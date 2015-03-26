@@ -1,0 +1,4 @@
+This is the site we used to generate barcodes. It stores the codes in a mysqldatabase so we can continue where we left off.
+
+
+change the mysql credentials in generate.php and index.php

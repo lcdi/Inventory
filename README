@@ -1,0 +1,14 @@
+This is the LCDI's internal inventory tracking system. 
+
+It hooks into our AD for logins.
+
+
+The original project was written very quickly due to necessity in the lab.  
+There are probably bugs, errors, and algorithms that make no sense....but it works :P
+
+
+Change the mysql credentials in includes/functions.php and admin.php
+
+
+edit and rename the adLDAP module to fit your company's domain
+includes/adLDAP/src/adLDAP.php.sample
