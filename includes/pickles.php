@@ -225,10 +225,7 @@ function getStats(){
 	//Count total items that are signed out.
 	$query = "SELECT * FROM `Inout` WHERE `DateIn` = '0000-00-00 00:00:00'" or die("im dumb" . mysqli_error($con));
 	$result = mysqli_query($con, $query);
-	$count = mysqli_num_rows($result);
-	if ($count > 0){
-		$stats['Current-SignedOut'] = $count;
-	}
+	$stats['Current-SignedOut'] = mysqli_num_rows($result);
 	
 	return $stats;
 }
