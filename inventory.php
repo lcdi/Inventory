@@ -154,7 +154,7 @@ if (isset($_GET['action'])){
 						<center>
 							<form class='form' name='input' action='inventory.php' method='GET'>
 								<input type='hidden' name='action' value='wipe'> 
-								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control center-text form-small' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Wipe'> 
+								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control center-text form-small' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Wipe'> 
 							</form>
 						</center>
 					</div>
@@ -207,7 +207,7 @@ if (isset($_GET['action'])){
 						<center>
 							<form class='form' name='input' action='inventory.php' method='GET'>
 								<input type='hidden' name='action' value='wipe'> 
-								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control center-text form-small' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Wipe'> 
+								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control center-text form-small' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Wipe'> 
 							</form>
 						</center>
 					</div>
@@ -220,7 +220,7 @@ if (isset($_GET['action'])){
 				<center>
 					<form class='form' name='input' action='inventory.php' method='GET'>
 						<input type='hidden' name='action' value='wipe'> 
-						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control center-text form-small' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Wipe'> 
+						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control center-text form-small' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Wipe'> 
 					</form>
 				</center>
 			</div>
@@ -589,7 +589,7 @@ if (isset($_GET['action'])){
 						<center>
 							<form class='form' name='input' action='inventory.php' method='GET'>
 								<input type='hidden' name='action' value='edititem'> 
-								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 							</form>
 						</center>
 						</div>
@@ -712,7 +712,7 @@ if (isset($_GET['action'])){
 						<center>
 							<form class='form' name='input' action='inventory.php' method='GET'>
 								<input type='hidden'name='action' value='edititem'> 
-								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+								<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 							</form>
 						</center>
 						</div>
@@ -818,7 +818,7 @@ if (isset($_GET['action'])){
 				<center>
 					<form class='form' name='input' action='inventory.php' method='GET'>
 						<input type='hidden'name='action' value='edititem'> 
-						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 					</form>
 				</center>
 				</div>
@@ -852,7 +852,7 @@ if (isset($_GET['action'])){
 				<center>
 					<form class='form' name='input' action='inventory.php' method='GET'>
 						<input type='hidden'name='action' value='getItem'> 
-						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 					</form>
 				</center>
 				</div>
@@ -1053,7 +1053,7 @@ if (isset($_GET['action'])){
 				<center>
 					<form class='form' name='input' action='inventory.php' method='GET'>
 						<input type='hidden'name='action' value='getItem'> 
-						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+						<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 					</form>
 				</div>
 			";
@@ -1066,7 +1066,7 @@ if (isset($_GET['action'])){
 			<center>
 				<form class='form' name='input' action='inventory.php' method='GET'>
 					<input type='hidden'name='action' value='getItem'> 
-					<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+					<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 				</form>
 			</center>
 			</div>
@@ -1080,7 +1080,7 @@ if (isset($_GET['action'])){
 		<center>
 			<form class='form' name='input' action='inventory.php' method='GET'>
 				<input type='hidden'name='action' value='getItem'> 
-				<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI-00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
+				<label>Item Serial Number: </label> <input type='text' name='serialNum' class='form-control form-small center-text' placeholder='LCDI00000' autofocus> <br> <input type='submit' class='btn btn-default' value='Lookup'> 
 			</form>
 		</center>
 		</div>

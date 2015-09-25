@@ -10,7 +10,7 @@
 					$password = $_POST['password'];
 					if ($adldap->authenticate($username,$password)){
 						createSession($username,$password);
-						header( 'Location: http://inventory/index.php' ) ;
+						header( 'Location: http://inventory.lcdi/index.php' ) ;
 					}else{
 							echo "<div class='login'>
 									<div class='alert alert-danger'>Invalid Credentials!</div>
