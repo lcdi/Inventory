@@ -239,7 +239,7 @@ function uploadPicture(){
 	$extension = end($temp);
 	if (in_array($extension, $allowedExts)){
 		if (!file_exists("uploads/photos/$Type")){
-			mkdir("uploads/photos/$Type", 0777);
+			mkdir("uploads/photos/$Type", 0777, true);
 		}
 		if ($_FILES["file"]["error"] > 0){
 			echo "Return Code: " . $_FILES["file"]["error"] . "<br>";
