@@ -93,7 +93,7 @@ function viewall($type = "%", $state = "%", $SignedIn = "%", $sort = 'ID' ) {
 		$serial	= $row['SerialNumber'];
 		$type	= $row['Type'];
 		$desc	= $row['Description'];
-		$issues	= $row['Issues'];
+		$issues	= $row['Use'];
 		$state	= $row['State'];
 		$items .= "<tr><td><a href='inventory.php?action=getItem&serialNum=$serial'>$serial</a></td><td>$type</td><td>$desc</td><td>$issues</td><td>$state</td></tr>";
 	}
