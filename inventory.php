@@ -72,13 +72,17 @@ include('includes/header.php');
 <?php
 if (isset($_GET['action'])){
 	if ($_GET['action'] == 'viewall'){
+		// <!-- Filters header text -->
 		echo "<h4>Filters:</h4>";
+		// Start of the form. Form includes headers, boxes, and submission button
 		echo "<form class='form' name='input' action='inventory.php?action=viewall' method='GET'>";
 		echo "<input type='hidden' name='action' value='viewall'>";
 		echo "<input type='hidden' name='filter' value='yes'>";
 		echo "<table class='table table-condensed'><tr>";
+		// Headers for selection filter boxes
 		echo "<th width='1%'>Item Type:</th><th width='1%'>Current State</th><th >Signed In/Out</th></tr>";
 		
+		// Selection box for Item_Type
 		echo "<tr><td><select style='width: 150px' multiple name='Type'> ";
 		$query = 'SELECT DISTINCT Type FROM Inventory;' or die('im dumb' . mysqli_error($con));
 		$result = mysqli_query($con, $query);
@@ -88,6 +92,7 @@ if (isset($_GET['action'])){
 		}
 		echo "</select></td>  ";
 		
+		// Selection box for Current_State
 		echo "<td><select style='width: 150px' multiple name='State'> ";
 		$query = 'SELECT DISTINCT State FROM Inventory;' or die('im dumb' . mysqli_error($con));
 		$result = mysqli_query($con, $query);
@@ -98,6 +103,7 @@ if (isset($_GET['action'])){
 		echo "</select>";
 		echo "</td>";
 		
+		// Selection box for Signed_In/Out
 		echo "<td><select style='width: 100px' multiple name='SignedIn'> ";
 			echo "<option value='In'>In</option>
 				<option value='Out'>Out</option>
@@ -105,8 +111,12 @@ if (isset($_GET['action'])){
 		echo "</select>
 		
 		</td></tr></table>";
+		// "Filter" submission button and end form
 		echo "<input type='submit' value='Filter'>";
 		echo "</form>";
+
+		// Actually displays the items using an external php file
+		// Functions set a php variable called $items, which is later passed to an html table
 		if (isset($_GET['filter'])){
 			$query  = explode('&', $_SERVER['QUERY_STRING']);
 			$params = array();
@@ -136,8 +146,10 @@ if (isset($_GET['action'])){
 			}
 			viewall($type, $state, $SignedIn, 'SerialNumber ASC');
 		}else{
+			// specifically this one uses pickles.php.viewall(type,state,SignedIn,sort)
 			viewall();
 		}
+		// Display the items in a table
 		echo "<br>
 			<table class='table'>
 				$items

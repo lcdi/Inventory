@@ -2,7 +2,7 @@
 
 
 function viewall($type = "%", $state = "%", $SignedIn = "%", $sort = 'ID' ) {
-	global $items;
+	global $items; // define the items to be put in the table, this is just a large string of table rows ("<tr></tr>...")
 	global $con;
 	$stringtype = '';
 	$stringstate = '';

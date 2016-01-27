@@ -37,6 +37,9 @@
 			}else{
 				$userinfo = $adldap->user()->info(checkSession($_SESSION['Authenticated']), array("displayname"));
 		?>
+		  
+		  <!-- Old main page body -->
+
 		  <div class="jumbotron">
 			<h2>Welcome back <?php echo $userinfo[0]["displayname"][0]; ?>,</h2>
 			<p class="lead">
@@ -47,6 +50,13 @@
 				?>
 			</p>
 		  </div>
+
+		  <!-- New page body -->
+
+		  
+
+		  <!-- End new page body -->
+
 		<?php
 			}
 		?>
