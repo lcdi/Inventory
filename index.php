@@ -2,7 +2,7 @@
 	require_once('php/session.php');
 	require_once('php/header.php');
 ?>
-		<table>
+		<table class='table'>
 			<tr>
 				<th>Serial Number</th>
 				<th>Item Type</th>
