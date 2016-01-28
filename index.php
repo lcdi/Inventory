@@ -2,6 +2,7 @@
 	require_once('php/session.php');
 	require_once('php/header.php');
 ?>
+		<!-- START INDEX -->
 		<table class='table'>
 			<tr>
 				<th>Serial Number</th>
@@ -79,6 +80,7 @@
 				// Items
 			?>
 		</table>
+		<!-- END INDEX -->
 <?php
 	require_once('php/footer.php');
 ?>

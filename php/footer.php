@@ -1,5 +1,4 @@
-		<hr>
-
+		<!-- START FOOTER -->
 		<div class="footer">
 			<p><center>&copy; Champlain College LCDI 2013</center></p>
 		</div>

@@ -176,4 +176,3 @@
 				<h3 class="muted"></h3>
 			</div>
 		<!-- END OF HEADER -->
-		<hr>
