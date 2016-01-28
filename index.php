@@ -24,5 +24,5 @@
 		</table>
 	-->
 <?php
-	require_once('php/footer.png');
+	require_once('php/footer.php');
 ?>
