@@ -25,6 +25,7 @@
 	$datetime = date('Y-m-d h:i:s', time());
 	$clientIP = $_SERVER['REMOTE_ADDR'];
 
+	/*
 	function random($length = 10) {
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$randomString = '';
@@ -94,5 +95,6 @@
 		$_SESSION['Authenticated'] = $SessionID;
 		return $username;
 	}
+	/*
 
 ?>
