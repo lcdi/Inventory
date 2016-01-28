@@ -61,7 +61,12 @@
 			<!-- New page body -->
 
 			<?php
-				viewall();
+				if (isset($_GET['filter'])) {
+
+				}
+				else {
+					viewall();
+				}
 				echo "<br><table class='table'>$items</table>";
 			?>
 
