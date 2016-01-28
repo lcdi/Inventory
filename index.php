@@ -2,19 +2,25 @@
 	require_once('php/session.php');
 	require_once('php/header.php');
 ?>
-		<hr>
-
-		<div class="footer">
-			<p><center>&copy; Champlain College LCDI 2013</center></p>
-		</div>
-
-		</div> <!-- /container -->
-
-		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script src="//code.jquery.com/jquery.js"></script>
-		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		<script src="js/bootstrap.min.js"></script>
-
-	</body>
-
-</html>
+		<table>
+			<tr>
+				<th>Serial Number</th>
+				<th>Item Type</th>
+				<th>Description</th>
+				<th>Notes/Issues</th>
+				<th>Quality/State</th>
+				<th>In/Out</th>
+				<th></th>
+			</tr>
+			<tr>
+				<?php
+					// Selectors
+				?>
+			</tr>
+			<?php
+				// Items
+			?>
+		</table>
+<?php
+	require_once('php/footer.png');
+?>
