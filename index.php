@@ -2,6 +2,12 @@
 	require_once('php/session.php');
 	require_once('php/header.php');
 ?>
+		<form class='form' name='input' action='index.php' method='GET'>
+			<center>
+				<input type='submit' value='In'>
+				<input type='submit' value='All'>
+				<input type='submit' value='Out'>
+			</center>
 		<table class='table'>
 			<tr>
 				<th>Serial Number</th>
@@ -13,7 +19,6 @@
 				<th></th>
 			</tr>
 			<tr>
-				<form class='form' name='input' action='index.php' method='GET'>
 					<!-- Serial Number -->
 					<td>
 						<input type='text' name='serialNumber'
@@ -70,9 +75,6 @@
 					<td><input type='submit' value='Filter'></td>
 			</tr>
 				</form>
-				<?php
-					// Selectors
-				?>
 			</tr>
 			<?php
 				// Items
