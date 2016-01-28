@@ -9,7 +9,7 @@
 	echo $configFileJson['account_suffix'].'<br>';
 	echo $configFileJson['mysql_password'].'<br>';
 
-	require_once(dirname(__FILE__) . '/adLDAP/src/adLDAP.php');
+	//require_once(dirname(__FILE__) . '/adLDAP/src/adLDAP.php');
 
 	/*
 	try {

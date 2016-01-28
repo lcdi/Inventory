@@ -1,9 +1,7 @@
 <?php
 	require_once('php/session.php');
-
+	require_once('php/header.php');
 ?>
-<html><body>
-
 		<hr>
 
 		<div class="footer">
