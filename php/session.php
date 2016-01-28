@@ -3,13 +3,13 @@
 		This file handles adLDAP (domain control), the MySQL connection, and the session
 	*/
 
-	require_once(dirname(__FILE__) . '/adLDAP/src/adLDAP.php');
+	//require_once(dirname(__FILE__) . '/adLDAP/src/adLDAP.php');
 
 	$configFileString = file_get_contents(dirname(__FILE__) . '/../../config.json');
 	$configFileJson = json_decode($configFileString, true);
-	echo $configFileJson['base_dn'];
-	echo $configFileJson['account_suffix'];
-	echo $configFileJson['mysql_password'];
+	echo $configFileJson['base_dn'].'\n';
+	echo $configFileJson['account_suffix'].'\n';
+	echo $configFileJson['mysql_password'].'\n';
 
 	/*
 	try {
