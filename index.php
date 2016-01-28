@@ -58,7 +58,7 @@
 						</select>
 					</td>
 					<!-- In/Out -->
-					<td>
+					<td colspan="7">
 						<select style='width: 100px;' multiple name='SignedIn'>
 							<option value='In'>In</option>
 							<option value='Out'>Out</option>
