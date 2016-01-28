@@ -5,9 +5,9 @@
 
 	$configFileString = file_get_contents(dirname(__FILE__) . '/../../config.json');
 	$configFileJson = json_decode($configFileString, true);
-	echo $configFileJson['base_dn'].'<br>';
-	echo $configFileJson['account_suffix'].'<br>';
-	echo $configFileJson['mysql_password'].'<br>';
+	//echo $configFileJson['base_dn'].'<br>';
+	//echo $configFileJson['account_suffix'].'<br>';
+	//echo $configFileJson['mysql_password'].'<br>';
 
 	//require_once(dirname(__FILE__) . '/adLDAP/src/adLDAP.php');
 
