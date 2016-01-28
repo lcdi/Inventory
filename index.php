@@ -1,6 +1,6 @@
 <?php
-	require_once('php/session.php');
-	
+	//require_once('php/session.php');
+
 ?>
 <html><body>
 
