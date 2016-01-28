@@ -65,7 +65,10 @@
 					</td>
 					<!-- Sign In/Out -->
 					<td></td>
-					<input type='submit' value='Filter'>
+			</tr>
+			<tr>
+					<td><input type='submit' value='Filter'></td>
+			</tr>
 				</form>
 				<?php
 					// Selectors
