@@ -5,6 +5,13 @@
 
 	require_once(dirname(__FILE__) . '/adLDAP/src/adLDAP.php');
 
+	$configFileString = file_get_contents(dirname(__FILE__) . '/../../config.json');
+	$configFileJson = json_decode($configFileString, true);
+	echo $configFileJson['base_dn'];
+	echo $configFileJson['account_suffix'];
+	echo $configFileJson['mysql_password'];
+
+	/*
 	try {
 		// NOTE: THIS NEEDS TO BE CHANGED AFTER PUSHED TO MAIN BRANCH
 		$adldap = new adLDAP(array('base_dn'=>'DC=c3di,DC=local', 'account_suffix'=>'@c3di.local'));
@@ -24,6 +31,7 @@
 
 	$datetime = date('Y-m-d h:i:s', time());
 	$clientIP = $_SERVER['REMOTE_ADDR'];
+	*/
 
 	/*
 	function random($length = 10) {
