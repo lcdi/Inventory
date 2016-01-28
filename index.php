@@ -68,11 +68,9 @@
 					<td></td>
 			</tr>
 			<tr>
-				<center>
-					<input type='submit' value='In'>
-					<input type='submit' value='All'>
-					<input type='submit' value='Out'>
-				</center>	
+				<input type='submit' value='In'>
+				<input type='submit' value='All'>
+				<input type='submit' value='Out'>
 			</tr>
 				</form>
 			</tr>
