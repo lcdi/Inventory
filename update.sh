@@ -1,2 +1,2 @@
 sudo git fetch --all
-sudo git reset --hard origin/dev
+sudo git reset --hard origin/flask
