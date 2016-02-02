@@ -6,6 +6,6 @@ app = Flask(__name__)
 def index():
 	return render_template('index.html')
 
-if __name_ == '__main__':
+if __name__ == '__main__':
 	app.debug = True
 	app.run()
