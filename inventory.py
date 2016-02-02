@@ -1,7 +1,9 @@
 from flask import Flask, render_template, url_for, redirect
 from peewee import *
+#from datetime import date
 
 app = Flask(__name__)
+# http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
 database = SqliteDatabase('developmentData.db')
 
 #class Device(Model):
