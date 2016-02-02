@@ -21,10 +21,12 @@
     <img src="/static/lcdi_logo.jpg" height=50px />
     <hr>
 
-    {% block content %}
-      {% block scripts %}
+    <div class="container-narrow">
+      {% block content %}
+        {% block scripts %}
+        {% endblock %}
       {% endblock %}
-    {% endblock %}
+    </div>
 
     <hr>
     <div class="footer">
