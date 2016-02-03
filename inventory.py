@@ -11,10 +11,6 @@ from settings import APP_STATIC
 # Create Flask app
 app = Flask(__name__)
 
-# Load secret key
-with open('file.dat', 'r') as f:
-    app.secret_key = f.read()
-
 # http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
 database = SqliteDatabase('developmentData.db')
 
@@ -54,3 +50,7 @@ app.secret_key
 if __name__ == '__main__':
 	db.connect()
 	app.run(debug = True)
+
+# Load secret key
+with open('file.dat') as f:
+    app.secret_key = f.read()
