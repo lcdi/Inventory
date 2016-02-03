@@ -6,14 +6,20 @@ Inventory
 
 {% block content %}
 
+<!--
 <div class="login">
-	<form name="input" action="" method="post" class="form-signin">
+	<form action="" method="post" name="input" class="form-signin">
 		<h2 class="form-signin-heading">Please sign in: </h2>
-		<input name="username" type="text" class="form-control" placeholder="LCDI Username" autofocus>
-		<input name="password" type="password" class="form-control" placeholder="Password"><br>
+		<input type="text" name="username" class="form-control" placeholder="LCDI Username" autofocus >
+		<input type="password" name="password" class="form-control" placeholder="Password"><br>
 		<button class="btn btn-lg btn-primary btn-block" type="submit" value="Login">Sign in</button>
 	</form>
 </div>
-
+-->
+<form action="" method="post">
+    <p><input type=text name=username>
+    <p><input type=submit value=Login>
+</form>
+        
 {%endblock%}
 
