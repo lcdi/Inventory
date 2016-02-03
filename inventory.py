@@ -21,7 +21,7 @@ def index():
 	# http://flask.pocoo.org/snippets/15/
 	if 'username' in session:
 		return render_template('inventory.html', inventoryData="", deviceLogData="")
-	return redirect(url_for('login'));
+	return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -30,6 +30,10 @@ def login():
 		return redirect(url_for('index'))
 	return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+	session.pop('username', None)
+	return redirect(url_for('index'))
 
 if __name__ == '__main__':
 	db.connect()
