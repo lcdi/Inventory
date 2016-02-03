@@ -6,6 +6,15 @@ Inventory
 
 {% block content %}
 
+<div class="jumbo">
+	<h2>Welcome back {{ name }},</h2>
+	<p class="lead">
+		There are currently <span class='text-info'>{{ totalItems }}</span> items in inventory and <span class='text-info'>{{ signedOutItems }}</span> currently signed out item[s].
+	</p>
+</div>
+
+<hr>
+
 <table class='table'>
 	<tr>
 		<th>Serial Number</th>
