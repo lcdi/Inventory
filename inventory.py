@@ -59,7 +59,7 @@ def logout():
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LW/,?RT'
 
 if __name__ == '__main__':
-	db.connect()
+	database.connect()
 	app.run(debug = True)
 
 # Load secret key
