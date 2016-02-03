@@ -64,8 +64,8 @@ def login():
 			return redirect(url_for('index'))
 		except Exception as e:
 			return str(e)
-	return render_template('login.html')#'''<form action="" method="post"><p><input type=text name=username><p><input type=submit value=Login></form>'''
-
+	return render_template('login.html')
+	
 @app.route('/logout')
 def logout():
 	session.pop('username', None)
