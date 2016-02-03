@@ -20,7 +20,7 @@ class Device(Model):
 def index():
 	# http://flask.pocoo.org/snippets/15/
 	#if 'username' in session:
-		return render_template('inventory.html', inventoryData="", deviceLogData="")
+	return render_template('inventory.html', inventoryData="", deviceLogData="")
 	#return redirect(url_for('login'));
 
 #@app.route('/login', methods=['GET', 'POST'])
