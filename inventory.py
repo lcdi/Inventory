@@ -39,4 +39,4 @@ def logout():
 
 if __name__ == '__main__':
 	db.connect()
-	app.run()
+	app.run(debug = True)
