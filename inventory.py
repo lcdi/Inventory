@@ -27,9 +27,9 @@ def login():
 	if request.method == 'POST':
 		#session['username'] = request.form['username']
 		try:
-			return url_for('index')
-		except Exception, e:
-			return e
+			return redirect(url_for('index'))
+		except Exception as e:
+			return 'There was an error! ' + str(e)
 	return '''<form action="" method="post"><p><input type=text name=username><p><input type=submit value=Login></form>'''
 
 @app.route('/logout')
