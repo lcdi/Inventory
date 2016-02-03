@@ -7,14 +7,14 @@ app = Flask(__name__)
 # http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
 database = SqliteDatabase('developmentData.db')
 
-class Device(Model):
-	idNumber = IntField()
-	serialNumber = CharField()
-	typeCategory = CharField()
-	description = TextField()
-	issues = TextField()
-	photo = CharField()
-	quality = CharField()
+#class Device(Model):
+#	idNumber = IntField()
+#	serialNumber = CharField()
+#	typeCategory = CharField()
+#	description = TextField()
+#	issues = TextField()
+#	photo = CharField()
+#	quality = CharField()
 
 @app.route('/')
 def index():
