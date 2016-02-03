@@ -24,12 +24,12 @@ def index():
 	return "<p>no</p>"
 	#return redirect(url_for('login'));
 
-#@app.route('/login', methods=['GET', 'POST'])
-#def login():
-#	if request.method == 'POST':
-#		session['username'] = request.form['username']
-#		return redirect(url_for('index'))
-#	return render_template('login.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if request.method == 'POST':
+		session['username'] = request.form['username']
+		return redirect(url_for('index'))
+	return render_template('login.html')
 
 
 if __name__ == '__main__':
