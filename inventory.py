@@ -25,7 +25,10 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		session['username'] = request.form['username']
+		try:
+			session['username'] = request.form['username']
+		except Exception as e:
+			return str(e)
 		return 'finished'#redirect(url_for('index'))
 	return '''<form action="" method="post"><p><input type=text name=username><p><input type=submit value=Login></form>'''
 
