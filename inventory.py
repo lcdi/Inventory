@@ -1,8 +1,20 @@
+# Flask imports
 from flask import Flask, render_template, session, redirect, url_for, escape, request
+# Peewee
 from peewee import *
+# File manipulation
+import os
+from settings import APP_STATIC
+# Other
 #from datetime import date
 
+# Create Flask app
 app = Flask(__name__)
+
+# Load secret key
+with open(os.path.join(APP_STATIC, 'file.dat')) as f:
+    app.secret_key = f.read()
+
 # http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
 database = SqliteDatabase('developmentData.db')
 
@@ -36,6 +48,8 @@ def login():
 def logout():
 	session.pop('username', None)
 	return redirect(url_for('index'))
+
+app.secret_key
 
 if __name__ == '__main__':
 	db.connect()
