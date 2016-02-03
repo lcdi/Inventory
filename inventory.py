@@ -21,8 +21,7 @@ def index():
 	# http://flask.pocoo.org/snippets/15/
 	if 'username' in session:
 		return render_template('inventory.html', inventoryData="", deviceLogData="")
-	return "<p>no</p>"
-	#return redirect(url_for('login'));
+	return redirect(url_for('login'));
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
