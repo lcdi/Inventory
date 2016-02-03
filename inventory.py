@@ -27,7 +27,7 @@ def index():
 def login():
 	if request.method == 'POST':
 		session['username'] = request.form['username']
-		return redirect(url_for('index'))
+		return url_for('index')
 	return '''<form action="" method="post"><p><input type=text name=username><p><input type=submit value=Login></form>'''
 
 @app.route('/logout')
