@@ -1,5 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
-from flask import session, escape, request
+from flask import Flask, render_template, session, redirect, url_for, escape, request
 from peewee import *
 #from datetime import date
 
@@ -26,7 +25,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		session['username'] = request.form['username']
+		#session['username'] = request.form['username']
 		try:
 			return url_for('index')
 		except Exception, e:
