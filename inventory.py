@@ -19,16 +19,17 @@ class Device(Model):
 @app.route('/')
 def index():
 	# http://flask.pocoo.org/snippets/15/
-	if 'username' in session:
+	#if 'username' in session:
 		return render_template('inventory.html', inventoryData="", deviceLogData="")
-	return redirect(url_for('login'));
+	#return redirect(url_for('login'));
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	if request.method == 'POST':
-		session['username'] = request.form['username']
-		return redirect(url_for('index'))
-	return render_template('login.html')
+#@app.route('/login', methods=['GET', 'POST'])
+#def login():
+#	if request.method == 'POST':
+#		session['username'] = request.form['username']
+#		return redirect(url_for('index'))
+#	return render_template('login.html')
+
 
 if __name__ == '__main__':
 	db.connect()
