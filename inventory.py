@@ -27,7 +27,7 @@ def index():
 def login():
 	if request.method == 'POST':
 		session['username'] = request.form['username']
-		return "success"#redirect(url_for('index'))
+		return redirect(url_for('index'))
 	return render_template('login.html')
 
 
