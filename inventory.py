@@ -45,10 +45,12 @@ def logout():
 	session.pop('username', None)
 	return redirect(url_for('index'))
 
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
 if __name__ == '__main__':
 	db.connect()
 	app.run(debug = True)
 
 # Load secret key
-with open('file.dat') as f:
-    app.secret_key = f.read()
+#with open('file.dat') as f:
+#    app.secret_key = f.read()
