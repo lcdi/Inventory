@@ -45,8 +45,6 @@ def logout():
 	session.pop('username', None)
 	return redirect(url_for('index'))
 
-app.secret_key
-
 if __name__ == '__main__':
 	db.connect()
 	app.run(debug = True)
