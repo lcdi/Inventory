@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, redirect
+from flask import session, escape, request
 from peewee import *
 #from datetime import date
 
@@ -18,10 +19,16 @@ class Device(Model):
 @app.route('/')
 def index():
 	# http://flask.pocoo.org/snippets/15/
-	for item in Device.select():
-		print(item.serialNumber)
+	if 'username' in session:
+		return render_template('inventory.html', inventoryData="", deviceLogData="")
+	return redirect(url_for('login'));
 
-	return render_template('inventory.html', inventoryData="", deviceLogData="")
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if request.method == 'POST':
+		session['username'] = request.form['username']
+		return redirect(url_for('index'))
+	return render_template('login.html')
 
 if __name__ == '__main__':
 	db.connect()
