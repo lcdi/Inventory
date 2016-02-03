@@ -12,7 +12,7 @@ from settings import APP_STATIC
 app = Flask(__name__)
 
 # Load secret key
-with open(os.path.join(APP_STATIC, 'file.dat')) as f:
+with open('static/file.dat', 'r') as f:
     app.secret_key = f.read()
 
 # http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
