@@ -8,6 +8,8 @@ import os.path
 # Other
 #from datetime import date
 
+# LDAP http://www.python-ldap.org/doc/html/installing.html
+
 # Create Flask app
 app = Flask(__name__)
 
@@ -22,6 +24,8 @@ app = Flask(__name__)
 #	issues = TextField()
 #	photo = CharField()
 #	quality = CharField()
+#class DeviceLogItem(Model):
+# TODO
 
 # http://flask.pocoo.org/snippets/104/
 def install_secret_key(app, filename='secret_key'):
@@ -65,7 +69,7 @@ def login():
 		except Exception as e:
 			return str(e)
 	return render_template('login.html')
-	
+
 @app.route('/logout')
 def logout():
 	session.pop('username', None)
