@@ -37,7 +37,10 @@ def login():
 			session['username'] = request.form['username']
 		except Exception as e:
 			return str(e)
-		return redirect(url_for('index'))
+		try:
+			return redirect(url_for('index'))
+		except Exception as e:
+			return str(e)
 	return '''<form action="" method="post"><p><input type=text name=username><p><input type=submit value=Login></form>'''
 
 @app.route('/logout')
