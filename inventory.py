@@ -8,7 +8,7 @@ import os.path
 # Other
 #from datetime import date
 
-# LDAP; http://www.python-ldap.org/doc/html/installing.html
+# LDAP http://www.python-ldap.org/doc/html/installing.html
 
 # Create Flask app
 app = Flask(__name__)
