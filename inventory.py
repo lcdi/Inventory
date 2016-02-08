@@ -8,25 +8,29 @@ import os.path
 # Other
 #from datetime import date
 
-# LDAP http://www.python-ldap.org/doc/html/installing.html
+# LDAP; http://www.python-ldap.org/doc/html/installing.html
 
 # Create Flask app
 app = Flask(__name__)
 
 # http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
-#database = SqliteDatabase('developmentData.db')
+db = SqliteDatabase('Inventory.db')
 
-#class Device(Model):
-#	idNumber = IntField()
-#	serialNumber = CharField()
-#	typeCategory = CharField()
-#	description = TextField()
-#	issues = TextField()
-#	photo = CharField()
-#	quality = CharField()
-#class DeviceLogItem(Model):
-# TODO
+class BaseModel(Model):
 
+	class Meta:
+		database = db
+
+class Device(Model):
+	idNumber = IntegerField()
+	serialNumber = CharField()
+	typeCategory = CharField()
+	description = TextField()
+	issues = TextField()
+	photo = CharField()
+	state = CharField()
+
+#TODO
 # http://flask.pocoo.org/snippets/104/
 def install_secret_key(app, filename='secret_key'):
 	"""Configure the SECRET_KEY from a file
@@ -75,7 +79,29 @@ def logout():
 	session.pop('username', None)
 	return redirect(url_for('index'))
 
+@app.before_request
+def before_request():
+    g.db = database
+    g.db.connect()
+
+@app.after_request
+def after_request(response):
+    g.db.close()
+    return response
+
 if __name__ == '__main__':
 	#database.connect()
 	app.run(debug = True)
+	db.connect()
 
+	device = Device.create(
+			idNumber = 1,
+			serialNumber = "LCDI-00001",
+			typeCategory = "Tablet",
+			description = "This is a tablet",
+			issues = "None of note",
+			photo = "IMG_000.jpg",
+			state = "operational"
+		)
+
+	db.close()
