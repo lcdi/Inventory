@@ -1,1 +1,5 @@
 file.dat
+peewee.db
+Inventory.db
+secret_key
+commitPush.sh

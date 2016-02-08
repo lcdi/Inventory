@@ -4,6 +4,7 @@ from flask import Flask, render_template, session, redirect, url_for, escape, re
 from peewee import *
 # File manipulation
 import sys
+import os
 import os.path
 # Other
 #from datetime import date
@@ -12,6 +13,7 @@ import os.path
 
 # Create Flask app
 app = Flask(__name__)
+app.debug = True
 
 # http://docs.peewee-orm.com/en/latest/peewee/quickstart.html
 db = SqliteDatabase('Inventory.db')
@@ -45,14 +47,14 @@ def install_secret_key(app, filename='secret_key'):
 	try:
 		app.config['SECRET_KEY'] = open(filename, 'rb').read()
 	except IOError:
-		print 'Error: No secret key. Create it with:'
+		print ('Error: No secret key. Create it with:')
 		if not os.path.isdir(os.path.dirname(filename)):
-			print 'mkdir -p', os.path.dirname(filename)
-		print 'head -c 24 /dev/urandom >', filename
+			print ('mkdir -p', os.path.dirname(filename))
+		print ('head -c 24 /dev/urandom >', filename)
 		sys.exit(1)
 
 # Load secret key
-install_secret_key(app)
+#install_secret_key(app)
 
 @app.route('/')
 def index():
@@ -72,36 +74,18 @@ def login():
 			return redirect(url_for('index'))
 		except Exception as e:
 			return str(e)
-	return render_template('login.html')
+	return render_template('inventory.html')
 
 @app.route('/logout')
 def logout():
 	session.pop('username', None)
 	return redirect(url_for('index'))
 
-@app.before_request
-def before_request():
-    g.db = database
-    g.db.connect()
-
-@app.after_request
-def after_request(response):
-    g.db.close()
-    return response
-
 if __name__ == '__main__':
-	#database.connect()
-	app.run(debug = True)
+	port = int(os.getenv('PORT', 8080))
+	host = os.getenv('IP', '0.0.0.0')
+	app.run(port=port, host=host)
+
 	db.connect()
-
-	device = Device.create(
-			idNumber = 1,
-			serialNumber = "LCDI-00001",
-			typeCategory = "Tablet",
-			description = "This is a tablet",
-			issues = "None of note",
-			photo = "IMG_000.jpg",
-			state = "operational"
-		)
-
+	
 	db.close()
