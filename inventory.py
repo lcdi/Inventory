@@ -53,7 +53,7 @@ def install_secret_key(app, filename='secret_key'):
 		print ('head -c 24 /dev/urandom >', filename)
 		sys.exit(1)
 
-# Load secret key
+#  Load secret key
 #install_secret_key(app)
 
 @app.route('/')
