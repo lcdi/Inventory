@@ -36,7 +36,12 @@ def init(isDebug):
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def renderMainPage():
-	query = models.getQuery()
+	query = models.Device.select(models.Device.serialNumber,
+								 models.Device.typeCategory,
+								 models.Device.description,
+								 models.Device.issues,
+								 models.Device.state
+				).order_by(models.Device.idNumber)
 	types = models.getDeviceTypes()
 	return render_template('listings_page.html',
 			name=escape(session['displayName']),

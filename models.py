@@ -33,11 +33,3 @@ def doesTypeExistIn(t, types):
 		if t == _type:
 			return True
 	return False
-	
-def getQuery():
-	return Device.select(
-				Device.serialNumber,
-				Device.typeCategory,
-				Device.description,
-				Device.issues,
-				Device.state).order_by(Device.idNumber)
