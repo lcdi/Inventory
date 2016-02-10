@@ -60,7 +60,9 @@ def renderMainPage(
 
 def renderEntry(serialNumber):
 	
-	return render_template('entry.html')
+	return render_template('entry.html',
+		serialNumber='LCDI-4358679',
+		)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
