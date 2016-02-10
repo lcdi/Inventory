@@ -1,0 +1,18 @@
+{% extends "baseWithStyles.html" %}
+
+{%block title%}
+{{ serialNumber }}
+{%endblock%}
+
+{% block content %}
+
+<!-- https://github.com/lcdi/Inventory/blob/master/inventory.php#L831 -->
+<center>
+	{% block HeaderSerialNumber %}{% endblock %}
+	{% block HeaderItemType %}{% endblock %}
+	{% block HeaderDescription %}{% endblock %}
+	<br />
+    
+</center>
+
+{%endblock%}
