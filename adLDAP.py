@@ -1,7 +1,9 @@
 import ldap
 
 def areCredentialsValid(username, password):
-	return checkCredentials(username, password) == None
+	ret = checkCredentials(username, password)
+	print(ret)
+	return ret == None
 
 def checkCredentials(username, password):
 	controller = 'devdc'
@@ -9,7 +11,7 @@ def checkCredentials(username, password):
 	domainB = 'devlcdi'
 	domain = domainA + '.' + domainB
 	
-	ldapServer = 'ldap://' + contorller + '.' + domain
+	ldapServer = 'ldap://' + controller + '.' + domain
 	ldapUsername = username + '@' + domain
 	ldapPassword = password
 	
