@@ -7,10 +7,12 @@ Inventory
 {% block content %}
 
 <div class="jumbo">
-	<h2>Welcome back {{ name }},</h2>
-	<p class="lead">
-		There are currently <span class='text-info'>{{ totalItems }}</span> items in inventory and <span class='text-info'>{{ signedOutItems }}</span> currently signed out item[s].
-	</p>
+	<center>
+		<h2>Welcome back {{ name }},</h2>
+		<p class="lead">
+			There are currently <span class='text-info'>{{ totalItems }}</span> items in inventory and <span class='text-info'>{{ signedOutItems }}</span> currently signed out item[s].
+		</p>
+	</center>
 </div>
 
 <hr>
@@ -26,7 +28,8 @@ Inventory
 		<th></th>
 	</tr>
 	<tr>
-		<form class='form' name='input'  method='POST'>
+		<form class='form' name='filter' method='POST'>
+			<input type='hidden' name='formID' value='filter'>
 			<!-- Serial Number -->
 			<td>
 				<input type='text' name='serialNumber'
@@ -35,9 +38,9 @@ Inventory
 			</td>
 			<!-- Item Type -->
 			<td>
-				<select class="form-control" id="sel1">
+				<select class="form-control" id="sel1" name='itemtype'>
 					{% for type in types%}
-						<option value='$type'>{{ type }}</option>";
+						<option value='{{ type }}'>{{ type }}</option>";
 					{% endfor %}
 				</select>
 			</td>
@@ -47,18 +50,21 @@ Inventory
 			<td></td>
 			<!-- Quality/State -->
 			<td>
-				<select class="form-control" id="sel1">
+				<select class="form-control" id="sel1" name='state'>
+			        <option>ALL</option>
 			        <option>Operational</option>
-			        <option>Decommisioned</option>
+			        <option>Decommissioned</option>
 			     </select>
 			  </div>
 			</td>
 			<!-- In/Out -->
 			<td>
-				<select class="form-control" id="sel1">
+				<!-- This is not needed, due to buttons below
+				<select class="form-control" id="sel1" name='status'>
 			        <option>In</option>
 			        <option>Out</option>
 			     </select>
+				-->
 			</td>
 			<!-- Sign In/Out -->
 			<td></td>
@@ -66,20 +72,29 @@ Inventory
 	<tr>
 		<td colspan="7">
 			<center>
-				<input type='submit' value='In'>
-				<a href="/out"><button>All</button></a>
-				<input type='submit' value='Out'>
+				<input type='submit' value='In' name='status'>
+				<input type='submit' value='All' name='status'>
+				<input type='submit' value='Out' name='status'>
 			</center>
 		</td>
 	</tr>
 		</form>
 	</tr>
 	{% for q in query %}
-		<tr><td>{{ q.serialNumber }}</td><td>{{ q.typeCategory }}</td><td>{{ q.description }}</td><td>{{ q.issues }}</td><td>{{ q.state }}</td></tr>
+		<tr>
+			<td>
+				<form class='form' name='entry' method='POST'>
+					<input type='hidden' name='formID' value='entry'>
+					<input class='linkButton' type="submit"
+						name='serialNumber' value='{{ q.serialNumber }}'>
+				</form>
+			</td>
+			<td>{{ q.typeCategory }}</td>
+			<td>{{ q.description }}</td>
+			<td>{{ q.issues }}</td>
+			<td>{{ q.state }}</td>
+		</tr>
 	{% endfor %}
 </table>
-
-
-
 
 {%endblock%}

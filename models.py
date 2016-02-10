@@ -17,7 +17,7 @@ class Device(Model):
 	state = CharField()
 	
 def getDeviceTypes():
-	types = [];
+	types = ['ALL'];
 	
 	query = Device.select(Device.typeCategory).order_by(Device.typeCategory)
 	for q in query:

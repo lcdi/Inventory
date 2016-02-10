@@ -35,7 +35,15 @@ def init(isDebug):
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def renderMainPage():
+def renderMainPage(
+		serialNumber = '', itemType = 'ALL', state = 'ALL', status = 'All'):
+	
+	# TODO filter results, set page form filters, and remove prints
+	print(serialNumber)
+	print(itemType)
+	print(state)
+	print(status)
+	
 	query = models.Device.select(models.Device.serialNumber,
 								 models.Device.typeCategory,
 								 models.Device.description,
@@ -50,14 +58,29 @@ def renderMainPage():
 			logoutURL=url_for('logout')
 		)
 
-@app.route('/')
+def renderEntry(serialNumber):
+	
+	return render_template('entry.html')
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
 	# http://flask.pocoo.org/snippets/15/
 	
 	# If user logged in
 	if 'username' in session:
 		# Render main page
-		return renderMainPage()
+		if request.method == 'POST':
+			print(request.values)
+			if request.form['formID'] == 'filter':
+				return renderMainPage(
+								serialNumber = request.form['serialNumber'],
+								itemType = request.form['itemtype'],
+								state = request.form['state'],
+								status = request.form['status'])
+			elif request.form['formID'] == 'entry':
+				return renderEntry(request.form['serialNumber'])
+		else:
+			return renderMainPage()
 	
 	# Force user to login
 	return redirect(url_for('login'))
@@ -67,7 +90,7 @@ def login():
 	# If form has been submitted
 	if request.method == 'POST':
 		try:
-			if (#app.debug == True or
+			if (app.debug == True or
 				adLDAP.areCredentialsValid(
 					request.form['username'],
 					request.form['password']
