@@ -9,10 +9,20 @@
 <!-- https://github.com/lcdi/Inventory/blob/master/inventory.php#L831 -->
 <center>
 	{% block HeaderSerialNumber %}{% endblock %}
-	{% block HeaderItemType %}{% endblock %}
-	{% block HeaderDescription %}{% endblock %}
-	<br />
-    
 </center>
+
+<table>
+	<tr>
+		<td colspan='20'>
+			<img src="/static/photos/{{ photoName }}" />
+		</td>
+		<td>
+			<h2>Type: </h2>{% block ItemType %}{% endblock %}
+			<h2>Description: </h2>{% block Description %}{% endblock %}
+			<h3>State: </h3>{% block State %}{% endblock %}
+			<h4>Notes: </h4>{% block Notes %}{% endblock %}
+		</td>
+	</tr>
+</table>
 
 {%endblock%}

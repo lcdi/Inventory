@@ -1,2 +1,21 @@
 {% extends "entryBase.html" %}
 
+{% block HeaderSerialNumber %}
+	<h1>{{ serialNumber }}</h1>
+{% endblock %}
+
+{% block ItemType %}
+	<h2>{{ itemType }}</h2>
+{% endblock %}
+
+{% block Description %}
+	<h2>{{ description }}</h2>
+{% endblock %}
+
+{% block State %}
+	<h2>{{ state }}</h2>
+{% endblock %}
+
+{% block Notes %}
+	<h2>{{ notes }}</h2>
+{% endblock %}

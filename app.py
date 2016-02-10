@@ -29,6 +29,7 @@ app = Flask(__name__)
 
 def init(isDebug):
 	app.debug = isDebug
+	#app._static_folder = '/static'
 	
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
@@ -60,8 +61,9 @@ def renderMainPage(
 
 def renderEntry(serialNumber):
 	
-	return render_template('entry.html',
+	return render_template('entryView.html',
 		serialNumber='LCDI-4358679',
+		photoName='IMG_9880.jpg'
 		)
 
 @app.route('/', methods=['GET', 'POST'])
