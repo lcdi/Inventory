@@ -142,10 +142,12 @@ def renderEntry(function, serialNumber):
 		entryType = 'View'
 		if isAdmin:
 			formID = 'openEditting'
-	elif function == 'openEditting':
-		if isAdmin:
-			entryType = 'Edit'
-			formID = 'saveInformation'
+	elif function == 'openEditting' and isAdmin:
+		entryType = 'Edit'
+		formID = 'saveInformation'
+	elif function == 'add' and isAdmin:
+		entryType = 'Edit'
+		formID = 'saveInformation'
 	
 	return render_template('entry' + entryType + '.html',
 			indexURL=url_for('index'),
@@ -155,7 +157,7 @@ def renderEntry(function, serialNumber):
 			submitURL=url_for('index'),
 			isAdmin=isAdmin,
 			
-			serialNumber='LCDI-4358679',
+			serialNumber=serialNumber,
 			itemType='Type A',
 			description='This is a desc',
 			state='operational',
