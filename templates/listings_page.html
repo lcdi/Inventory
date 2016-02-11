@@ -82,15 +82,16 @@ Inventory
 		<tr>
 			<td>
 				<form class='form' name='entry' method='POST'>
-					<input type='hidden' name='formID' value='entry'>
+					<input type='hidden' name='formID' value='openEntry'>
 					<input class='linkButton' type="submit"
 						name='serialNumber' value='{{ q.serialNumber }}'>
-				</form>
+				</form>{{ q.idNumber }}
 			</td>
 			<td>{{ q.typeCategory }}</td>
 			<td>{{ q.description }}</td>
 			<td>{{ q.issues }}</td>
 			<td>{{ q.state }}</td>
+			<td>{{ q.status }}</td>
 		</tr>
 	{% endfor %}
 </table>

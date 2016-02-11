@@ -7,22 +7,31 @@
 {% block content %}
 
 <!-- https://github.com/lcdi/Inventory/blob/master/inventory.php#L831 -->
-<center>
-	{% block HeaderSerialNumber %}{% endblock %}
-</center>
 
-<table>
+{% block pre %}{% endblock %}
+
+<table width='100%'>
 	<tr>
-		<td colspan='20'>
-			<img src="/static/photos/{{ photoName }}" />
+		<td width="400">
+			<img src="{{ url_for('static', filename=photoName) }}" width=400 />
 		</td>
-		<td>
-			<h2>Type: </h2>{% block ItemType %}{% endblock %}
-			<h2>Description: </h2>{% block Description %}{% endblock %}
-			<h3>State: </h3>{% block State %}{% endblock %}
-			<h4>Notes: </h4>{% block Notes %}{% endblock %}
+		<td align="center">
+			{% block HeaderSerialNumber %}{% endblock %}
+			<br /><br />
+			<h3>Type: {% block ItemType %}{% endblock %}</h3>
+			<h3>Description: {% block Description %}{% endblock %}</h3>
+		</td>
+	</tr>
+	<tr>
+		<td colspan='2' align="center">
+			<h3>State: {% block State %}{% endblock %}</h3>
+			<h4>Notes: {% block Notes %}{% endblock %}</h4>
 		</td>
 	</tr>
 </table>
+
+<br />
+
+{% block post %}{% endblock %}
 
 {%endblock%}
