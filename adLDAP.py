@@ -36,7 +36,7 @@ def checkCredentials(username, password):
 	id = ldap_client.search(dn, ldap.SCOPE_SUBTREE, filter, attrs)
 	groups = ldap_client.result(id)[1][0][1]['memberOf']
 	for group in groups:
-		address - group.split(',')
+		address = group.split(',')
 		groupName = address[0].split('=')[1]
 		if groupName in validEditAccessGroups:
 			hasEditAccess = True
