@@ -1,10 +1,5 @@
 import ldap
 
-def areCredentialsValid(username, password):
-	ret = checkCredentials(username, password)
-	print(ret)
-	return ret == None
-
 def checkCredentials(username, password):
 	controller = 'devdc'
 	domainA = 'dev'
@@ -29,5 +24,5 @@ def checkCredentials(username, password):
 	except ldap.SERVER_DOWN:
 		return 'Server Down'
 	ldap_client.unbind()
-	return None
+	return True
 	

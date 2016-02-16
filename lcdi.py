@@ -103,22 +103,21 @@ def login():
 	# If form has been submitted
 	if request.method == 'POST':
 		try:
-			if (app.debug == True or
-				adLDAP.areCredentialsValid(
-					request.form['username'],
-					request.form['password']
-					)):
-				
-				# Set username and displayName in session
-				session['username'] = request.form['username']
-				session['displayName'] = session['username']
-		except Exception as e:
-			return str(e)
+			user = request.form['username']
+			pw = request.form['password']
+			valid = adLDAP.checkCredentials(user, pw)
+			print("[DEBUG]" + str(app.debug))
+			print("[VALID]" + str(valid))
 			
-		try:
-			# Send user back to index page
-			# (if username wasnt set, it will redirect back to login screen)
-			return redirect(url_for('index'))
+			if (app.debug == True or valid == True):
+				# Set username and displayName in session
+				session['username'] = user
+				session['displayName'] = session['username']
+				
+				# Send user back to index page
+				# (if username wasnt set, it will redirect back to login screen)
+				return redirect(url_for('index'))
+				
 		except Exception as e:
 			return str(e)
 			
