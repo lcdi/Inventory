@@ -18,6 +18,8 @@ import adLDAP
 
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+isDebugMode = True
+
 # Create Flask app
 app = Flask(__name__)
 
@@ -36,7 +38,7 @@ def init(isDebug):
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# ~~~~~~~~~~~~~~~~ Index ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~ Index ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -84,7 +86,7 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 	return render_template('listings_page.html',
 			indexURL=url_for('index'),
 			logoutURL=url_for('logout'),
-			isAdmin=True,
+			hasEditAccess=True,
 			totalItems=len(query),
 			signedOutItems=0,
 			
@@ -93,26 +95,22 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 			types=types
 		)
 
-# ~~~~~~~~~~~~~~~~ Log In/Out ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~ Log In/Out ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if 'username' in session:
 		return redirect(url_for('index'))
-	
-	# If form has been submitted
-	if request.method == 'POST':
+	elif request.method == 'POST':
 		try:
 			user = request.form['username']
 			pw = request.form['password']
-			valid = adLDAP.checkCredentials(user, pw)
-			#print("[DEBUG]" + str(app.debug))
-			#print("[VALID]" + str(valid))
-			
+			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
 			if (app.debug == True or valid == True):
 				# Set username and displayName in session
 				session['username'] = user
 				session['displayName'] = session['username']
+				session['hasEditAccess'] = hasEditAccess
 				
 				# Send user back to index page
 				# (if username wasnt set, it will redirect back to login screen)
@@ -120,31 +118,32 @@ def login():
 				
 		except Exception as e:
 			return str(e)
-			
-	# Was not a POST, which means index or some other source sent user to login
-	return render_template('login.html')
+	else
+		# Was not a POST, which means index or some other source sent user to login
+		return render_template('login.html')
 
 @app.route('/logout')
 def logout():
 	session.pop('username', None)
 	session.pop('displayName', None)
+	session.pop('hasEditAccess', None)
 	return redirect(url_for('login'))
 
 # ~~~~~~~~~~~~~~~~ Entries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def renderEntry(function, serialNumber):
-	isAdmin = True
+	hasEditAccess = session['hasEditAccess']
 	
 	formID = 'view'
 	entryType = 'View'
 	if function == 'view':
 		entryType = 'View'
-		if isAdmin:
+		if hasEditAccess:
 			formID = 'openEditting'
-	elif function == 'openEditting' and isAdmin:
+	elif function == 'openEditting' and hasEditAccess:
 		entryType = 'Edit'
 		formID = 'saveInformation'
-	elif function == 'add' and isAdmin:
+	elif function == 'add' and hasEditAccess:
 		entryType = 'Edit'
 		formID = 'saveInformation'
 	
@@ -154,7 +153,7 @@ def renderEntry(function, serialNumber):
 			
 			formID=formID,
 			submitURL=url_for('index'),
-			isAdmin=isAdmin,
+			hasEditAccess=hasEditAccess,
 			
 			serialNumber=serialNumber,
 			itemType='Type A',
@@ -166,7 +165,7 @@ def renderEntry(function, serialNumber):
 
 # ~~~~~~~~~~~~~~~~ Start page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-init(True)
+init(isDebugMode)
 
 if __name__ == '__main__':
 	ctx = app.test_request_context()

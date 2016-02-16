@@ -24,9 +24,18 @@ def checkCredentials(username, password):
 		ldap_client.simple_bind_s(ldapUsername, ldapPassword)
 	except ldap.INVALID_CREDENTIALS:
 		ldap_client.unbind()
-		return 'Wrong Credentials'
+		return ('Wrong Credentials', False)
 	except ldap.SERVER_DOWN:
-		return 'Server Down'
+		return ('Server Down', False)
+	
+	hasEditAccess = False
+	search_dn = "ou=users," + base_dn
+	scope = ldap.SCOPE_SUBTREE
+	filterStr = '(objectclass=person)'
+	attrs = ['sn']
+	res = ldap_client.search_s(search_dn, scope, filterStr, attrs)
+	print(res)
+	
 	ldap_client.unbind()
-	return True
+	return (True, hasEditAccess)
 	

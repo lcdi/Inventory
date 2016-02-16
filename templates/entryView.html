@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block pre %}
-	{% if isAdmin %}
+	{% if hasEditAccess %}
 		<form class='form' name='input' action='{{ submitURL }}' method='POST'>
 		<input type='hidden' name='formID' value='{{ formID }}'>
 		<input type='hidden' name='serialNumber' value='{{ serialNumber }}'>
