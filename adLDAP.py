@@ -1,6 +1,9 @@
 import ldap
 
 def checkCredentials(username, password):
+	if password == "":
+		return 'Empty Password'
+	
 	controller = 'devdc'
 	domainA = 'dev'
 	domainB = 'devlcdi'
@@ -14,6 +17,7 @@ def checkCredentials(username, password):
 	ldap_filter = 'userPrincipalName=' + ldapUsername
 	attrs = ['memberOf']
 	
+	# Note: empty passwords WILL validate with ldap
 	try:
 		ldap_client = ldap.initialize(ldapServer)
 		ldap_client.set_option(ldap.OPT_REFERRALS, 0)

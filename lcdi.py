@@ -106,8 +106,8 @@ def login():
 			user = request.form['username']
 			pw = request.form['password']
 			valid = adLDAP.checkCredentials(user, pw)
-			print("[DEBUG]" + str(app.debug))
-			print("[VALID]" + str(valid))
+			#print("[DEBUG]" + str(app.debug))
+			#print("[VALID]" + str(valid))
 			
 			if (app.debug == True or valid == True):
 				# Set username and displayName in session
