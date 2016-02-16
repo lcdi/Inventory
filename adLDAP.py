@@ -1,5 +1,7 @@
 import ldap
 
+validEditAccessGroups = ['Office Assistants', 'Domain Admins']
+
 def checkCredentials(username, password):
 	if password == "":
 		return 'Empty Password'
@@ -15,7 +17,6 @@ def checkCredentials(username, password):
 	
 	base_dn = 'DC=' + domainA + ',DC=' + domainB
 	ldap_filter = 'userPrincipalName=' + ldapUsername
-	attrs = ['memberOf']
 	
 	# Note: empty passwords WILL validate with ldap
 	try:
@@ -29,12 +30,17 @@ def checkCredentials(username, password):
 		return ('Server Down', False)
 	
 	hasEditAccess = False
-	search_dn = "ou=users," + base_dn
-	scope = ldap.SCOPE_SUBTREE
-	filterStr = '(objectclass=person)'
-	attrs = ['sn']
-	res = ldap_client.search_s(search_dn, scope, filterStr, attrs)
-	print(res)
+	dn = 'cn=Users,' + base_dn
+	filter = 'cn=' + str(username)
+	attrs = ['memberOf']
+	id = ldap_client.search(dn, ldap.SCOPE_SUBTREE, filter, attrs)
+	groups = ldap_client.result(id)[1][0][1]['memberOf']
+	for group in groups:
+		address - group.split(',')
+		groupName = address[0].split('=')[1]
+		if groupName in validEditAccessGroups:
+			hasEditAccess = True
+			break
 	
 	ldap_client.unbind()
 	return (True, hasEditAccess)
