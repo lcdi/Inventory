@@ -118,7 +118,7 @@ def login():
 				
 		except Exception as e:
 			return str(e)
-	else
+	else:
 		# Was not a POST, which means index or some other source sent user to login
 		return render_template('login.html')
 
