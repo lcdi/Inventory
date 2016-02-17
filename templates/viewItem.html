@@ -4,17 +4,13 @@
 	{{ item[0].serialNumber }}
 {%endblock%}
 
-{% block header %}
-	<h2 style="margin-left: 20px;">
-		{{ item[0].serialNumber }}
-	</h2>
-{% endblock %}
+{% block preContent %}{% endblock %}
 
 {% block content %}
 
 	<!-- Start: Table header -->
 	<div class="panel-heading">
-		<h1>Details</h1>
+		<h1>{{ item[0].serialNumber }}</h1>
 	</div>
 	<!-- End: Table header -->
 	
@@ -22,22 +18,6 @@
 		
 		<!-- Start: Details Body -->
 		<div class="col-lg-6">
-			
-			<!-- TODO ADMIN ONLY -->
-			<center>
-				<button type="button" class="btn btn-warning"
-						data-toggle="modal" data-target="#editItemModal">
-					<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-					Edit Item
-				</button>
-				<button type="button" class="btn btn-danger"
-						data-toggle="modal" data-target="#deleteModal">
-					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-					Delete Item
-				</button>
-			</center>
-			<br />
-			<!-- TODO END -->
 			
 			<div class="well" style="display: flex; justify-content: flex-start;">
 				<div>
@@ -57,6 +37,23 @@
 					</div>
 				</div>
 			</div>
+			
+			<!-- ADMIN ONLY -->
+				<center>
+					<button type="button" class="btn btn-warning"
+							data-toggle="modal" data-target="#editItemModal">
+						<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+						Edit Item
+					</button>
+					<button type="button" class="btn btn-danger"
+							data-toggle="modal" data-target="#deleteModal">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						Delete Item
+					</button>
+				</center>
+				<br />
+			<!-- END -->
+			
 		</div>
 		<!-- End: Details Body -->
 		
@@ -91,7 +88,99 @@
 {%endblock%}
 
 {% block modals %}
-	<!-- Modal -->
+
+	<!-- Start: Edit -->
+	<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<!-- Start: Header -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						Edit Item
+					</h4>
+				</div>
+				<!-- End: Header -->
+
+				<!-- Start: Body -->
+				<div class="modal-body">
+					<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+						<input name='functionID' value='updateItem' type='hidden' class='form-contorl' >
+						<input name='serial' value='{{ item[0].serialNumber }}' type='hidden' >
+						
+						<div class="form-group">
+							<label for="lcdi_serial">LCDI Serial Number</label>
+							<input type="text" class="form-control" name="lcdi_serial" value="{{ item[0].serialNumber }}"/>
+						</div>
+						<!--
+						<div class="form-group">
+							<label for="device_serial">Device Serial Number</label>
+							<input type="text" class="form-control" name="device_serial" />
+						</div>
+						-->
+						<div class="row">
+							<div class="form-group col-xs-6">
+								<label for="device_types">Select Type</label>
+								<select class="form-control" name="device_types">
+									<option>{{ item[0].typeCategory }}</option>
+									{% for type in types %}
+										<option>{{ type }}</option>
+									{% endfor %}
+									<option>Other</option>
+								</select>
+							</div>
+							<div class="form-group col-xs-6">
+								<label for="other">If Other</label>
+								<input type="text" class="form-control" name="other" placeholder=""/>
+							</div> 
+						</div>
+						<div class="form-group">
+							<label>Device Description</label>
+							<textarea class="form-control" rows="3" name="device_desc">
+								{{ item[0].description }}
+							</textarea>
+						</div>
+						<div class="form-group">
+							<label>Notes</label>
+							<textarea class="form-control" rows="3" name="device_notes" >
+								{{ item[0].issues }}
+							</textarea>
+						</div>
+						<div class="form-group">
+							<label for="device_state">Select Type</label>
+							<select class="form-control" name="device_state">
+								<option>{{ item[0].state }}</option>
+								{% for state in states %}
+									<option>{{ state }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Add Photo</label>
+							<input type="file" name="file">
+						</div>
+						
+						<!-- Start: Footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								Close
+							</button>
+							<button type="submit" class="btn btn-primary">
+								Edit Item
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End: Edit -->
+
+	<!-- Start: Delete -->
 	<div class="modal fade" id="deleteModal" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -101,19 +190,26 @@
 					</div>
 					<div class="panel-body">
 						<p>Are You Sure?</p>
-						<a href="{{ url_for('deleteItem', serial=item[0].serialNumber) }}">
-							<button type="button" class="btn btn-success">
+						
+						<form name="viewSerialForm" role="form" method="POST" action="{{ url_for('index') }}">
+							<input name='functionID' value='deleteItem' type='hidden' class='form-contorl' >
+							<input name='serial' value='{{ item[0].serialNumber }}' type='hidden' >
+							<button type="submit" class="btn btn-success" >
 								<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 								Yes
 							</button>
-						</a>
+						</form>
+						
 						<button type="button" class="btn btn-danger" data-dismiss="modal">
 							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							No
 						</button>
+						
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<!-- End: Delete -->
+	
 {% endblock %}

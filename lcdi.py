@@ -17,6 +17,7 @@ import adLDAP
 
 # Paramaters
 isDebugMode = True
+pagePostKey = 'functionID'
 UPLOAD_FOLDER = 'static/item_photos'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'PNG', 'JPG', 'JPEG', 'GIF'])
 
@@ -38,10 +39,10 @@ def getIndexURL():
 
 def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 'All'):
 	# TODO filter results, set page form filters, and remove prints
-	print(serialNumber)
-	print(itemType)
-	print(state)
-	print(status)
+	#print(serialNumber)
+	#print(itemType)
+	#print(state)
+	#print(status)
 	
 	query = models.Device.select().order_by(models.Device.serialNumber)
 	types = models.getDeviceTypes()
@@ -58,10 +59,43 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 			hasEditAccess=True
 		)
 
+def renderPage_Search(search):
+	
+	query = models.Device.select(
+		models.Device.serialNumber,
+		models.Device.typeCategory,
+		models.Device.description,
+		models.Device.issues,
+		models.Device.state
+	).where(
+		models.Device.serialNumber.contains(search) |
+		models.Device.typeCategory.contains(search) |
+		models.Device.description.contains(search)
+	).order_by(models.Device.serialNumber)
+	
+	types = models.getDeviceTypes()
+	
+	return render_template('searchResults.html',
+			query=query,
+			types=types,
+			logoutURL=url_for('logout')
+		)
+
+def renderPage_View(serial):
+	item = models.Device.select().where(models.Device.serialNumber == serial)
+	types = models.getDeviceTypes()
+	states = models.getStates()
+	return render_template('viewItem.html',
+			item=item,
+			types=types,
+			states=states,
+			logoutURL=url_for('logout')
+		)
+
 def renderEntry(function, serialNumber):
 	# TODO remake entry files
 	return getIndexURL()
-	hasEditAccess = session['hasEditAccess']
+	hasEditAccess = app.debug == True or session['hasEditAccess']
 	
 	formID = 'view'
 	entryType = 'View'
@@ -102,20 +136,38 @@ def index():
 	if 'username' in session:
 		# Render main page
 		if request.method == 'POST':
-			print(request.values)
-			if request.form['formID'] == 'filter':
-				return renderMainPage(
-								serialNumber = request.form['serialNumber'],
-								itemType = request.form['itemtype'],
-								state = request.form['state'],
-								status = request.form['status'])
-			elif request.form['formID'] == 'openEntry':
-				return renderEntry('view', request.form['serialNumber'])
-			elif request.form['formID'] == 'openEditting':
-				return renderEntry('openEditting', request.form['serialNumber'])
-			elif request.form['formID'] == 'saveInformation':
-				# TODO save information
-				return renderEntry('view', request.form['serialNumber'])
+			function = request.form[pagePostKey]
+			if function == 'search':
+				return renderPage_Search(request.form['searchField'])
+			elif function == 'viewSerial':
+				return renderPage_View(request.form['serial'])
+			elif function == 'addItem':
+				return addItem(
+						serialNumber = request.form['lcdi_serial'],
+						device_type = request.form['device_types'],
+						device_other = request.form['other'],
+						description = request.form['device_desc'],
+						notes = request.form['device_notes'],
+						state = request.form['device_state'],
+						file = request.files['file']
+					)
+			elif function == 'deleteItem':
+				item = models.Device.select().where(
+						models.Device.serialNumber == request.form['serial']
+					).get();
+				item.delete_instance();
+				return getIndexURL()
+			elif function == 'updateItem':
+				return updateItem(
+						oldSerial = request.form['serial'],
+						serialNumber = request.form['lcdi_serial'],
+						device_type = request.form['device_types'],
+						device_other = request.form['other'],
+						description = request.form['device_desc'],
+						notes = request.form['device_notes'],
+						state = request.form['device_state'],
+						file = request.files['file']
+					)
 		else:
 			return renderMainPage()
 	
@@ -153,119 +205,48 @@ def logout():
 	session.pop('displayName', None)
 	session.pop('hasEditAccess', None)
 	return redirect(url_for('login'))
-	
 
-# ~~~~~~~~~~~~~~~~ New Functions: TODO sort ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@app.route('/search', methods=['POST'])
-def search():
-	if request.method == 'POST':
-		search = request.form['searchField']
-	if search != "":
-		return redirect(url_for('search_results', search=search))
-	else:
-		return redirect(url_for('index'))
-
-
-
-@app.route('/search_results/<search>')
-def search_results(search):
-	#query = models.Device.query.whoosh_search(search)
-
-	query = models.Device.select(models.Device.serialNumber,
-								 models.Device.typeCategory,
-								 models.Device.description,
-								 models.Device.issues,
-								 models.Device.state
-								 ).where(models.Device.serialNumber.contains(search) | 
-								 		 models.Device.typeCategory.contains(search) |
-								 		 models.Device.description.contains(search)).order_by(models.Device.serialNumber)
-
-	types = models.getDeviceTypes()
-	return render_template('searchResults.html',
-			query=query,
-			types=types,
-			logoutURL=url_for('logout')
-		)
-		
-@app.route('/viewItem/<serial>')
-def viewItem(serial):
-	item = models.Device.select().where(models.Device.serialNumber == serial)
-	types = models.getDeviceTypes()
-	states = models.getStates()
-	return render_template('viewItem.html',
-			item=item,
-			types=types,
-			states=states,
-			logoutURL=url_for('logout')
-		)
-		
-@app.route('/', methods=['POST'])
-def addItem():
-	if request.method == 'POST':
-		
-		idNum = models.Device.select().order_by(models.Device.idNumber.desc()).get()
-		
-		if request.form['device_types'] == 'Other':
-			device_type = request.form['other']
-		else:
-			device_type = request.form['device_types']
-			
-		file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			
+def addItem(serialNumber, device_type, device_other, description, notes, state, file):
+	idNum = models.Device.select().order_by(models.Device.idNumber.desc()).get()
+	if device_type == 'Other':
+		device_type = device_other
+	if file and allowed_file(file.filename):
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	models.Device.create(
 			idNumber = idNum.idNumber + 1,
-			serialNumber = request.form['lcdi_serial'],
+			serialNumber = serialNumber,
 			typeCategory = device_type,
-			description = request.form['device_desc'],
-			issues = request.form['device_notes'],
+			description = description,
+			issues = notes,
 			photo = file.filename,
-			state = request.form['device_state']
+			state = state
 		)
-		
-	return redirect(url_for('viewItem', serial=request.form['lcdi_serial']))
+	return renderPage_View(serialNumber)
+
+def updateItem(oldSerial, serialNumber, device_type, device_other, description, notes, state, file):
 	
-@app.route('/deleteItem/<serial>')
-def deleteItem(serial):
+	item = models.Device.select().where(models.Device.serialNumber == oldSerial).get()
 	
-	item = models.Device.select().where(models.Device.serialNumber == serial).get();
-	item.delete_instance();
-	return redirect(url_for('index'))
+	if device_type == 'Other':
+		device_type = device_other
+	if file and allowed_file(file.filename):
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
-@app.route('/updateItem/<serial>', methods=['POST'])
-def updateItem(serial):
-	
-	if request.method == 'POST':
-		
-		item = models.Device.select().where(models.Device.serialNumber == serial).get()
-		
-		if request.form['device_types'] == 'Other':
-			device_type = request.form['other']
-		else:
-			device_type = request.form['device_types']
-			
-			
-		file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			
-			
-	item.serialNumber = request.form['lcdi_serial']
+	item.serialNumber = serialNumber
 	item.typeCategory = device_type
-	item.description = request.form['device_desc']
-	item.issues = request.form['device_notes']
+	item.description = description
+	item.issues = notes
 	if file:
 		item.photo = file.filename
-	item.state = request.form['device_state']
+	item.state = state
 	
 	item.save()
 	
-	return redirect(url_for('viewItem', serial=item.serialNumber))
-	
+	return renderPage_View(serialNumber)
 
 def allowed_file(filename):
     return '.' in filename and \
