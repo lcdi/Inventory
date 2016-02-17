@@ -1,0 +1,48 @@
+{% extends "baseContent.html" %}
+
+{% block content %}
+	
+	<!-- Start: Table header -->
+	<div class="panel-heading">
+		{% block tableHeader %}{% endblock %}
+	</div>
+	<!-- End: Table header -->
+	
+	<!-- Start: Table Body -->
+	<div class="panel-body">
+		<div class="dataTable_wrapper">
+			<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+				<thead>
+					<tr>
+						<th>Serial Number</th>
+						<th>Type</th>
+						<th>Description</th>
+						<th>Use</th>
+						<th>Out To</th>
+						<th>Date Out</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for q in query %}
+						<tr>
+							<!-- TODO this uses a get request -->
+							<td>
+								<a href="{{ url_for('viewItem', serial=q.serialNumber) }}">
+									{{ q.serialNumber }}
+								</a>
+							</td>
+							<!-- TODO END -->
+							<td>{{ q.typeCategory }}</td>
+							<td>{{ q.description }}</td>
+							<td>{{ q.use }}</td>
+							<td>{{ q.studentName }}</td>
+							<td>{{ q.dateOut}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- End: Table Body -->
+	
+{%endblock%}

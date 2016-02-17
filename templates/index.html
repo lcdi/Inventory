@@ -1,0 +1,24 @@
+{% extends "baseViewItemTable.html" %}
+
+{%block title%}
+	Inventory
+{%endblock%}
+
+{% block header %}
+	<h2 style="margin-left: 20px;">
+		Welcome back {{ name }}
+	</h2>
+	<p class="lead" style="margin-left: 20px;">
+		<span class='text-info'>
+			There are currently {{ totalItems }} items in inventory.
+		</span>
+	</p>
+{% endblock %}
+
+{% block tableHeader %}
+	All Items
+{% endblock %}
+
+{% block modals %}{% endblock %}
+
+{% block scripts %}{% endblock %}

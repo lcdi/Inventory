@@ -4,7 +4,7 @@ validEditAccessGroups = ['Office Assistants', 'Domain Admins']
 
 def checkCredentials(username, password):
 	if password == "":
-		return 'Empty Password'
+		return ('Empty Password', False)
 	
 	controller = 'devdc'
 	domainA = 'dev'
