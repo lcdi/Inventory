@@ -1,9 +1,8 @@
 from peewee import *
 
-db = SqliteDatabase('Inventory.db')
+db = SqliteDatabase('developmentData.db')
 
 class BaseModel(Model):
-
 	class Meta:
 		database = db
 

@@ -12,6 +12,7 @@ import os.path
 # Custom support files
 import models
 import adLDAP
+import inventoryData
 
 # Other
 #from datetime import date
@@ -35,6 +36,9 @@ def init(isDebug):
 	
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
+
+def getIndexURL():
+	return redirect(url_for('index'))
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -114,7 +118,7 @@ def login():
 				
 				# Send user back to index page
 				# (if username wasnt set, it will redirect back to login screen)
-				return redirect(url_for('index'))
+				return getIndexURL()
 				
 		except Exception as e:
 			return str(e)
@@ -128,6 +132,14 @@ def logout():
 	session.pop('displayName', None)
 	session.pop('hasEditAccess', None)
 	return redirect(url_for('login'))
+	
+@app.route('/add')
+def add():
+	# TODO
+	if 'hasEditAccess' in session:
+		if session['hasEditAccess']:
+			return render_template('entryAdd.html')
+	return getIndexURL()
 
 # ~~~~~~~~~~~~~~~~ Entries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
