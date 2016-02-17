@@ -1,28 +1,27 @@
-# Inventory
+# [Start Bootstrap](http://startbootstrap.com/) - [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/)
 
-## New Content
+[SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/) is an open source, admin dashboard template for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/).
 
-The inventory requires users to login in order to anything at all.
+## Getting Started
 
-The first page to open will be the item viewing page. You can specifiy which types of inventory items you want to view by using the selectors above their corresponding columns. Filters are sent back to this page do define which items are filtered.
+To begin using this template, choose one of the following options to get started:
+* [Download the latest release on Start Bootstrap](http://startbootstrap.com/template-overviews/sb-admin-2/)
+* Clone the repo: `git clone https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git`
+* Fork the repo
 
-## Changes
+## Bugs and Issues
 
-There is no "?action=viewall" anymore. If you want to search fora  specific Serial Number, use its column filter.
+Have a bug or an issue with this template? [Open a new issue](https://github.com/BlackrockDigital/startbootstrap-sb-admin-2/issues) here on GitHub or leave a comment on the [template overview page at Start Bootstrap](http://startbootstrap.com/template-overviews/sb-admin-2/).
 
-## Old
+## Creator
 
-This is the LCDI's internal inventory tracking system. 
+Start Bootstrap was created by and is maintained by **[David Miller](http://davidmiller.io/)**, Owner of [Blackrock Digital](http://blackrockdigital.io/).
 
-It hooks into our AD for logins.
+* https://twitter.com/davidmillerskt
+* https://github.com/davidtmiller
 
+Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
 
-The original project was written very quickly due to necessity in the lab.  
-There are probably bugs, errors, and algorithms that make no sense....but it works :P
+## Copyright and License
 
-
-Change the mysql credentials in includes/functions.php and admin.php
-
-
-edit and rename the adLDAP module to fit your company's domain
-includes/adLDAP/src/adLDAP.php.sample
+Copyright 2013-2016 Blackrock Digital LLC. Code released under the [MIT](https://github.com/BlackrockDigital/startbootstrap-sb-admin-2/blob/gh-pages/LICENSE) license.

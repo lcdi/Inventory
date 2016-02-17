@@ -1,0 +1,119 @@
+{% extends "baseContent.html" %}
+
+{%block title%}
+	{{ item[0].serialNumber }}
+{%endblock%}
+
+{% block header %}
+	<h2 style="margin-left: 20px;">
+		{{ item[0].serialNumber }}
+	</h2>
+{% endblock %}
+
+{% block content %}
+
+	<!-- Start: Table header -->
+	<div class="panel-heading">
+		<h1>Details</h1>
+	</div>
+	<!-- End: Table header -->
+	
+	<div class="panel-body">
+		
+		<!-- Start: Details Body -->
+		<div class="col-lg-6">
+			
+			<!-- TODO ADMIN ONLY -->
+			<center>
+				<button type="button" class="btn btn-warning"
+						data-toggle="modal" data-target="#editItemModal">
+					<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+					Edit Item
+				</button>
+				<button type="button" class="btn btn-danger"
+						data-toggle="modal" data-target="#deleteModal">
+					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					Delete Item
+				</button>
+			</center>
+			<br />
+			<!-- TODO END -->
+			
+			<div class="well" style="display: flex; justify-content: flex-start;">
+				<div>
+					<img src="{{ url_for('static', filename='item_photos/' + item[0].photo) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
+				</div>
+				<div style="padding-left: 20px;">
+					<h4><b>Device Serial Number:</b> {{ item[0].serialNumber}} </h4>
+					<h4><b>Device Type:</b> {{ item[0].typeCategory}} </h4>
+					<h4><b>State:</b> {{ item[0].state}} </h4>
+					<h4><b>Description:</b></h4>
+					<div class="well well-sm" style="background: rgb(255,255,255);">
+						<p>{{ item[0].description}}</p>    
+					</div>
+					<h4><b>Notes:</b></h4>
+					<div class="well well-sm" style="background: rgb(255,255,255);">
+						<p>{{ item[0].issues}}</p>    
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End: Details Body -->
+		
+		<!-- Start: History Table -->
+		<div class="col-lg-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					History
+				</div>
+				<div class="panel-body">
+					<div class="dataTable_wrapper">
+						<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+							<thead>
+								<tr>
+									<th>Date In</th>
+									<th>Date Out</th>
+									<th>User In</th>
+									<th>User Out</th>
+									<th>Out To</th>
+									<th>Use</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End: History Table -->
+	</div>
+
+{%endblock%}
+
+{% block modals %}
+	<!-- Modal -->
+	<div class="modal fade" id="deleteModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="panel panel-red">
+					<div class="panel-heading">
+						Confirm Delete?
+					</div>
+					<div class="panel-body">
+						<p>Are You Sure?</p>
+						<a href="{{ url_for('deleteItem', serial=item[0].serialNumber) }}">
+							<button type="button" class="btn btn-success">
+								<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+								Yes
+							</button>
+						</a>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							No
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
