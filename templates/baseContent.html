@@ -116,17 +116,22 @@
 				<!-- Start: Modal Body -->
 				<div class="modal-body">
 					<form method="post" enctype="multipart/form-data">
+						<!-- Function -->
 						<input name='functionID' value='addItem' type='hidden' class='form-contorl' >
+						
+						<!-- SerialNumber -->
 						<div class="form-group">
 							<label for="lcdi_serial">LCDI Serial Number</label>
 							<input type="text" class="form-control" name="lcdi_serial" value="LCDI-"/>
 						</div>
-						<!--
+						
+						<!-- SerialDevice -->
 						<div class="form-group">
 							<label for="device_serial">Device Serial Number</label>
 							<input type="text" class="form-control" name="device_serial" placeholder=""/>
 						</div>
-						-->
+						
+						<!-- Type -->
 						<div class="row">
 							<div class="form-group col-xs-6">
 								<label for="device_types">Select Type</label>
@@ -142,14 +147,20 @@
 								<input type="text" class="form-control" name="other" placeholder=""/>
 							</div> 
 						</div>
+						
+						<!-- Description -->
 						<div class="form-group">
-							<label>Device Description</label>
+							<label for="device_desc">Device Description</label>
 							<textarea class="form-control" rows="3" name="device_desc"></textarea>
 						</div>
+						
+						<!-- Issues -->
 						<div class="form-group">
-							<label>Notes</label>
+							<label for="device_notes">Notes</label>
 							<textarea class="form-control" rows="3" name="device_notes"></textarea>
 						</div>
+						
+						<!-- Quality/State -->
 						<div class="form-group">
 							<label for="device_state">Select State</label>
 							<select class="form-control" name="device_state">
@@ -158,6 +169,8 @@
 								{% endfor %}
 							</select>
 						</div>
+						
+						<!-- File -->
 						<div class="form-group">
 							<label for="file">Photo</label>
 							<input type="file" name="file"/>

@@ -19,7 +19,8 @@ import adLDAP
 isDebugMode = True
 pagePostKey = 'functionID'
 UPLOAD_FOLDER = 'static/item_photos'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'PNG', 'JPG', 'JPEG', 'GIF'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
+						  'PNG', 'JPG', 'JPEG', 'GIF'])
 
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = Flask(__name__)
@@ -44,7 +45,7 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 	#print(state)
 	#print(status)
 	
-	query = models.Device.select().order_by(models.Device.serialNumber)
+	query = models.Device.select().order_by(models.Device.SerialNumber)
 	types = models.getDeviceTypes()
 	states = models.getStates()
 	return render_template('index.html',
@@ -62,16 +63,18 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 def renderPage_Search(search):
 	
 	query = models.Device.select(
-		models.Device.serialNumber,
-		models.Device.typeCategory,
-		models.Device.description,
-		models.Device.issues,
-		models.Device.state
+		models.Device.SerialNumber,
+		models.Device.SerialDevice,
+		models.Device.Type,
+		models.Device.Description,
+		models.Device.Issues,
+		models.Device.quality
 	).where(
-		models.Device.serialNumber.contains(search) |
-		models.Device.typeCategory.contains(search) |
-		models.Device.description.contains(search)
-	).order_by(models.Device.serialNumber)
+		models.Device.SerialNumber.contains(search) |
+		models.Device.SerialDevice.contains(search) |
+		models.Device.Type.contains(search) |
+		models.Device.Description.contains(search)
+	).order_by(models.Device.SerialNumber)
 	
 	types = models.getDeviceTypes()
 	
@@ -82,7 +85,7 @@ def renderPage_Search(search):
 		)
 
 def renderPage_View(serial):
-	item = models.Device.select().where(models.Device.serialNumber == serial)
+	item = models.Device.select().where(models.Device.SerialNumber == serial)
 	types = models.getDeviceTypes()
 	states = models.getStates()
 	return render_template('viewItem.html',
@@ -144,6 +147,7 @@ def index():
 			elif function == 'addItem':
 				return addItem(
 						serialNumber = request.form['lcdi_serial'],
+						serialDevice = request.form['device_serial'],
 						device_type = request.form['device_types'],
 						device_other = request.form['other'],
 						description = request.form['device_desc'],
@@ -153,7 +157,7 @@ def index():
 					)
 			elif function == 'deleteItem':
 				item = models.Device.select().where(
-						models.Device.serialNumber == request.form['serial']
+						models.Device.SerialNumber == request.form['serial']
 					).get();
 				item.delete_instance();
 				return getIndexURL()
@@ -161,6 +165,7 @@ def index():
 				return updateItem(
 						oldSerial = request.form['serial'],
 						serialNumber = request.form['lcdi_serial'],
+						serialDevice = request.form['device_serial'],
 						device_type = request.form['device_types'],
 						device_other = request.form['other'],
 						description = request.form['device_desc'],
@@ -208,27 +213,26 @@ def logout():
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def addItem(serialNumber, device_type, device_other, description, notes, state, file):
-	idNum = models.Device.select().order_by(models.Device.idNumber.desc()).get()
+def addItem(serialNumber, serialDevice, device_type, device_other, description, notes, state, file):
 	if device_type == 'Other':
 		device_type = device_other
 	if file and allowed_file(file.filename):
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	models.Device.create(
-			idNumber = idNum.idNumber + 1,
-			serialNumber = serialNumber,
-			typeCategory = device_type,
-			description = description,
-			issues = notes,
-			photo = file.filename,
-			state = state
+			SerialNumber = serialNumber,
+			SerialDevice = serialDevice,
+			Type = device_type,
+			Description = description,
+			Issues = notes,
+			PhotoName = file.filename,
+			Quality = state
 		)
 	return renderPage_View(serialNumber)
 
-def updateItem(oldSerial, serialNumber, device_type, device_other, description, notes, state, file):
+def updateItem(oldSerial, serialNumber, serialDevice, device_type, device_other, description, notes, state, file):
 	
-	item = models.Device.select().where(models.Device.serialNumber == oldSerial).get()
+	item = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
 	if device_type == 'Other':
 		device_type = device_other
@@ -236,13 +240,14 @@ def updateItem(oldSerial, serialNumber, device_type, device_other, description, 
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
-	item.serialNumber = serialNumber
-	item.typeCategory = device_type
-	item.description = description
-	item.issues = notes
+	item.SerialNumber = serialNumber
+	item.SerialDevice = serialDevice
+	item.Type = device_type
+	item.Description = description
+	item.Issues = notes
 	if file:
-		item.photo = file.filename
-	item.state = state
+		item.PhotoName = file.filename
+	item.quality = state
 	
 	item.save()
 	
@@ -266,9 +271,12 @@ if __name__ == '__main__':
 
 	models.db.connect()
 	
-	"""models.Device.create_table()
-	models.InOut.create_table()"""
+	#"""
+	models.Device.create_table()
+	models.Log.create_table()
+	#"""
 	
+	"""
 	models.Device.create(
 		idNumber = 2,
 		serialNumber = 'LCDI-1111',
@@ -287,5 +295,6 @@ if __name__ == '__main__':
 		userOut = 'mfortier',
 		issues = 'None of note'
 	)
+	"""
 	
 	models.db.close()

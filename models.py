@@ -2,64 +2,69 @@ from peewee import *
 import flask.ext.whooshalchemy
 import datetime
 
-db = SqliteDatabase('Inventory.db')
+db = MySQLDatabase('inventory', user="root", password="")
 
 class BaseModel(Model):
-
 	class Meta:
 		database = db
 
 class Device(Model):
 
-	__searchable__ = ['serialNumber', 'typeCategory', 'description', 'issues', 'photo', 'state']
+	__searchable__ = [
+		'SerialNumber',
+		'SerialDevice'
+		'Type',
+		'Description',
+		'Issues',
+		'PhotoName',
+		'Quality'
+	]
 
-	idNumber = IntegerField()
-	serialNumber = CharField()
-	typeCategory = CharField()
-	description = TextField()
-	issues = TextField()
-	photo = CharField()
-	state = CharField()
+	SerialNumber = CharField(primary_key=True)
+	SerialDevice = CharField()
+	Type = CharField()
+	Description = TextField()
+	Issues = TextField()
+	PhotoName = CharField()
+	Quality = CharField()
 	
 	class Meta:
 		database = db
 	
-class InOut(Model):
+class Log(Model):
 	
-	idNumber = ForeignKeyField(Device)
-	studentName = CharField()
-	use = CharField()
-	dateIn = DateTimeField(default=datetime.datetime.now)
-	dateOut = DateTimeField(default=datetime.datetime.now)
-	userIn = CharField()
-	userOut = CharField()
-	issues = CharField()
+	Identifier = IntegerField()
+	SerialNumber = ForeignKeyField(Device)
+	UserIdentifier = CharField()
+	Purpose = TextField()
+	DateOut = DateTimeField(default=datetime.datetime.now)
+	DateIn = DateTimeField(default=datetime.datetime.now)
+	AuthorizerIdentifier = CharField()
 	
 	class Meta:
 		database = db
-	
 
 def getDeviceTypes():
 	types = [];
 
-	query = Device.select(Device.typeCategory).order_by(Device.typeCategory)
+	query = Device.select(Device.Type).order_by(Device.Type)
 	for q in query:
-		if (doesEntryExist(q.typeCategory, types) == True):
+		if (doesEntryExist(q.Type, types) == True):
 			pass
 		else:
-			types.append(q.typeCategory)
+			types.append(q.Type)
 
 	return types
 	
 def getStates():
-	states = [];
+	states = ["Operational"];
 
-	query = Device.select(Device.state).order_by(Device.state)
+	query = Device.select(Device.Quality).order_by(Device.Quality)
 	for q in query:
-		if (doesEntryExist(q.state, states) == True):
+		if (doesEntryExist(q.Quality, states) == True):
 			pass
 		else:
-			states.append(q.state)
+			states.append(q.Quality)
 
 	return states
 

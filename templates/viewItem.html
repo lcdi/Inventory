@@ -10,7 +10,7 @@
 
 	<!-- Start: Table header -->
 	<div class="panel-heading">
-		<h1>{{ item[0].serialNumber }}</h1>
+		<h1>{{ item[0].SerialNumber }}</h1>
 	</div>
 	<!-- End: Table header -->
 	
@@ -21,19 +21,19 @@
 			
 			<div class="well" style="display: flex; justify-content: flex-start;">
 				<div>
-					<img src="{{ url_for('static', filename='item_photos/' + item[0].photo) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
+					<img src="{{ url_for('static', filename='item_photos/' + item[0].PhotoName) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
 				</div>
 				<div style="padding-left: 20px;">
-					<h4><b>Device Serial Number:</b> {{ item[0].serialNumber}} </h4>
-					<h4><b>Device Type:</b> {{ item[0].typeCategory}} </h4>
-					<h4><b>State:</b> {{ item[0].state}} </h4>
+					<h4><b>Device Serial Number:</b> {{ item[0].SerialNumber}} </h4>
+					<h4><b>Device Type:</b> {{ item[0].Type}} </h4>
+					<h4><b>State:</b> {{ item[0].Quality}} </h4>
 					<h4><b>Description:</b></h4>
 					<div class="well well-sm" style="background: rgb(255,255,255);">
-						<p>{{ item[0].description}}</p>    
+						<p>{{ item[0].Description}}</p>    
 					</div>
 					<h4><b>Notes:</b></h4>
 					<div class="well well-sm" style="background: rgb(255,255,255);">
-						<p>{{ item[0].issues}}</p>    
+						<p>{{ item[0].Notes}}</p>    
 					</div>
 				</div>
 			</div>
@@ -109,24 +109,22 @@
 				<!-- Start: Body -->
 				<div class="modal-body">
 					<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-						<input name='functionID' value='updateItem' type='hidden' class='form-contorl' >
-						<input name='serial' value='{{ item[0].serialNumber }}' type='hidden' >
+						<input name='functionID' value='updateItem' type='hidden' class='form-control' >
+						<input name='serial' value='{{ item[0].SerialNumber }}' type='hidden' >
 						
 						<div class="form-group">
 							<label for="lcdi_serial">LCDI Serial Number</label>
-							<input type="text" class="form-control" name="lcdi_serial" value="{{ item[0].serialNumber }}"/>
+							<input type="text" class="form-control" name="lcdi_serial" value="{{ item[0].SerialNumber }}"/>
 						</div>
-						<!--
 						<div class="form-group">
 							<label for="device_serial">Device Serial Number</label>
 							<input type="text" class="form-control" name="device_serial" />
 						</div>
-						-->
 						<div class="row">
 							<div class="form-group col-xs-6">
 								<label for="device_types">Select Type</label>
 								<select class="form-control" name="device_types">
-									<option>{{ item[0].typeCategory }}</option>
+									<option>{{ item[0].Type }}</option>
 									{% for type in types %}
 										<option>{{ type }}</option>
 									{% endfor %}
@@ -140,20 +138,16 @@
 						</div>
 						<div class="form-group">
 							<label>Device Description</label>
-							<textarea class="form-control" rows="3" name="device_desc">
-								{{ item[0].description }}
-							</textarea>
+							<textarea class="form-control" rows="3" name="device_desc">{{ item[0].Description }}</textarea>
 						</div>
 						<div class="form-group">
 							<label>Notes</label>
-							<textarea class="form-control" rows="3" name="device_notes" >
-								{{ item[0].issues }}
-							</textarea>
+							<textarea class="form-control" rows="3" name="device_notes" >{{ item[0].Issues }}</textarea>
 						</div>
 						<div class="form-group">
 							<label for="device_state">Select Type</label>
 							<select class="form-control" name="device_state">
-								<option>{{ item[0].state }}</option>
+								<option>{{ item[0].Quality }}</option>
 								{% for state in states %}
 									<option>{{ state }}</option>
 								{% endfor %}
