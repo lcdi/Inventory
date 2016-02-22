@@ -60,33 +60,47 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 			hasEditAccess=True
 		)
 
-def renderPage_Search(search, page):
+def renderPage_Search(search, pageType):
 	
-	query = models.Device.select(
-		models.Device.SerialNumber,
-		models.Device.SerialDevice,
-		models.Device.Type,
-		models.Device.Description,
-		models.Device.Issues,
-		models.Device.Quality
-	).where(
-		models.Device.SerialNumber.contains(search) |
-		models.Device.SerialDevice.contains(search) |
-		models.Device.Type.contains(search) |
-		models.Device.Description.contains(search)
-	).order_by(models.Device.SerialNumber)
+	item = models.Device.select().where(models.Device.SerialNumber == search)
 	
-	types = models.getDeviceTypes()
-	
-	return render_template('searchResults.html',
-			query=query,
-			types=types,
-			page=page,
-			logoutURL=url_for('logout')
-		)
+	if (len(item) == 1):
+		item = models.Device.select().where(models.Device.SerialNumber == search).get()
+		types = models.getDeviceTypes()
+		states = models.getStates()
+		return render_template('viewItem.html',
+				item=item,
+				types=types,
+				states=states,
+				logoutURL=url_for('logout')
+			)
+	else:
+		query = models.Device.select(
+			models.Device.SerialNumber,
+			models.Device.SerialDevice,
+			models.Device.Type,
+			models.Device.Description,
+			models.Device.Issues,
+			models.Device.Quality
+		).where(
+			models.Device.SerialNumber.contains(search) |
+			models.Device.SerialDevice.contains(search) |
+			models.Device.Type.contains(search) |
+			models.Device.Description.contains(search)
+		).order_by(models.Device.SerialNumber)
+		
+		types = models.getDeviceTypes()
+		
+		return render_template('searchResults.html',
+				query=query,
+				types=types,
+				page=pageType,
+				params=search,
+				logoutURL=url_for('logout')
+			)
 
 def renderPage_View(serial):
-	item = models.Device.select().where(models.Device.SerialNumber == serial)
+	item = models.Device.select().where(models.Device.SerialNumber == serial).get()
 	types = models.getDeviceTypes()
 	states = models.getStates()
 	return render_template('viewItem.html',
@@ -131,17 +145,31 @@ def renderEntry(function, serialNumber):
 		)
 		
 def renderFilter(device_type, status, page):
-	query = models.Device.select(
-	).where(
-		models.Device.Type == device_type
-	).order_by(models.Device.SerialNumber)
+	
+	if device_type == 'Select Type' and status == 'Select Status':
+		return redirect(url_for('index'))
+	elif device_type == 'Select Type' and status != 'Select Status':
+		query = models.Device.select().order_by(models.Device.SerialNumber)
+	elif device_type != 'Select Type' and status == 'Select Status':
+		query = models.Device.select(
+		).where(
+			models.Device.Type == device_type
+		).order_by(models.Device.SerialNumber)
+	elif device_type != 'Select Type' and status != 'Select Status':
+		query = models.Device.select(
+		).where(
+			models.Device.Type == device_type
+		).order_by(models.Device.SerialNumber)
 	
 	types = models.getDeviceTypes()
+	
+	filters= [device_type, status]
 	
 	return render_template('searchResults.html',
 			query=query,
 			types=types,
 			page=page,
+			params=filters,
 			logoutURL=url_for('logout')
 		)
 	
@@ -158,7 +186,7 @@ def index():
 		if request.method == 'POST':
 			function = request.form[pagePostKey]
 			if function == 'search':
-				return renderPage_Search(request.form['searchField'], page="Search")
+				return renderPage_Search(request.form['searchField'], pageType="Search")
 			elif function == 'viewSerial':
 				return renderPage_View(request.form['serial'])
 			elif function == 'addItem':
@@ -296,25 +324,6 @@ if __name__ == '__main__':
 	models.Log.create_table()
 	#"""
 	
-	"""
-	models.Device.create(
-		idNumber = 2,
-		serialNumber = 'LCDI-1111',
-		typeCategory = 'Phone',
-		description = 'iPhone 6 Plus',
-		issues = 'None of note',
-		photo = 'IMG_001.png',
-		state = 'Operational'
-	)
 	
-	models.InOut.create(
-		idNumber = 2,
-		studentName = 'Matthew Fortier',
-		use = 'iOS Forensics',
-		userIn = 'N/A',
-		userOut = 'mfortier',
-		issues = 'None of note'
-	)
-	"""
 	
 	models.db.close()
