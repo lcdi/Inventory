@@ -60,7 +60,7 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 			hasEditAccess=True
 		)
 
-def renderPage_Search(search):
+def renderPage_Search(search, page):
 	
 	query = models.Device.select(
 		models.Device.SerialNumber,
@@ -68,7 +68,7 @@ def renderPage_Search(search):
 		models.Device.Type,
 		models.Device.Description,
 		models.Device.Issues,
-		models.Device.quality
+		models.Device.Quality
 	).where(
 		models.Device.SerialNumber.contains(search) |
 		models.Device.SerialDevice.contains(search) |
@@ -81,6 +81,7 @@ def renderPage_Search(search):
 	return render_template('searchResults.html',
 			query=query,
 			types=types,
+			page=page,
 			logoutURL=url_for('logout')
 		)
 
@@ -128,6 +129,22 @@ def renderEntry(function, serialNumber):
 			notes='this is a note',
 			photoName='IMG_9880.JPG'
 		)
+		
+def renderFilter(device_type, status, page):
+	query = models.Device.select(
+	).where(
+		models.Device.Type == device_type
+	).order_by(models.Device.SerialNumber)
+	
+	types = models.getDeviceTypes()
+	
+	return render_template('searchResults.html',
+			query=query,
+			types=types,
+			page=page,
+			logoutURL=url_for('logout')
+		)
+	
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -141,7 +158,7 @@ def index():
 		if request.method == 'POST':
 			function = request.form[pagePostKey]
 			if function == 'search':
-				return renderPage_Search(request.form['searchField'])
+				return renderPage_Search(request.form['searchField'], page="Search")
 			elif function == 'viewSerial':
 				return renderPage_View(request.form['serial'])
 			elif function == 'addItem':
@@ -173,6 +190,9 @@ def index():
 						state = request.form['device_state'],
 						file = request.files['file']
 					)
+			elif function == 'filter':
+				return renderFilter(request.form['filter_types'], request.form['filter_status'], page="Filter")
+				
 		else:
 			return renderMainPage()
 	
