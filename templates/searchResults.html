@@ -7,7 +7,11 @@
 {% block preContent %}{% endblock %}
 
 {% block tableHeader %}
-	{{ page }}
+	{% if page == "Search" %}
+		{{ page }} Results for "{{ params[0] }}"
+	{% else %}
+		{{ page }} Results for {{ params[0] }}, {{ params[1] }}
+	{% endif %}
 {% endblock %}
 
 {% block modals %}{% endblock %}
