@@ -1,7 +1,7 @@
 {% extends "baseContent.html" %}
 
 {%block title%}
-	{{ item[0].serialNumber }}
+	{{ item.serialNumber }}
 {%endblock%}
 
 {% block preContent %}{% endblock %}
@@ -10,7 +10,7 @@
 
 	<!-- Start: Table header -->
 	<div class="panel-heading">
-		<h1>{{ item[0].SerialNumber }}</h1>
+		<h1>{{ item.SerialNumber }}</h1>
 	</div>
 	<!-- End: Table header -->
 	
@@ -21,19 +21,19 @@
 			
 			<div class="well" style="display: flex; justify-content: flex-start;">
 				<div>
-					<img src="{{ url_for('static', filename='item_photos/' + item[0].PhotoName) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
+					<img src="{{ url_for('static', filename='item_photos/' + item.PhotoName) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
 				</div>
 				<div style="padding-left: 20px;">
-					<h4><b>Device Serial Number:</b> {{ item[0].SerialNumber}} </h4>
-					<h4><b>Device Type:</b> {{ item[0].Type}} </h4>
-					<h4><b>State:</b> {{ item[0].Quality}} </h4>
+					<h4><b>Device Serial Number:</b> {{ item.SerialNumber}} </h4>
+					<h4><b>Device Type:</b> {{ item.Type}} </h4>
+					<h4><b>State:</b> {{ item.Quality}} </h4>
 					<h4><b>Description:</b></h4>
 					<div class="well well-sm" style="background: rgb(255,255,255);">
-						<p>{{ item[0].Description}}</p>    
+						<p>{{ item.Description}}</p>    
 					</div>
 					<h4><b>Notes:</b></h4>
 					<div class="well well-sm" style="background: rgb(255,255,255);">
-						<p>{{ item[0].Notes}}</p>    
+						<p>{{ item.Issues}}</p>    
 					</div>
 				</div>
 			</div>
@@ -83,6 +83,23 @@
 			</div>
 		</div>
 		<!-- End: History Table -->
+		
+		<!-- Start: Sign In Sign Out -->
+		<center>
+			<button type="button" class="btn btn-success"
+					data-toggle="modal" data-target="#signInModal">
+				<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+				Sign In
+			</button>
+			<button type="button" class="btn btn-danger"
+					data-toggle="modal" data-target="#signOutModal">
+				<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+				Sign Out
+			</button>
+		</center>
+		<br />
+		<!-- END -->
+		
 	</div>
 
 {%endblock%}
@@ -110,11 +127,11 @@
 				<div class="modal-body">
 					<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
 						<input name='functionID' value='updateItem' type='hidden' class='form-control' >
-						<input name='serial' value='{{ item[0].SerialNumber }}' type='hidden' >
+						<input name='serial' value='{{ item.SerialNumber }}' type='hidden' >
 						
 						<div class="form-group">
 							<label for="lcdi_serial">LCDI Serial Number</label>
-							<input type="text" class="form-control" name="lcdi_serial" value="{{ item[0].SerialNumber }}"/>
+							<input type="text" class="form-control" name="lcdi_serial" value="{{ item.SerialNumber }}"/>
 						</div>
 						<div class="form-group">
 							<label for="device_serial">Device Serial Number</label>
@@ -124,7 +141,7 @@
 							<div class="form-group col-xs-6">
 								<label for="device_types">Select Type</label>
 								<select class="form-control" name="device_types">
-									<option>{{ item[0].Type }}</option>
+									<option>{{ item.Type }}</option>
 									{% for type in types %}
 										<option>{{ type }}</option>
 									{% endfor %}
@@ -138,16 +155,16 @@
 						</div>
 						<div class="form-group">
 							<label>Device Description</label>
-							<textarea class="form-control" rows="3" name="device_desc">{{ item[0].Description }}</textarea>
+							<textarea class="form-control" rows="3" name="device_desc">{{ item.Description }}</textarea>
 						</div>
 						<div class="form-group">
 							<label>Notes</label>
-							<textarea class="form-control" rows="3" name="device_notes" >{{ item[0].Issues }}</textarea>
+							<textarea class="form-control" rows="3" name="device_notes" >{{ item.Issues }}</textarea>
 						</div>
 						<div class="form-group">
 							<label for="device_state">Select Type</label>
 							<select class="form-control" name="device_state">
-								<option>{{ item[0].Quality }}</option>
+								<option>{{ item.Quality }}</option>
 								{% for state in states %}
 									<option>{{ state }}</option>
 								{% endfor %}
@@ -187,7 +204,7 @@
 						
 						<form name="viewSerialForm" role="form" method="POST" action="{{ url_for('index') }}">
 							<input name='functionID' value='deleteItem' type='hidden' class='form-contorl' >
-							<input name='serial' value='{{ item[0].serialNumber }}' type='hidden' >
+							<input name='serial' value='{{ item.SerialNumber }}' type='hidden' >
 							<button type="submit" class="btn btn-success" >
 								<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 								Yes
@@ -205,5 +222,71 @@
 		</div>
 	</div>
 	<!-- End: Delete -->
+	
+	<!-- Start: Sign In -->
+	<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<!-- Start: Header -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						Sign In {{ item.SerialNumber }}
+					</h4>
+				</div>
+				<!-- End: Header -->
+
+				<!-- Start: Body -->
+				<div class="modal-body">
+				</div>
+				<!-- Start: Footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-primary">
+						Sign In
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Start: Sign Out -->
+	<div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<!-- Start: Header -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						Sign Out {{ item.SerialNumber }}
+					</h4>
+				</div>
+				<!-- End: Header -->
+
+				<!-- Start: Body -->
+				<div class="modal-body">
+				</div>
+				<!-- Start: Footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-primary">
+						Sign Out
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 {% endblock %}
