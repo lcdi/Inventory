@@ -33,7 +33,6 @@ ENGINE = InnoDB;
 -- Table `inventory`.`log`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `inventory`.`log` (
-  `Identifier` INT NOT NULL AUTO_INCREMENT,
   `SerialNumber` VARCHAR(255) NOT NULL,
   `UserIdentifier` VARCHAR(255) NOT NULL,
   `Purpose` TEXT NOT NULL,
