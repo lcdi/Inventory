@@ -33,15 +33,17 @@ ENGINE = InnoDB;
 -- Table `inventory`.`log`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `inventory`.`log` (
+  `Identifier` INT NOT NULL AUTO_INCREMENT,
   `SerialNumber` VARCHAR(255) NOT NULL,
   `UserIdentifier` VARCHAR(255) NOT NULL,
   `Purpose` TEXT NOT NULL,
   `DateOut` DATE NOT NULL,
   `DateIn` DATE NOT NULL,
-  `AuthorizerIdentifier` VARCHAR(255) NOT NULL,
+  `AuthorizerIn` VARCHAR(255) NOT NULL,
+  `AuthorizerOut` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`Identifier`),
   INDEX `SerialNumber_idx` (`SerialNumber` ASC),
-  CONSTRAINT `SerialNumber`
+  CONSTRAINT `SerialNumber_constraint`
     FOREIGN KEY (`SerialNumber`)
     REFERENCES `inventory`.`device` (`SerialNumber`)
     ON DELETE CASCADE
