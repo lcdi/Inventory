@@ -1,7 +1,7 @@
 {% extends "baseContent.html" %}
 
 {%block title%}
-	{{ item.serialNumber }}
+	{{ item.SerialNumber }}
 {%endblock%}
 
 {% block preContent %}{% endblock %}
@@ -76,7 +76,16 @@
 									<th>Use</th>
 								</tr>
 							</thead>
-							<tbody></tbody>
+							<tbody>
+								{% for l in log %}
+									<th>{{ l.DateIn }}</th>
+									<th>{{ l.DateOut }}</th>
+									<th>{{ l.AuthorizerIn }}</th>
+									<th>{{ l.AuthorizerOut }}</th>
+									<th>{{ l.UserIdentifier }}</th>
+									<th>{{ l.Purpose }}</th>
+								{% endfor %}
+							</tbody>
 						</table>
 					</div>
 				</div>
@@ -223,8 +232,8 @@
 	</div>
 	<!-- End: Delete -->
 	
-	<!-- Start: Sign In -->
-	<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- Start: Sign Out -->
+	<div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				
@@ -235,29 +244,45 @@
 						<span class="sr-only">Close</span>
 					</button>
 					<h4 class="modal-title" id="myModalLabel">
-						Sign In {{ item.SerialNumber }}
+						Sign Out {{ item.SerialNumber }}
 					</h4>
 				</div>
 				<!-- End: Header -->
 
 				<!-- Start: Body -->
 				<div class="modal-body">
-				</div>
-				<!-- Start: Footer -->
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
-						Close
-					</button>
-					<button type="submit" class="btn btn-primary">
-						Sign In
-					</button>
+					<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+						<input name='functionID' value='signOut' type='hidden' class='form-control'>
+						<div class="form-group">
+							<label for="signIn_serial">LCDI Serial Number</label>
+							<input type="text" class="form-control" name="signOut_serial" value="{{ item.SerialNumber }}"/>
+						</div>
+						<div class="form-group">
+							<label for="studentName">Student Name</label>
+							<input type="text" class="form-control" name="studentName" placeholder="jwilliams"/>
+						</div>
+						<div class="form-group">
+							<label>Use</label>
+							<textarea class="form-control" rows="3" name="signOut_use" ></textarea>
+						</div>
+						
+						<!-- Start: Footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								Close
+							</button>
+							<button type="submit" class="btn btn-primary">
+								Sign Out
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<!-- Start: Sign Out -->
-	<div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- Start: Sign In -->
+	<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				
@@ -282,7 +307,7 @@
 						Close
 					</button>
 					<button type="submit" class="btn btn-primary">
-						Sign Out
+						Sign In
 					</button>
 				</div>
 			</div>
