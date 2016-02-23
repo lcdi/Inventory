@@ -26,8 +26,9 @@
 	
 	<form role="form" method="POST" action="{{ url_for('index') }}">
 		<input name='functionID' value='filter' type='hidden' class='form-contorl' >
+		
 		<div class="form-group col-xs-2">
-			<select class="form-control" name="filter_types">
+			<select name="device_type" class="form-control">
 				<option>Select Type</option>
 				{% for type in types %}
 					<option>{{ type }}</option>
@@ -35,8 +36,9 @@
 				<option>Other</option>
 			</select>
 		</div>
+		
 		<div class="form-group col-xs-2">
-			<select class="form-control" name="filter_status">
+			<select name="device_status" class="form-control">
 				<option>Select Status</option>
 				<option>Signed Out</option>
 				<option>Signed In</option>

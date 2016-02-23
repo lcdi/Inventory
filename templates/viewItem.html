@@ -24,9 +24,9 @@
 					<img src="{{ url_for('static', filename='item_photos/' + item.PhotoName) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
 				</div>
 				<div style="padding-left: 20px;">
-					<h4><b>Device Serial Number:</b> {{ item.SerialNumber}} </h4>
-					<h4><b>Device Type:</b> {{ item.Type}} </h4>
-					<h4><b>State:</b> {{ item.Quality}} </h4>
+					<h4><b>Device Serial Number:</b> {{ item.SerialDevice }} </h4>
+					<h4><b>Device Type:</b> {{ item.Type }} </h4>
+					<h4><b>State:</b> {{ item.Quality }} </h4>
 					<h4><b>Description:</b></h4>
 					<div class="well well-sm" style="background: rgb(255,255,255);">
 						<p>{{ item.Description}}</p>    
@@ -64,26 +64,47 @@
 					History
 				</div>
 				<div class="panel-body">
+					
+					<!-- Start: Sign In Sign Out -->
+					<center>
+						<button type="button" class="btn btn-success"
+								data-toggle="modal" data-target="#signInModal">
+							<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+							Sign In
+						</button>
+						<button type="button" class="btn btn-danger"
+								data-toggle="modal" data-target="#signOutModal">
+							<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+							Sign Out
+						</button>
+					</center>
+					<!-- END -->
+					
+					<br />
 					<div class="dataTable_wrapper">
 						<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
 							<thead>
 								<tr>
-									<th>Date In</th>
+									<th>Purpose</th>
+									<th>User</th>
 									<th>Date Out</th>
-									<th>User In</th>
-									<th>User Out</th>
-									<th>Out To</th>
-									<th>Use</th>
+									<th>Authorizer Out</th>
+									<th>Date In</th>
+									<th>Authorizer In</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for l in log %}
-									<th>{{ l.DateIn }}</th>
-									<th>{{ l.DateOut }}</th>
-									<th>{{ l.AuthorizerIn }}</th>
-									<th>{{ l.AuthorizerOut }}</th>
-									<th>{{ l.UserIdentifier }}</th>
-									<th>{{ l.Purpose }}</th>
+								{% for log in log %}
+									<th>{{ log.Purpose }}</th>
+									<th>{{ log.UserIdentifier }}</th>
+									<th>{{ log.DateOut }}</th>
+									<th>{{ log.AuthorizerOut }}</th>
+									<td>
+										{% if log.DateIn != None %}
+											{{ log.DateIn }}
+										{% endif %}
+									</td>
+									<th>{{ log.AuthorizerIn }}</th>
 								{% endfor %}
 							</tbody>
 						</table>
@@ -92,22 +113,6 @@
 			</div>
 		</div>
 		<!-- End: History Table -->
-		
-		<!-- Start: Sign In Sign Out -->
-		<center>
-			<button type="button" class="btn btn-success"
-					data-toggle="modal" data-target="#signInModal">
-				<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-				Sign In
-			</button>
-			<button type="button" class="btn btn-danger"
-					data-toggle="modal" data-target="#signOutModal">
-				<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-				Sign Out
-			</button>
-		</center>
-		<br />
-		<!-- END -->
 		
 	</div>
 
@@ -134,21 +139,22 @@
 
 				<!-- Start: Body -->
 				<div class="modal-body">
-					<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+					<form action="{{ url_for('view', serial=item.SerialNumber) }}" method="POST" enctype="multipart/form-data">
 						<input name='functionID' value='updateItem' type='hidden' class='form-control' >
 						
-						<input name='serial' value='{{ item.SerialNumber }}' type='hidden' >
 						<!--
 						<div class="form-group">
 							<label for="lcdi_serial">LCDI Serial Number</label>
-							<input type="text" class="form-control" name="lcdi_serial" value="{{ item.SerialNumber }}"/>
+							<input name="lcdi_serial" value="{{ item.SerialNumber }}" type="text" class="form-control"/>
 						</div>
 						-->
 						
 						<div class="form-group">
 							<label for="device_serial">Device Serial Number</label>
-							<input type="text" class="form-control" name="device_serial" />
+							<input name="device_serial" value='{{ item.SerialDevice }}' type="text" class="form-control" />
 						</div>
+						
+						<!--
 						<div class="row">
 							<div class="form-group col-xs-6">
 								<label for="device_types">Select Type</label>
@@ -165,17 +171,19 @@
 								<input type="text" class="form-control" name="other" placeholder=""/>
 							</div> 
 						</div>
+						-->
+						
 						<div class="form-group">
 							<label>Device Description</label>
-							<textarea class="form-control" rows="3" name="device_desc">{{ item.Description }}</textarea>
+							<textarea name="device_desc" class="form-control" rows="3" >{{ item.Description }}</textarea>
 						</div>
 						<div class="form-group">
 							<label>Notes</label>
-							<textarea class="form-control" rows="3" name="device_notes" >{{ item.Issues }}</textarea>
+							<textarea name="device_notes" class="form-control" rows="3" >{{ item.Issues }}</textarea>
 						</div>
 						<div class="form-group">
 							<label for="device_state">Select Type</label>
-							<select class="form-control" name="device_state">
+							<select name="device_state" class="form-control">
 								<option>{{ item.Quality }}</option>
 								{% for state in states %}
 									<option>{{ state }}</option>
@@ -251,22 +259,28 @@
 					</h4>
 				</div>
 				<!-- End: Header -->
-
+				
 				<!-- Start: Body -->
 				<div class="modal-body">
-					<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-						<input name='functionID' value='signOut' type='hidden' class='form-control'>
+					<form action="{{ url_for('signInOut') }}" method="POST" enctype="multipart/form-data">
+						<input name='functionID' value='out' type='hidden' class='form-control'>
+						
+						<input name="serial" value="{{ item.SerialNumber }}" type="hidden" class="form-control"/>
+						<!--
 						<div class="form-group">
 							<label for="signIn_serial">LCDI Serial Number</label>
 							<input type="text" class="form-control" name="signOut_serial" value="{{ item.SerialNumber }}"/>
 						</div>
+						-->
+						
 						<div class="form-group">
 							<label for="studentName">Student Name</label>
-							<input type="text" class="form-control" name="studentName" placeholder="jwilliams"/>
+							<input name="studentName" placeholder="jwilliams" type="text" class="form-control"/>
 						</div>
+						
 						<div class="form-group">
 							<label>Use</label>
-							<textarea class="form-control" rows="3" name="signOut_use" ></textarea>
+							<textarea name="use" class="form-control" rows="3"></textarea>
 						</div>
 						
 						<!-- Start: Footer -->
@@ -278,8 +292,12 @@
 								Sign Out
 							</button>
 						</div>
+						<!-- End: Footer -->
+						
 					</form>
 				</div>
+				<!-- End: Body -->
+				
 			</div>
 		</div>
 	</div>

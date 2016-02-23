@@ -36,109 +36,69 @@ def init(isDebug):
 def getIndexURL():
 	return redirect(url_for('index'))
 
+def getLoginURL():
+	return redirect(url_for('login'))
+
+def getName():
+	return session['displayName']
+
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 'All'):
-	# TODO filter results, set page form filters, and remove prints
-	#print(serialNumber)
-	#print(itemType)
-	#print(state)
-	#print(status)
+def renderMainPage(itemType = 'ALL', quality = 'ALL', status = 'in'):
 	
-	query = models.Device.select(models.Device, models.Log).join(models.Log).order_by(models.Device.SerialNumber)
-	types = models.getDeviceTypes()
-	states = models.getStates()
-	return render_template('index.html',
-			query=query,
-			types=types,
-			states=states,
-			totalItems=len(query),
-			
-			name=escape(session['displayName']),
-			hasEditAccess=True
-		)
-
-def renderPage_Search(search, pageType):
+	print(itemType)
 	
-	item = models.Device.select().where(models.Device.SerialNumber == search)
-	
-	if (len(item) == 1):
-		item = models.Device.select().where(models.Device.SerialNumber == search).get()
-		types = models.getDeviceTypes()
-		states = models.getStates()
-		return render_template('viewItem.html',
-				item=item,
-				types=types,
-				states=states
-			)
-	else:
-		query = models.Device.select(
+	query = models.Device.select(
 			models.Device.SerialNumber,
-			models.Device.SerialDevice,
 			models.Device.Type,
 			models.Device.Description,
-			models.Device.Issues,
-			models.Device.Quality
+			models.Device.Issues
 		).where(
-			models.Device.SerialNumber.contains(search) |
-			models.Device.SerialDevice.contains(search) |
-			models.Device.Type.contains(search) |
-			models.Device.Description.contains(search)
+			(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != '')
+			#,(models.Device.Quality == quality if itemType != 'ALL' else models.Device.Quality != '')
 		).order_by(models.Device.SerialNumber)
+	for device in query:
+		device.log = models.Log.select(
+			models.Log.UserIdentifier,
+			models.Log.Purpose,
+			models.Log.DateOut,
+			models.Log.AuthorizerOut,
+			models.Log.DateIn,
+			models.Log.AuthorizerIn
+		).where(
+			models.Log.SerialNumber == device.SerialNumber
+		).order_by(models.Log.Identifier)
 		
-		types = models.getDeviceTypes()
-		
-		return render_template('searchResults.html',
-				query=query,
-				types=types,
-				page=pageType,
-				params=search
-			)
+		if len(device.log) > 0:
+			device.log = device.log.get()
+			if status == 'in':
+				# remove device entry
+				device;
+			elif status == 'out':
+				# remove device entry
+				device;
+	
+	return render_template('index.html',
+			query=query,
+			types=models.getDeviceTypes(),
+			states=models.getStates(),
+			totalItems=len(query),
+			
+			name=escape(getName()),
+			hasEditAccess=True
+		)
 
 def renderPage_View(serial):
 	item = models.Device.select().where(models.Device.SerialNumber == serial).get()
 	log = models.Log.select().where(models.Log.SerialNumber == serial)
-	types = models.getDeviceTypes()
-	states = models.getStates()
+	
 	return render_template('viewItem.html',
 			item=item,
-			types=types,
-			states=states,
+			types=models.getDeviceTypes(),
+			states=models.getStates(),
 			log=log
 		)
-
-def renderEntry(function, serialNumber):
-	# TODO remake entry files
-	return getIndexURL()
-	hasEditAccess = app.debug == True or session['hasEditAccess']
 	
-	formID = 'view'
-	entryType = 'View'
-	if function == 'view':
-		entryType = 'View'
-		if hasEditAccess:
-			formID = 'openEditting'
-	elif function == 'openEditting' and hasEditAccess:
-		entryType = 'Edit'
-		formID = 'saveInformation'
-	elif function == 'add' and hasEditAccess:
-		entryType = 'Edit'
-		formID = 'saveInformation'
-	
-	return render_template('entry' + entryType + '.html',
-			
-			formID=formID,
-			submitURL=url_for('index'),
-			hasEditAccess=hasEditAccess,
-			
-			serialNumber=serialNumber,
-			itemType='Type A',
-			description='This is a desc',
-			state='operational',
-			notes='this is a note',
-			photoName='IMG_9880.JPG'
-		)
-		
 def renderFilter(device_type, status, page):
 	
 	if device_type == 'Select Type' and status == 'Select Status':
@@ -179,11 +139,8 @@ def index():
 		# Render main page
 		if request.method == 'POST':
 			function = request.form[pagePostKey]
-			if function == 'search':
-				return renderPage_Search(request.form['searchField'], pageType="Search")
-			elif function == 'viewSerial':
-				return renderPage_View(request.form['serial'])
-			elif function == 'addItem':
+			
+			if function == 'addItem':
 				return addItem(
 						#serialNumber = request.form['lcdi_serial'],
 						serialDevice = request.form['device_serial'],
@@ -200,31 +157,89 @@ def index():
 					).get();
 				item.delete_instance();
 				return getIndexURL()
-			elif function == 'updateItem':
-				return updateItem(
-						oldSerial = request.form['serial'],
-						#serialNumber = request.form['lcdi_serial'],
-						serialDevice = request.form['device_serial'],
-						device_type = request.form['device_types'],
-						device_other = request.form['other'],
-						description = request.form['device_desc'],
-						notes = request.form['device_notes'],
-						state = request.form['device_state'],
-						file = request.files['file']
-					)
+			
 			elif function == 'filter':
-				return renderFilter(request.form['filter_types'], request.form['filter_status'], page="Filter")
-			elif function == 'signOut':
-				return signOutItem(
-						serial = request.form['signOut_serial'],
-						sname = request.form['studentName'],
-						use = request.form['signOut_use']
-					)
+				return renderMainPage(itemType = request.form['device_type'], status = request.form['device_status'])
+			
 		else:
 			return renderMainPage()
 	
 	# Force user to login
-	return redirect(url_for('login'))
+	return getLoginURL()
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+	if not 'username' in session:
+		return getLoginURL()
+	if not request.method == 'POST':
+		return getIndexURL()
+	
+	searchPhrase = request.form['searchField']
+	
+	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
+		return renderPage_View(searchPhrase)
+	else:
+		query = models.Device.select(
+			models.Device.SerialNumber,
+			models.Device.SerialDevice,
+			models.Device.Type,
+			models.Device.Description,
+			models.Device.Issues,
+			models.Device.Quality
+		).where(
+			models.Device.SerialNumber.contains(search) |
+			models.Device.SerialDevice.contains(searchPhrase) |
+			models.Device.Type.contains(searchPhrase) |
+			models.Device.Description.contains(searchPhrase)
+		).order_by(models.Device.SerialNumber)
+		
+		types = models.getDeviceTypes()
+		
+		return render_template('searchResults.html',
+				query=query,
+				types=types,
+				params=searchPhrase
+			)
+
+@app.route('/view/<string:serial>', methods=['GET', 'POST'])
+def view(serial):
+	if not 'username' in session:
+		return getLoginURL()
+	
+	if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
+		return updateItem(
+				oldSerial = request.form['serial'],
+				#serialNumber = request.form['lcdi_serial'],
+				serialDevice = request.form['device_serial'],
+				device_type = request.form['device_types'],
+				device_other = request.form['other'],
+				description = request.form['device_desc'],
+				notes = request.form['device_notes'],
+				state = request.form['device_state'],
+				file = request.files['file']
+			)
+	
+	return renderPage_View(serial)
+
+@app.route('/signInOut', methods=['GET', 'POST'])
+def signInOut():
+	if not 'username' in session:
+		return getLoginURL()
+	if not request.method == 'POST':
+		return getIndexURL()
+	
+	if request.form[pagePostKey] == 'out':
+		serial = request.form['serial']
+		
+		models.Log.create(
+				SerialNumber = serial,
+				UserIdentifier = request.form['studentName'],
+				Purpose = request.form['use'],
+				DateOut = models.datetime.datetime.now(),
+				AuthorizerOut = escape(getName())
+			)
+		
+		return renderPage_View(serial)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -260,8 +275,7 @@ def logout():
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def addItem(#serialNumber,
-		serialDevice, device_type, device_other, description, notes, state, file):
+def addItem(serialDevice, device_type, device_other, description, notes, state, file):
 	
 	if device_other != '':
 		device_type = device_other
@@ -282,8 +296,7 @@ def addItem(#serialNumber,
 		)
 	return renderPage_View(serialNumber)
 
-def updateItem(oldSerial, #serialNumber,
-		serialDevice, device_type, device_other, description, notes, state, file):
+def updateItem(oldSerial, serialDevice, device_type, device_other, description, notes, state, file):
 	
 	item = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
@@ -309,7 +322,7 @@ def updateItem(oldSerial, #serialNumber,
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-           
+         
 def signOutItem(serial, sname, use):
 	identifierItem = models.Log.select().order_by(models.Log.Identifier.desc())
 	if len(identifierItem) == 0:
@@ -327,9 +340,7 @@ def signOutItem(serial, sname, use):
 		)
 	
 	return renderPage_View(serial)
-	
 
-	
 # ~~~~~~~~~~~~~~~~ Start page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 init(isDebugMode)
