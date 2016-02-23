@@ -1,7 +1,6 @@
 {% extends "baseContent.html" %}
 
 {% block content %}
-	
 	<!-- Start: Table header -->
 	<div class="panel-heading">
 		{% block tableHeader %}{% endblock %}
@@ -16,10 +15,16 @@
 					<tr>
 						<th>Serial Number</th>
 						<th>Type</th>
-						<th>Description</th>
-						<th>Use</th>
-						<th>Out To</th>
-						<th>Date Out</th>
+						{% if log %}
+							<th>Use</th>
+							<th>Out To</th>
+							<th>Date Out</th>
+							<th>Sign In / Sign Out</th>
+						{% else %}
+							<th>Description</th>
+							<th>Notes</th>
+							<td>Sign In / Sign Out</td>
+						{% endif %}
 					</tr>
 				</thead>
 				<tbody>
@@ -41,10 +46,28 @@
 								</form>
 							</td>
 							<td>{{ q.Type }}</td>
-							<td>{{ q.Description }}</td>
-							<td>{{ q.Purpose }}</td>
-							<td>{{ q.UserIdentifier }}</td>
-							<td>{{ q.DateOut }}</td>
+							{% if log %}
+								<td>{{ q.log.Purpose }}</td>
+								<td>{{ q.log.UserIdentifier }}</td>
+								<td>{{ q.log.DateOut }}</td>
+								<td>
+									<button type="button" class="btn btn-success"
+											data-toggle="modal" data-target="#signOutModal">
+										<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+										Sign In
+									</button>
+								</td>
+							{% else %}
+								<td>{{ q.Description }}</td>
+								<td>{{ q.Issues }}</td>
+								<td>
+									<button type="button" class="btn btn-danger"
+											data-toggle="modal" data-target="#signOutModal">
+										<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+										Sign Out
+									</button>
+								</td>
+							{% endif %}
 						</tr>
 					{% endfor %}
 				</tbody>
