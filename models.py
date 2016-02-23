@@ -2,7 +2,7 @@ from peewee import *
 import flask.ext.whooshalchemy
 import datetime
 
-db = MySQLDatabase('inventory', user="root", password="")
+db = MySQLDatabase('inventory', user="root", password="root")
 
 class BaseModel(Model):
 	class Meta:
@@ -33,14 +33,15 @@ class Device(Model):
 	
 class Log(Model):
 	
-	Identifier = IntegerField()
-	SerialNumber = ForeignKeyField(Device)
+	Identifier = PrimaryKeyField()
+	SerialNumber = ForeignKeyField(Device, db_column='SerialNumber')
 	UserIdentifier = CharField()
 	Purpose = TextField()
 	DateOut = DateTimeField(default=datetime.datetime.now)
 	DateIn = DateTimeField(default=datetime.datetime.now)
-	AuthorizerIdentifier = CharField()
-	
+	AuthorizerIn = CharField()
+	AuthorizerOut = CharField()
+
 	class Meta:
 		database = db
 
@@ -74,4 +75,21 @@ def doesEntryExist(x, arr):
 			return True
 	return False
 
-
+def getNextSerialNumber(device_type):
+	querySerial = Device.select(Device.SerialNumber).where(Device.Type == device_type).order_by(Device.SerialNumber)
+	nextSerial="LCDI-"
+	
+	numberOfEntries = len(querySerial)
+	prefix = 0
+	
+	if numberOfEntries <= 0:
+		prefix = len(getDeviceTypes())
+	else:
+		prefix = querySerial.get().SerialNumber[len(nextSerial)]
+	
+	if numberOfEntries < 99:
+		nextSerial += str(prefix) + str(numberOfEntries).zfill(2)
+	else:
+		return "OVERFLOW ERROR (MORE THAN 100 ITEMS PER TYPE)"
+	
+	return nextSerial
