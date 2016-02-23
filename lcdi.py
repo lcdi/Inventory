@@ -46,13 +46,10 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 	#print(status)
 	
 	query = models.Device.select(models.Device, models.Log).join(models.Log).order_by(models.Device.SerialNumber)
-	print(query)
-	log = models.Log.select().order_by(models.Log.SerialNumber)
 	types = models.getDeviceTypes()
 	states = models.getStates()
 	return render_template('index.html',
 			query=query,
-			log = log,
 			types=types,
 			states=states,
 			totalItems=len(query),
