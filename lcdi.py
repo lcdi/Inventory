@@ -55,8 +55,6 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 			totalItems=len(query),
 			
 			name=escape(session['displayName']),
-			logoutURL=url_for('logout'),
-			indexURL=url_for('index'),
 			hasEditAccess=True
 		)
 
@@ -71,8 +69,7 @@ def renderPage_Search(search, pageType):
 		return render_template('viewItem.html',
 				item=item,
 				types=types,
-				states=states,
-				logoutURL=url_for('logout')
+				states=states
 			)
 	else:
 		query = models.Device.select(
@@ -95,8 +92,7 @@ def renderPage_Search(search, pageType):
 				query=query,
 				types=types,
 				page=pageType,
-				params=search,
-				logoutURL=url_for('logout')
+				params=search
 			)
 
 def renderPage_View(serial):
@@ -108,8 +104,7 @@ def renderPage_View(serial):
 			item=item,
 			types=types,
 			states=states,
-			log=log,
-			logoutURL=url_for('logout')
+			log=log
 		)
 
 def renderEntry(function, serialNumber):
@@ -131,8 +126,6 @@ def renderEntry(function, serialNumber):
 		formID = 'saveInformation'
 	
 	return render_template('entry' + entryType + '.html',
-			indexURL=url_for('index'),
-			logoutURL=url_for('logout'),
 			
 			formID=formID,
 			submitURL=url_for('index'),
@@ -172,7 +165,7 @@ def renderFilter(device_type, status, page):
 			types=types,
 			page=page,
 			params=filters,
-			logoutURL=url_for('logout')
+			states=models.getStates()
 		)
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -192,7 +185,7 @@ def index():
 				return renderPage_View(request.form['serial'])
 			elif function == 'addItem':
 				return addItem(
-						serialNumber = request.form['lcdi_serial'],
+						#serialNumber = request.form['lcdi_serial'],
 						serialDevice = request.form['device_serial'],
 						device_type = request.form['device_types'],
 						device_other = request.form['other'],
@@ -210,7 +203,7 @@ def index():
 			elif function == 'updateItem':
 				return updateItem(
 						oldSerial = request.form['serial'],
-						serialNumber = request.form['lcdi_serial'],
+						#serialNumber = request.form['lcdi_serial'],
 						serialDevice = request.form['device_serial'],
 						device_type = request.form['device_types'],
 						device_other = request.form['other'],
@@ -267,12 +260,17 @@ def logout():
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def addItem(serialNumber, serialDevice, device_type, device_other, description, notes, state, file):
-	if device_type == 'Other':
+def addItem(#serialNumber,
+		serialDevice, device_type, device_other, description, notes, state, file):
+	
+	if device_other != '':
 		device_type = device_other
 	if file and allowed_file(file.filename):
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+	
+	serialNumber = models.getNextSerialNumber(device_type)
+
 	models.Device.create(
 			SerialNumber = serialNumber,
 			SerialDevice = serialDevice,
@@ -284,7 +282,8 @@ def addItem(serialNumber, serialDevice, device_type, device_other, description, 
 		)
 	return renderPage_View(serialNumber)
 
-def updateItem(oldSerial, serialNumber, serialDevice, device_type, device_other, description, notes, state, file):
+def updateItem(oldSerial, #serialNumber,
+		serialDevice, device_type, device_other, description, notes, state, file):
 	
 	item = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
@@ -294,7 +293,7 @@ def updateItem(oldSerial, serialNumber, serialDevice, device_type, device_other,
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
-	item.SerialNumber = serialNumber
+	item.SerialNumber = oldSerial
 	item.SerialDevice = serialDevice
 	item.Type = device_type
 	item.Description = description
@@ -305,7 +304,7 @@ def updateItem(oldSerial, serialNumber, serialDevice, device_type, device_other,
 	
 	item.save()
 	
-	return renderPage_View(serialNumber)
+	return renderPage_View(oldSerial)
 
 def allowed_file(filename):
     return '.' in filename and \
