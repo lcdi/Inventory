@@ -35,7 +35,7 @@ def init(isDebug):
 	
 def getIndexURL():
 	return redirect(url_for('index'))
-	
+
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 'All'):
@@ -45,11 +45,14 @@ def renderMainPage(serialNumber = '', itemType = 'ALL', state = 'ALL', status = 
 	#print(state)
 	#print(status)
 	
-	query = models.Device.select().order_by(models.Device.SerialNumber)
+	query = models.Device.select(models.Device, models.Log).join(models.Log).order_by(models.Device.SerialNumber)
+	print(query)
+	log = models.Log.select().order_by(models.Log.SerialNumber)
 	types = models.getDeviceTypes()
 	states = models.getStates()
 	return render_template('index.html',
 			query=query,
+			log = log,
 			types=types,
 			states=states,
 			totalItems=len(query),
@@ -101,12 +104,14 @@ def renderPage_Search(search, pageType):
 
 def renderPage_View(serial):
 	item = models.Device.select().where(models.Device.SerialNumber == serial).get()
+	log = models.Log.select().where(models.Log.SerialNumber == serial)
 	types = models.getDeviceTypes()
 	states = models.getStates()
 	return render_template('viewItem.html',
 			item=item,
 			types=types,
 			states=states,
+			log=log,
 			logoutURL=url_for('logout')
 		)
 
@@ -172,7 +177,6 @@ def renderFilter(device_type, status, page):
 			params=filters,
 			logoutURL=url_for('logout')
 		)
-	
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -220,7 +224,12 @@ def index():
 					)
 			elif function == 'filter':
 				return renderFilter(request.form['filter_types'], request.form['filter_status'], page="Filter")
-				
+			elif function == 'signOut':
+				return signOutItem(
+						serial = request.form['signOut_serial'],
+						sname = request.form['studentName'],
+						use = request.form['signOut_use']
+					)
 		else:
 			return renderMainPage()
 	
@@ -304,6 +313,26 @@ def updateItem(oldSerial, serialNumber, serialDevice, device_type, device_other,
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+           
+def signOutItem(serial, sname, use):
+	identifierItem = models.Log.select().order_by(models.Log.Identifier.desc())
+	if len(identifierItem) == 0:
+		identifier = 1
+	else:
+		identifier = identifierItem.Identifier + 1
+	
+	models.Log.create(
+			Identifier = identifier,
+			SerialNumber = serial,
+			UserIdentifier = sname,
+			Purpose = use,
+			DateOut = models.datetime.datetime.now(),
+			AuthorizerOut = escape(session['displayName'])
+		)
+	
+	return renderPage_View(serial)
+	
+
 	
 # ~~~~~~~~~~~~~~~~ Start page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -320,10 +349,8 @@ if __name__ == '__main__':
 	models.db.connect()
 	
 	#"""
-	models.Device.create_table()
-	models.Log.create_table()
+	#models.Device.create_table()
+	#models.Log.create_table()
 	#"""
-	
-	
 	
 	models.db.close()
