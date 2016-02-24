@@ -43,13 +43,13 @@
 							</td>
 							<td>
 								{% if device.log.DateIn or not device.log.DateOut %}
-									<button type="button" class="btn btn-danger btn-sm"
+									<button type="button" class="btn btn-success btn-sm"
 											data-toggle="modal" data-target="#signOutModal">
 										<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
 										Sign Out
 									</button>
 								{% else %}
-									<button type="button" class="btn btn-success btn-sm"
+									<button type="button" class="btn btn-danger btn-sm"
 											data-toggle="modal" data-target="#signOutModal">
 										<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
 										Sign In
