@@ -44,9 +44,7 @@ def getName():
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def renderMainPage(itemType = 'ALL', status = 'in'):
-	
-	print(itemType)
+def renderMainPage(itemType = 'ALL', status = 'ALL'):
 	
 	query = models.Device.select(
 			models.Device.SerialNumber,
@@ -55,8 +53,10 @@ def renderMainPage(itemType = 'ALL', status = 'in'):
 			models.Device.Issues
 		).where(
 			(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != '')
-			#,(models.Device.Quality == quality if itemType != 'ALL' else models.Device.Quality != '')
 		).order_by(models.Device.SerialNumber)
+	
+	deviceList = []
+	
 	for device in query:
 		device.log = models.Log.select(
 			models.Log.UserIdentifier,
@@ -69,17 +69,25 @@ def renderMainPage(itemType = 'ALL', status = 'in'):
 			models.Log.SerialNumber == device.SerialNumber
 		).order_by(models.Log.Identifier)
 		
-		if len(device.log) > 0:
+		hasLog = len(device.log) > 0
+		if hasLog:
 			device.log = device.log.get()
-			if status == 'in':
-				# remove device entry
-				device;
-			elif status == 'out':
-				# remove device entry
-				device;
+		
+		if status == 'ALL':
+			deviceList.append(device)
+		elif status == 'in':
+			if not hasLog:
+				deviceList.append(device)
+			elif device.log.DateIn:
+				deviceList.append(device)
+		elif status == 'out':
+			if hasLog and not device.log.DateIn:
+				deviceList.append(device)
 	
 	return render_template('index.html',
-			query=query,
+			filter_Type = itemType,
+			filter_Status = status,
+			query=deviceList,
 			types=models.getDeviceTypes(),
 			states=models.getStates(),
 			totalItems=len(query),
@@ -162,7 +170,7 @@ def index():
 				return renderMainPage(itemType = request.form['device_type'], status = request.form['device_status'])
 			
 		else:
-			return renderMainPage()
+			return renderMainPage(status = 'out')
 	
 	# Force user to login
 	return getLoginURL()
