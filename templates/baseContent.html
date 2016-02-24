@@ -47,9 +47,8 @@
 						<li class="sidebar-search">
 							
 							<!-- Start: Search bar form -->
-							<form role="form" method="POST" action="{{ url_for('index') }}">
+							<form role="form" method="POST" action="{{ url_for('search') }}">
 								<div class="input-group custom-search-form">
-									<input name='functionID' value='search' type='hidden' class='form-contorl' >
 									<input name="searchField" type="text" class="form-control" placeholder="Search..." >
 									<span class="input-group-btn">
 										<button name="searchButton" class="btn btn-default" type="submit">
