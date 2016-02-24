@@ -45,7 +45,7 @@ def getName():
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def renderMainPage(itemType = 'ALL', status = 'ALL'):
+def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 	
 	query = models.Device.select(
 			models.Device.SerialNumber,
@@ -53,7 +53,8 @@ def renderMainPage(itemType = 'ALL', status = 'ALL'):
 			models.Device.Description,
 			models.Device.Issues
 		).where(
-			(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != '')
+			(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != ''),
+			(models.Device.Quality == quality if quality != 'ALL' else models.Device.Quality != '')
 		).order_by(models.Device.SerialNumber)
 	
 	deviceList = []
@@ -78,6 +79,7 @@ def renderMainPage(itemType = 'ALL', status = 'ALL'):
 	return render_template('index.html',
 			filter_Type = itemType,
 			filter_Status = status,
+			filter_quality = quality,
 			query=deviceList,
 			types=models.getDeviceTypes(),
 			states=models.getStates(),
@@ -146,13 +148,12 @@ def index():
 			
 			if function == 'addItem':
 				return addItem(
-						#serialNumber = request.form['lcdi_serial'],
 						serialDevice = request.form['device_serial'],
 						device_type = request.form['device_types'],
 						device_other = request.form['other'],
 						description = request.form['device_desc'],
 						notes = request.form['device_notes'],
-						state = request.form['device_state'],
+						quality = request.form['device_quality'],
 						file = request.files['file']
 					)
 			elif function == 'deleteItem':
@@ -163,7 +164,7 @@ def index():
 				return getIndexURL()
 			
 			elif function == 'filter':
-				return renderMainPage(itemType = request.form['device_type'], status = request.form['device_status'])
+				return renderMainPage(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
 			
 		else:
 			return renderMainPage(status = 'out')
@@ -211,17 +212,15 @@ def view(serial):
 		return getLoginURL()
 	
 	if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
-		return updateItem(
-				oldSerial = request.form['serial'],
-				#serialNumber = request.form['lcdi_serial'],
-				serialDevice = request.form['device_serial'],
-				device_type = request.form['device_types'],
-				device_other = request.form['other'],
-				description = request.form['device_desc'],
-				notes = request.form['device_notes'],
-				state = request.form['device_state'],
-				file = request.files['file']
-			)
+		updateItem(
+			oldSerial = serial,
+			serialDevice = request.form['device_serial'],
+			description = request.form['device_desc'],
+			notes = request.form['device_notes'],
+			quality = request.form['device_quality'],
+			file = request.files['file']
+		)
+		return renderPage_View(serial)
 	
 	return renderPage_View(serial)
 
@@ -286,7 +285,7 @@ def logout():
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def addItem(serialDevice, device_type, device_other, description, notes, state, file):
+def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
 	
 	if device_other != '':
 		device_type = device_other
@@ -303,32 +302,27 @@ def addItem(serialDevice, device_type, device_other, description, notes, state, 
 			Description = description,
 			Issues = notes,
 			PhotoName = file.filename,
-			Quality = state
+			Quality = quality
 		)
 	return renderPage_View(serialNumber)
 
-def updateItem(oldSerial, serialDevice, device_type, device_other, description, notes, state, file):
+def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	
-	item = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
+	device = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
-	if device_type == 'Other':
-		device_type = device_other
 	if file and allowed_file(file.filename):
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
-	item.SerialNumber = oldSerial
-	item.SerialDevice = serialDevice
-	item.Type = device_type
-	item.Description = description
-	item.Issues = notes
+	device.SerialNumber = oldSerial
+	device.SerialDevice = serialDevice
+	device.Description = description
+	device.Issues = notes
+	device.Quality = quality
 	if file:
-		item.PhotoName = file.filename
-	item.quality = state
+		device.PhotoName = file.filename
 	
-	item.save()
-	
-	return renderPage_View(oldSerial)
+	device.save()
 
 def allowed_file(filename):
     return '.' in filename and \
