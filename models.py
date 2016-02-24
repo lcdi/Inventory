@@ -76,6 +76,41 @@ def doesEntryExist(x, arr):
 			return True
 	return False
 
+def getDevices():
+	return Device.select(
+		Device.SerialNumber,
+		Device.Type,
+		Device.Description,
+		Device.Issues
+	).order_by(Device.SerialNumber)
+
+def getDevicesWithLog(itemType, status, quality):
+	query = getDevices().where(
+		(Device.Type == itemType if itemType != 'ALL' else Device.Type != ''),
+		(Device.Quality == quality if quality != 'ALL' else Device.Quality != '')
+	)
+	
+	deviceList = []
+	
+	for device in query:
+		device.log = getDeviceLog(device.SerialNumber)
+		
+		hasLog = len(device.log) > 0
+		if hasLog:
+			device.log = device.log.get()
+			device.statusIsOut = not device.log.DateIn
+		else:
+			device.statusIsOut = False
+		
+		if status == 'ALL':
+			deviceList.append(device)
+		elif status == 'in' and not device.statusIsOut:
+			deviceList.append(device)
+		elif status == 'out' and device.statusIsOut:
+			deviceList.append(device)
+	
+	return deviceList
+
 def getNextSerialNumber(device_type):
 	querySerial = Device.select(Device.SerialNumber).where(Device.Type == device_type).order_by(Device.SerialNumber)
 	nextSerial="LCDI-"
