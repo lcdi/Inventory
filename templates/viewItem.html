@@ -95,16 +95,18 @@
 							</thead>
 							<tbody>
 								{% for log in log %}
-									<th>{{ log.Purpose }}</th>
-									<th>{{ log.UserIdentifier }}</th>
-									<th>{{ log.DateOut }}</th>
-									<th>{{ log.AuthorizerOut }}</th>
-									<td>
-										{% if log.DateIn != None %}
-											{{ log.DateIn }}
-										{% endif %}
-									</td>
-									<th>{{ log.AuthorizerIn }}</th>
+									<tr>
+										<th>{{ log.Purpose }}</th>
+										<th>{{ log.UserIdentifier }}</th>
+										<th>{{ log.DateOut }}</th>
+										<th>{{ log.AuthorizerOut }}</th>
+										<td>
+											{% if log.DateIn %}
+												{{ log.DateIn }}
+											{% endif %}
+										</td>
+										<th>{{ log.AuthorizerIn }}</th>
+									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
@@ -314,7 +316,7 @@
 						<span class="sr-only">Close</span>
 					</button>
 					<h4 class="modal-title" id="myModalLabel">
-						Sign Out {{ item.SerialNumber }}
+						Sign In {{ item.SerialNumber }}
 					</h4>
 				</div>
 				<!-- End: Header -->
