@@ -15,9 +15,10 @@
 					<tr>
 						<th>Serial Number</th>
 						<th>Type</th>
-						<th>Use</th>
-						<th>Out To</th>
+						<th>Purpose</th>
+						<th>Last User</th>
 						<th>Date Out</th>
+						<th>Date In</th>
 						<th>Sign In / Out</th>
 					</tr>
 				</thead>
@@ -36,18 +37,23 @@
 								{% endif %}
 							</td>
 							<td>
-								{% if device.log.DateIn and not device.log.DateOut %}
-								<button type="button" class="btn btn-danger btn-sm"
-										data-toggle="modal" data-target="#signOutModal">
-									<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-									Sign Out
-								</button>
+								{% if device.log.DateIn %}
+									{{ device.log.DateIn }}
+								{% endif %}
+							</td>
+							<td>
+								{% if device.log.DateIn or not device.log.DateOut %}
+									<button type="button" class="btn btn-danger btn-sm"
+											data-toggle="modal" data-target="#signOutModal">
+										<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+										Sign Out
+									</button>
 								{% else %}
-								<button type="button" class="btn btn-success btn-sm"
-										data-toggle="modal" data-target="#signOutModal">
-									<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-									Sign In
-								</button>
+									<button type="button" class="btn btn-success btn-sm"
+											data-toggle="modal" data-target="#signOutModal">
+										<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+										Sign In
+									</button>
 								{% endif %}
 								
 							</td>
