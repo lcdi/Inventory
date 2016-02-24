@@ -6,10 +6,11 @@ import flask.ext.whooshalchemy
 # Peewee
 from peewee import *
 
-# File manipulation
+# Python
 import sys
 import os
 import os.path
+import time
 
 # Custom support files
 import models
@@ -58,31 +59,21 @@ def renderMainPage(itemType = 'ALL', status = 'ALL'):
 	deviceList = []
 	
 	for device in query:
-		device.log = models.Log.select(
-			models.Log.UserIdentifier,
-			models.Log.Purpose,
-			models.Log.DateOut,
-			models.Log.AuthorizerOut,
-			models.Log.DateIn,
-			models.Log.AuthorizerIn
-		).where(
-			models.Log.SerialNumber == device.SerialNumber
-		).order_by(models.Log.Identifier)
+		device.log = models.getDeviceLog(device.SerialNumber)
 		
 		hasLog = len(device.log) > 0
 		if hasLog:
 			device.log = device.log.get()
+			device.statusIsOut = not device.log.DateIn
+		else:
+			device.statusIsOut = False
 		
 		if status == 'ALL':
 			deviceList.append(device)
-		elif status == 'in':
-			if not hasLog:
-				deviceList.append(device)
-			elif device.log.DateIn:
-				deviceList.append(device)
-		elif status == 'out':
-			if hasLog and not device.log.DateIn:
-				deviceList.append(device)
+		elif status == 'in' and not device.statusIsOut:
+			deviceList.append(device)
+		elif status == 'out' and device.statusIsOut:
+			deviceList.append(device)
 	
 	return render_template('index.html',
 			filter_Type = itemType,
@@ -97,11 +88,16 @@ def renderMainPage(itemType = 'ALL', status = 'ALL'):
 		)
 
 def renderPage_View(serial):
-	item = models.Device.select().where(models.Device.SerialNumber == serial).get()
-	log = models.Log.select().where(models.Log.SerialNumber == serial)
+	device = models.Device.select().where(models.Device.SerialNumber == serial).get()
+	log = models.getDeviceLog(serial)
+	
+	if len(log) > 0:
+		device.statusIsOut = not log.get().DateIn
+	else:
+		device.statusIsOut = False
 	
 	return render_template('viewItem.html',
-			item=item,
+			device=device,
 			types=models.getDeviceTypes(),
 			states=models.getStates(),
 			log=log
@@ -236,18 +232,25 @@ def signInOut():
 	if not request.method == 'POST':
 		return getIndexURL()
 	
-	if request.form[pagePostKey] == 'out':
-		serial = request.form['serial']
-		
+	function = request.form[pagePostKey]
+	serial = request.form['lcdi_serial']
+	
+	if function == 'out':
 		models.Log.create(
-				SerialNumber = serial,
-				UserIdentifier = request.form['studentName'],
-				Purpose = request.form['use'],
-				DateOut = models.datetime.datetime.now(),
-				AuthorizerOut = escape(getName())
-			)
+			SerialNumber = serial,
+			UserOut = session['username'],
+			Purpose = request.form['purpose'],
+			DateOut = models.datetime.datetime.now(),
+			AuthorizerOut = request.form['authorizerID']
+		)
+	elif function == 'in':
+		deviceLog = models.getDeviceLog(serial).get()
+		deviceLog.UserIn = session['username']
+		deviceLog.DateIn = models.datetime.datetime.now()
+		deviceLog.AuthorizerIn = request.form['authorizerID']
+		deviceLog.save()
 		
-		return renderPage_View(serial)
+	return renderPage_View(serial)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -341,7 +344,7 @@ def signOutItem(serial, sname, use):
 	models.Log.create(
 			Identifier = identifier,
 			SerialNumber = serial,
-			UserIdentifier = sname,
+			UserOut = sname,
 			Purpose = use,
 			DateOut = models.datetime.datetime.now(),
 			AuthorizerOut = escape(session['displayName'])
