@@ -23,14 +23,16 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% set data_id=NONE %}
 					{% for device in query %}
+						{% set data_id=device.SerialNumber %}
 						<tr>
 							<td>
 								<a href="{{ url_for('view', serial=device.SerialNumber) }}">{{ device.SerialNumber }}</a>
 							</td>
 							<td>{{ device.Type }}</td>
 							<td>{{ device.log.Purpose }}</td>
-							<td>{{ device.log.UserIdentifier }}</td>
+							<td>{{ device.log.UserOut }}</td>
 							<td>
 								{% if device.log.DateOut %}
 									{{ device.log.DateOut }}
@@ -42,20 +44,11 @@
 								{% endif %}
 							</td>
 							<td>
-								{% if device.log.DateIn or not device.log.DateOut %}
-									<button type="button" class="btn btn-success btn-sm"
-											data-toggle="modal" data-target="#signOutModal">
-										<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-										Sign Out
-									</button>
+								{% if device.statusIsOut %}
+									{% include 'signInButton.html' %}
 								{% else %}
-									<button type="button" class="btn btn-danger btn-sm"
-											data-toggle="modal" data-target="#signOutModal">
-										<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-										Sign In
-									</button>
+									{% include 'signOutButton.html' %}
 								{% endif %}
-								
 							</td>
 							
 						</tr>
@@ -68,12 +61,6 @@
 	
 {%endblock%}
 
-{% block postScripts %}
+{% block baseModals %}{% endblock %}
 
-<script language="javascript">
-	function submitForm_ViewSerial() {
-		document.viewSerialForm.submit();
-	}
-</script>
-
-{% endblock %}
+{% block postScripts %}{% endblock %}
