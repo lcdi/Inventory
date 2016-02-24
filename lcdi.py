@@ -47,15 +47,10 @@ def getName():
 
 def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 	
-	query = models.Device.select(
-			models.Device.SerialNumber,
-			models.Device.Type,
-			models.Device.Description,
-			models.Device.Issues
-		).where(
-			(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != ''),
-			(models.Device.Quality == quality if quality != 'ALL' else models.Device.Quality != '')
-		).order_by(models.Device.SerialNumber)
+	query = models.getDevices().where(
+		(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != ''),
+		(models.Device.Quality == quality if quality != 'ALL' else models.Device.Quality != '')
+	)
 	
 	deviceList = []
 	
@@ -80,13 +75,13 @@ def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 			filter_Type = itemType,
 			filter_Status = status,
 			filter_quality = quality,
-			query=deviceList,
-			types=models.getDeviceTypes(),
-			states=models.getStates(),
-			totalItems=len(query),
+			query = deviceList,
+			types = models.getDeviceTypes(),
+			states = models.getStates(),
+			totalItems = len(deviceList),
 			
-			name=escape(getName()),
-			hasEditAccess=True
+			name = escape(getName()),
+			hasEditAccess = True
 		)
 
 def renderPage_View(serial):
@@ -184,25 +179,16 @@ def search():
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
 		return renderPage_View(searchPhrase)
 	else:
-		query = models.Device.select(
-			models.Device.SerialNumber,
-			models.Device.SerialDevice,
-			models.Device.Type,
-			models.Device.Description,
-			models.Device.Issues,
-			models.Device.Quality
-		).where(
+		query = models.getDevices().where(
 			models.Device.SerialNumber.contains(search) |
 			models.Device.SerialDevice.contains(searchPhrase) |
 			models.Device.Type.contains(searchPhrase) |
 			models.Device.Description.contains(searchPhrase)
-		).order_by(models.Device.SerialNumber)
-		
-		types = models.getDeviceTypes()
+		)
 		
 		return render_template('searchResults.html',
 				query=query,
-				types=types,
+				types=models.getDeviceTypes(),
 				params=searchPhrase
 			)
 
