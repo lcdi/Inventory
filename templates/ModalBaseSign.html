@@ -1,0 +1,60 @@
+<div class="modal fade" id="{{ id }}Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			
+			<!-- Start: Header -->
+			<div class="modal-header">
+				
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				
+				<div>
+					<h4 class="modal-title" style="float: left;">{{ title }}&nbsp</h4>
+					<h4 class="modal-title" style="float: left;" id="lcdi_serial"></h4>
+				</div>
+				
+			</div>
+			<!-- End: Header -->
+			
+			<!-- Start: Body -->
+			<div class="modal-body">
+				<form action="{{ url_for('signInOut') }}" method="POST" enctype="multipart/form-data">
+					
+					<input name='functionID' value='{{ function }}' type='hidden' class='form-control'>
+					<input name="lcdi_serial" id="lcdi_serial" type='hidden' class="form-control"/>
+					
+					<div class="form-group">
+						<label for="authorizerID">Authorizer</label>
+						<input name="authorizerID" placeholder="jwilliams" type="text" class="form-control"/>
+					</div>
+					
+					{% if hasPurpose %}
+						<div class="form-group">
+							<label for="purpose">Purpose</label>
+							<textarea name="purpose" class="form-control" rows="3"></textarea>
+						</div>
+					{% endif %}
+					
+					<!-- Start: Footer -->
+					<div class="modal-footer">
+						
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Close
+						</button>
+						
+						<button type="submit" class="btn btn-primary">
+							{{ title }}
+						</button>
+						
+					</div>
+					<!-- End: Footer -->
+					
+				</form>
+			</div>
+			<!-- End: Body -->
+			
+		</div>
+	</div>
+</div>
