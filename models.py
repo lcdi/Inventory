@@ -37,8 +37,8 @@ class Log(Model):
 	SerialNumber = ForeignKeyField(Device, db_column='SerialNumber')
 	UserIdentifier = CharField()
 	Purpose = TextField()
-	DateOut = DateTimeField(default=datetime.datetime.now)
-	DateIn = DateTimeField(default=datetime.datetime.now)
+	DateOut = DateTimeField()
+	DateIn = DateTimeField()
 	AuthorizerIn = CharField()
 	AuthorizerOut = CharField()
 
