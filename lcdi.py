@@ -44,7 +44,7 @@ def getName():
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def renderMainPage(itemType = 'ALL', quality = 'ALL', status = 'in'):
+def renderMainPage(itemType = 'ALL', status = 'in'):
 	
 	print(itemType)
 	
