@@ -56,11 +56,10 @@
 					
 					<!-- Quality/State -->
 					<div class="form-group">
-						<label for="device_state">Select State</label>
-						<select name="device_state" class="form-control">
-							{% for state in states %}
-								<option>{{ state }}</option>
-							{% endfor %}
+						<label for="device_quality">Select Quality</label>
+						<select name="device_quality" class="form-control">
+							<option>Operational</option>
+							<option>Decommissioned</option>
 						</select>
 					</div>
 					
