@@ -26,8 +26,8 @@
 	<form action="{{ url_for('index') }}" method="POST" role="form" >
 		<input name='functionID' value='filter' type='hidden' class='form-contorl' >
 		
-		<div class="form-group col-xs-4">
-			<select name="device_type" class="form-control">
+		<div class="form-group col-xs-2">
+			<select name="type" class="form-control">
 				<option value='ALL'>All Item Types</option>
 				{% for type in types %}
 					<option value='{{ type }}'
@@ -39,8 +39,8 @@
 			</select>
 		</div>
 		
-		<div class="form-group col-xs-4">
-			<select name="device_status" class="form-control">
+		<div class="form-group col-xs-2">
+			<select name="status" class="form-control">
 				<option value='ALL'>Select Status</option>
 				<option value='out'
 					{% if filter_Status == 'out' %} selected='selected' {% endif %}
@@ -48,6 +48,18 @@
 				<option value='in'
 					{% if filter_Status == 'in' %} selected='selected' {% endif %}
 				>Signed In</option>
+			</select>
+		</div>
+		
+		<div class="form-group col-xs-2">
+			<select name="quality" class="form-control">
+				<option value='ALL'>Select Quality</option>
+				<option
+					{% if filter_quality == 'Operational' %} selected='selected' {% endif %}
+				>Operational</option>
+				<option
+					{% if filter_quality == 'Decommissioned' %} selected='selected' {% endif %}
+				>Decommissioned</option>
 			</select>
 		</div>
 		
