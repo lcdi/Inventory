@@ -35,12 +35,13 @@ class Log(Model):
 	
 	Identifier = PrimaryKeyField()
 	SerialNumber = ForeignKeyField(Device, db_column='SerialNumber')
-	UserIdentifier = CharField()
 	Purpose = TextField()
+	UserOut = CharField()
 	DateOut = DateTimeField()
+	AuthorizerOut = CharField()
+	UserIn = CharField()
 	DateIn = DateTimeField()
 	AuthorizerIn = CharField()
-	AuthorizerOut = CharField()
 
 	class Meta:
 		database = db
@@ -93,3 +94,6 @@ def getNextSerialNumber(device_type):
 		return "OVERFLOW ERROR (MORE THAN 100 ITEMS PER TYPE)"
 	
 	return nextSerial
+
+def getDeviceLog(serial):
+	return Log.select().where(Log.SerialNumber == serial).order_by(-Log.Identifier)
