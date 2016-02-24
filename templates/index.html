@@ -23,36 +23,43 @@
 	<!-- End: Header -->
 	
 	<!-- Start: Filter Form -->
-	
-	<form role="form" method="POST" action="{{ url_for('index') }}">
+	<form action="{{ url_for('index') }}" method="POST" role="form" >
 		<input name='functionID' value='filter' type='hidden' class='form-contorl' >
 		
-		<div class="form-group col-xs-2">
+		<div class="form-group col-xs-4">
 			<select name="device_type" class="form-control">
-				<option>Select Type</option>
+				<option value='ALL'>All Item Types</option>
 				{% for type in types %}
-					<option>{{ type }}</option>
+					<option value='{{ type }}'
+						{% if filter_Type == type %}
+							selected='selected'
+						{% endif %}
+					>{{ type }}</option>
 				{% endfor %}
-				<option>Other</option>
 			</select>
 		</div>
 		
-		<div class="form-group col-xs-2">
+		<div class="form-group col-xs-4">
 			<select name="device_status" class="form-control">
-				<option>Select Status</option>
-				<option>Signed Out</option>
-				<option>Signed In</option>
+				<option value='ALL'>Select Status</option>
+				<option value='out'
+					{% if filter_Status == 'out' %} selected='selected' {% endif %}
+				>Signed Out</option>
+				<option value='in'
+					{% if filter_Status == 'in' %} selected='selected' {% endif %}
+				>Signed In</option>
 			</select>
 		</div>
 		
 		<div class="form-group col-xs-2">
-			<button type="submit" class="btn btn-primary">
-				Filter
-			</button>
+			<button type='submit' class="btn btn-primary">Filter</button>
 		</div>
+		
 	</form>
-	
+	<br />
+	<br />
 	<!-- End: Filter Form -->
+	
 {% endblock %}
 
 {% block tableHeader %}
