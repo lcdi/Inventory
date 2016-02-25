@@ -69,13 +69,19 @@
 								Dashboard
 							</a>
 						</li>
-						<li>
-							<!-- Send popup to add item. For usage, search for 'addItemModal' in this file -->
-							<a href="" data-toggle="modal" data-target="#addItemModal">
-								<i class="fa fa-edit fa-fw"></i>
-								Add Item
-							</a>
-						</li>
+						
+						{% if session['hasEditAccess'] %}
+							<li>
+								<!-- Send popup to add item. For usage, search for 'addItemModal' in this file -->
+								<a href="" data-toggle="modal" data-target="#addItemModal">
+									<i class="fa fa-edit fa-fw"></i>
+									Add Item
+								</a>
+							</li>
+						{% endif %}
+						
+						<!-- End listings -->
+						
 					</ul>
 				</div>
 			</div>

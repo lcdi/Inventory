@@ -38,7 +38,7 @@
 				</div>
 			</div>
 			
-			<!-- ADMIN ONLY -->
+			{% if session['hasEditAccess'] %}
 				<center>
 					<button type="button" class="btn btn-warning"
 							data-toggle="modal" data-target="#editItemModal">
@@ -52,7 +52,7 @@
 					</button>
 				</center>
 				<br />
-			<!-- END -->
+			{% endif %}
 			
 		</div>
 		<!-- End: Details Body -->
