@@ -47,29 +47,7 @@ def getName():
 
 def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 	
-	query = models.getDevices().where(
-		(models.Device.Type == itemType if itemType != 'ALL' else models.Device.Type != ''),
-		(models.Device.Quality == quality if quality != 'ALL' else models.Device.Quality != '')
-	)
-	
-	deviceList = []
-	
-	for device in query:
-		device.log = models.getDeviceLog(device.SerialNumber)
-		
-		hasLog = len(device.log) > 0
-		if hasLog:
-			device.log = device.log.get()
-			device.statusIsOut = not device.log.DateIn
-		else:
-			device.statusIsOut = False
-		
-		if status == 'ALL':
-			deviceList.append(device)
-		elif status == 'in' and not device.statusIsOut:
-			deviceList.append(device)
-		elif status == 'out' and device.statusIsOut:
-			deviceList.append(device)
+	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	
 	return render_template('index.html',
 			filter_Type = itemType,
@@ -80,8 +58,7 @@ def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 			states = models.getStates(),
 			totalItems = len(deviceList),
 			
-			name = escape(getName()),
-			hasEditAccess = True
+			name = escape(getName())
 		)
 
 def renderPage_View(serial):
@@ -250,7 +227,7 @@ def login():
 				# Set username and displayName in session
 				session['username'] = user
 				session['displayName'] = session['username']
-				session['hasEditAccess'] = hasEditAccess
+				session['hasEditAccess'] = hasEditAccess or app.debug == True
 				
 				# Send user back to index page
 				# (if username wasnt set, it will redirect back to login screen)
