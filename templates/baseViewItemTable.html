@@ -31,8 +31,16 @@
 								<a href="{{ url_for('view', serial=device.SerialNumber) }}">{{ device.SerialNumber }}</a>
 							</td>
 							<td>{{ device.Type }}</td>
-							<td>{{ device.log.Purpose }}</td>
-							<td>{{ device.log.UserOut }}</td>
+							<td>
+								{% if device.log.Purpose %}
+									{{ device.log.Purpose }}
+								{% endif %}
+							</td>
+							<td>
+								{% if device.log.UserOut %}
+									{{ device.log.UserOut }}
+								{% endif %}
+							</td>
 							<td>
 								{% if device.log.DateOut %}
 									{{ device.log.DateOut }}
