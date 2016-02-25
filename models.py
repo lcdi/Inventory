@@ -112,8 +112,10 @@ def getDevicesWithLog(itemType, status, quality):
 	return deviceList
 
 def getNextSerialNumber(device_type):
+	prefixStr = "LCDI"
+	
 	querySerial = Device.select(Device.SerialNumber).where(Device.Type == device_type).order_by(Device.SerialNumber)
-	nextSerial="LCDI-"
+	nextSerial = prefixStr + "-"
 	
 	numberOfEntries = len(querySerial)
 	prefix = 0
