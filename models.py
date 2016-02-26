@@ -89,7 +89,9 @@ def getDevicesWithLog(itemType, status, quality):
 		(Device.Type == itemType if itemType != 'ALL' else Device.Type != ''),
 		(Device.Quality == quality if quality != 'ALL' else Device.Quality != '')
 	)
-	
+	return getDeviceAndLogListForQuery(query, status)
+
+def getDeviceAndLogListForQuery(query, status = 'ALL'):
 	deviceList = []
 	
 	for device in query:
