@@ -162,11 +162,12 @@ def search():
 			models.Device.Type.contains(searchPhrase) |
 			models.Device.Description.contains(searchPhrase)
 		)
+		deviceList = models.getDeviceAndLogListForQuery(query)
 		
 		return render_template('searchResults.html',
-				query=query,
-				types=models.getDeviceTypes(),
-				params=searchPhrase
+				query = deviceList,
+				types = models.getDeviceTypes(),
+				params = searchPhrase
 			)
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
