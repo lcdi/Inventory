@@ -127,8 +127,10 @@ def getNextSerialNumber(device_type):
 	else:
 		prefix = querySerial.get().SerialNumber[len(nextSerial)]
 	
+	prefix = str(prefix).zfill(2)
+	
 	if numberOfEntries < 99:
-		nextSerial += str(prefix) + str(numberOfEntries).zfill(2)
+		nextSerial += prefix + str(numberOfEntries).zfill(2)
 	else:
 		return "OVERFLOW ERROR (MORE THAN 100 ITEMS PER TYPE)"
 	
