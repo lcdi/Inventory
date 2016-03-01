@@ -26,14 +26,14 @@
 					<input name="lcdi_serial" id="lcdi_serial" type='hidden' class="form-control"/>
 					
 					<div class="form-group">
-						<label for="userID">User</label>
-						<input name="userID" placeholder="jwilliams" type="text" class="form-control"/>
+						<label for="userID">User {% include "redStar.html" %}</label>
+						<input name="userID" placeholder="jwilliams" type="text" class="form-control" required/>
 					</div>
 					
 					{% if hasPurpose %}
 						<div class="form-group">
-							<label for="purpose">Purpose</label>
-							<textarea name="purpose" class="form-control" rows="3"></textarea>
+							<label for="purpose">Purpose {% include "redStar.html" %}</label>
+							<textarea name="purpose" class="form-control" rows="3" required></textarea>
 						</div>
 					{% endif %}
 					
