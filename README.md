@@ -1,27 +1,7 @@
-# [Start Bootstrap](http://startbootstrap.com/) - [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/)
+# [LCDI Internal Inventory Management Site](http://www.champlain.edu/cybersecurity-and-digital-forensics/senator-patrick-leahy-center-for-digital-investigation-(lcdi))
 
 [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/) is an open source, admin dashboard template for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/).
+Used for header and side bar
 
-## Getting Started
-
-To begin using this template, choose one of the following options to get started:
-* [Download the latest release on Start Bootstrap](http://startbootstrap.com/template-overviews/sb-admin-2/)
-* Clone the repo: `git clone https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git`
-* Fork the repo
-
-## Bugs and Issues
-
-Have a bug or an issue with this template? [Open a new issue](https://github.com/BlackrockDigital/startbootstrap-sb-admin-2/issues) here on GitHub or leave a comment on the [template overview page at Start Bootstrap](http://startbootstrap.com/template-overviews/sb-admin-2/).
-
-## Creator
-
-Start Bootstrap was created by and is maintained by **[David Miller](http://davidmiller.io/)**, Owner of [Blackrock Digital](http://blackrockdigital.io/).
-
-* https://twitter.com/davidmillerskt
-* https://github.com/davidtmiller
-
-Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
-
-## Copyright and License
-
-Copyright 2013-2016 Blackrock Digital LLC. Code released under the [MIT](https://github.com/BlackrockDigital/startbootstrap-sb-admin-2/blob/gh-pages/LICENSE) license.
+# Using [Flask Framework](http://flask.pocoo.org/) for Python back end and HTML, CSS, [Bootstrap](http://getbootstrap.com/) for design and styles
+# Using MySQL through Python ORM [Peewee](http://docs.peewee-orm.com/en/latest/)
