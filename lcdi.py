@@ -18,6 +18,7 @@ import adLDAP
 
 # Paramaters
 isDebugMode = True
+isHomepageImplemented = False
 pagePostKey = 'functionID'
 UPLOAD_FOLDER = 'static/item_photos'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
@@ -45,7 +46,10 @@ def getName():
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
+def renderHomepage():
+	return render_template("homepage.html")
+
+def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None):
 	
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	length = models.getDevices()
@@ -54,11 +58,16 @@ def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 			filter_Type = itemType,
 			filter_Status = status,
 			filter_quality = quality,
+			
 			query = deviceList,
 			types = models.getDeviceTypes(),
 			states = models.getStates(),
+			
 			totalItems = len(length),
 			totalSignedOut = len(deviceList),
+			
+			data_id = searchSerial,
+			queueModal = searchModal,
 			
 			name = escape(getName())
 		)
@@ -114,6 +123,9 @@ def renderFilter(device_type, status, page):
 def index():
 	# http://flask.pocoo.org/snippets/15/
 	
+	if isHomepageImplemented == True:
+		return renderHomepage()
+	
 	# If user logged in
 	if 'username' in session:
 		# Render main page
@@ -141,10 +153,10 @@ def index():
 				return getIndexURL()
 			
 			elif function == 'filter':
-				return renderMainPage(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
+				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
 			
 		else:
-			return renderMainPage(status = 'out')
+			return renderInventoryListings(status = 'out')
 	
 	# Force user to login
 	return getLoginURL()
@@ -153,7 +165,7 @@ def index():
 def allItems():
 	if not 'username' in session:
 		return getLoginURL()
-	return renderMainPage()
+	return renderInventoryListings()
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -162,7 +174,17 @@ def search():
 	if not request.method == 'POST':
 		return getIndexURL()
 	
-	searchPhrase = request.form['searchField']
+	searchPhrase = str(request.form['searchField'])
+	
+	if searchPhrase.startswith("scan:"):
+		serial = searchPhrase[5:]
+		query = models.getDeviceLog(serial)
+		isOut, obj = models.getStatus(query)
+		if isOut:
+			modal = "signIn"
+		else:
+			modal = "signOut"
+		return renderInventoryListings(searchSerial = serial, searchModal = modal)
 	
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
 		return renderPage_View(searchPhrase)
@@ -178,7 +200,8 @@ def search():
 		return render_template('searchResults.html',
 				query = deviceList,
 				types = models.getDeviceTypes(),
-				params = searchPhrase
+				params = searchPhrase,
+				searchPhrase = searchPhrase
 			)
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
@@ -256,7 +279,7 @@ def logout():
 	session.pop('username', None)
 	session.pop('displayName', None)
 	session.pop('hasEditAccess', None)
-	return redirect(url_for('login'))
+	return getIndexURL()
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
