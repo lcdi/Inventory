@@ -15,7 +15,10 @@
 				</button>
 				
 				<img src="{{ url_for('static', filename='lcdi_logo.png')}}" alt="LCDI Logo Goes Here" style="width: 250px; height:auto; padding: 10px;">
-				<a href="http://homepage.lcdi/"><button class="btn btn-primary">LCDI Home Page</button></a>
+				
+				{% if not isHomepageImplemented %}
+					<a href="http://homepage.lcdi/"><button class="btn btn-primary">LCDI Home Page</button></a>
+				{% endif %}
 				
 			</div>
 			<!-- End: Nav Bar; Header Image -->
@@ -27,15 +30,33 @@
 						<i class="fa fa-user fa-fw"></i>
 						<i class="fa fa-caret-down"></i>
 					</a>
-					<!-- Displays the drop down list -->
-					<ul class="dropdown-menu dropdown-user">
-						<li>
-							<a href="{{ url_for('logout') }}">
-								<i class="fa fa-sign-out fa-fw"></i>
-								Logout
-							</a>
-						</li>
-					</ul>
+					
+					<!-- Start: User Dropdown -->
+					{% if 'username' in session %}
+					
+						<ul class="dropdown-menu dropdown-user">
+							<li>
+								<a href="{{ url_for('logout') }}">
+									<i class="fa fa-sign-out fa-fw"></i>
+									Logout
+								</a>
+							</li>
+						</ul>
+					
+					{% else %}
+						
+						<ul class="dropdown-menu dropdown-user">
+							<li>
+								<a href="{{ url_for('login') }}">
+									<i class="fa fa-sign-out fa-fw"></i>
+									Login
+								</a>
+							</li>
+						</ul>
+						
+					{% endif %}
+					<!-- End: User Dropdown -->
+					
 				</li>
 			</ul>
 			<!-- End: Nav Bar; User Dropdown -->
@@ -63,23 +84,33 @@
 						
 						<!-- Sidebar listings -->
 						
-						<li>
-							<!-- Direct user back to main page -->
-							<a href="{{ url_for('allItems') }}">
-								<i class="fa fa-dashboard fa-fw"></i>
-								All Items
-							</a>
-						</li>
-						
-						<li>
-							<!-- Direct user back to main page -->
-							<a href="{{ url_for('index') }}">
-								<i class="fa fa-dashboard fa-fw"></i>
-								Items Out
-							</a>
-						</li>
+						{% if isHomepageImplemented == True %}
+							<li>
+								<!-- Direct user back to main page -->
+								<a href="{{ url_for('index') }}">
+									<i class="fa fa-dashboard fa-fw"></i>
+									Dashboard
+								</a>
+							</li>
+						{% endif %}
 						
 						{% if session['hasEditAccess'] %}
+							<li>
+								<!-- Direct user back to main page -->
+								<a href="{{ url_for('allItems') }}">
+									<i class="fa fa-dashboard fa-fw"></i>
+									Inventory (All)
+								</a>
+							</li>
+							
+							<li>
+								<!-- Direct user back to main page -->
+								<a href="{{ url_for('index') }}">
+									<i class="fa fa-dashboard fa-fw"></i>
+									Inventory (Out)
+								</a>
+							</li>
+							
 							<li>
 								<!-- Send popup to add item. For usage, search for 'addItemModal' in this file -->
 								<a href="" data-toggle="modal" data-target="#addItemModal">
@@ -87,6 +118,7 @@
 									Add Item
 								</a>
 							</li>
+							
 						{% endif %}
 						
 						<!-- End listings -->
@@ -124,6 +156,10 @@
 	<!-- jQuery -->
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
 	
+	<!--
+	-->
+	<script src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
+	
 	<!-- Bootstrap Core JavaScript -->
 	<script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 	
@@ -140,7 +176,7 @@
 	
 	<script src="{{ url_for('static', filename='js/dataTables.bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
+	
 	<script src="{{ url_for('static', filename='js/dataTables.responsive.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/responsive.bootstrap.min.js') }}"></script>
 	
@@ -154,7 +190,6 @@
 	<script language="javascript">
 		$(document).on("click", ".openSignModal", function() {
 			var lcdi_serial = $(this).data('id');
-			//window.alert(lcdi_serial);
 			$(".modal-header #lcdi_serial").text(lcdi_serial);
 			$(".modal-body #lcdi_serial").val(lcdi_serial);
 		})
