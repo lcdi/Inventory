@@ -21,7 +21,7 @@
 			
 			<div class="well" style="display: flex; justify-content: flex-start;">
 				<div>
-					<img src="{{ url_for('static', filename='item_photos/' + device.PhotoName) }}" alt = "Item-Photo" style="width: 250px; height: 250px;">                            
+					<img src="{{ url_for('static', filename='item_photos/' + device.PhotoName) }}" alt = "Item-Photo" style="width: 350px; height: auto;">                            
 				</div>
 				<div style="padding-left: 20px;">
 					<h4><b>Device Serial Number:</b> {{ device.SerialDevice }} </h4>
@@ -95,7 +95,7 @@
 									<tr>
 										<th>{{ log.Purpose }}</th>
 										<th>{{ log.UserOut }}</th>
-										<th>{{ log.DateOut }}</th>
+										<td>{{ log.DateOut }}</td>
 										<th>{{ log.AuthorizerOut }}</th>
 										<th>{{ log.UserIn }}</th>
 										<td>
