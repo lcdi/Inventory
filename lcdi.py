@@ -149,6 +149,12 @@ def index():
 	# Force user to login
 	return getLoginURL()
 
+@app.route('/all')
+def allItems():
+	if not 'username' in session:
+		return getLoginURL()
+	return renderMainPage()
+
 @app.route('/search', methods=['GET', 'POST'])
 def search():
 	if not 'username' in session:
