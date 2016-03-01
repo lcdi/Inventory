@@ -97,12 +97,7 @@ def getDeviceAndLogListForQuery(query, status = 'ALL'):
 	for device in query:
 		device.log = getDeviceLog(device.SerialNumber)
 		
-		hasLog = len(device.log) > 0
-		if hasLog:
-			device.log = device.log.get()
-			device.statusIsOut = not device.log.DateIn
-		else:
-			device.statusIsOut = False
+		device.statusIsOut, device.log = getStatus(device.log)
 		
 		if status == 'ALL':
 			deviceList.append(device)
@@ -112,6 +107,14 @@ def getDeviceAndLogListForQuery(query, status = 'ALL'):
 			deviceList.append(device)
 	
 	return deviceList
+
+def getStatus(log):
+	hasLog = len(log) > 0
+	if hasLog:
+		log = log.get()
+		return (not log.DateIn, log)
+	else:
+		return (False, log)
 
 def getNextSerialNumber(device_type):
 	prefixStr = "LCDI"
