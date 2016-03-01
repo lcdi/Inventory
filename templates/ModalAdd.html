@@ -21,15 +21,15 @@
 					
 					<!-- SerialDevice -->
 					<div class="form-group">
-						<label for="device_serial">Device Serial Number</label>
-						<input name="device_serial" type="text" class="form-control" placeholder=""/>
+						<label for="device_serial">Device Serial Number {% include "redStar.html" %}</label>
+						<input name="device_serial" type="text" class="form-control" placeholder="" required/>
 					</div>
 					
 					<!-- Type -->
 					<div class="row">
 						<div class="form-group col-xs-6">
-							<label for="device_types">Select Type</label>
-							<select name="device_types" class="form-control">
+							<label for="device_types">Select Type {% include "redStar.html" %}</label>
+							<select name="device_types" class="form-control" required>
 								{% for type in types %}
 									<option>{{ type }}</option>
 								{% endfor %}
@@ -37,14 +37,14 @@
 							</select>
 						</div>
 						<div class="form-group col-xs-6">
-							<label for="other">If Other</label>
+							<label for="other">If 'Other'</label>
 							<input name="other" type="text" class="form-control" placeholder=""/>
 						</div> 
 					</div>
 					
 					<!-- Description -->
 					<div class="form-group">
-						<label for="device_desc">Device Description</label>
+						<label for="device_desc">Description</label>
 						<textarea name="device_desc" class="form-control" rows="3"></textarea>
 					</div>
 					
@@ -56,8 +56,8 @@
 					
 					<!-- Quality/State -->
 					<div class="form-group">
-						<label for="device_quality">Select Quality</label>
-						<select name="device_quality" class="form-control">
+						<label for="device_quality">Select Quality {% include "redStar.html" %}</label>
+						<select name="device_quality" class="form-control" required>
 							<option>Operational</option>
 							<option>Decommissioned</option>
 						</select>
