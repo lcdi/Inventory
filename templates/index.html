@@ -73,6 +73,10 @@
 	<br />
 	<!-- End: Filter Form -->
 	
+	{% if data_id != None %}
+		
+	{% endif %}
+	
 {% endblock %}
 
 {% block tableHeader %}
@@ -94,4 +98,14 @@
 	    $('#number').text(data);
 		});
 	</script>
+	{% if data_id %}
+		<script language="javascript">
+			$(window).load(function() {
+				//alert("{{ data_id }}");
+				$('#{{ queueModal }}Modal').modal('show');
+				$(".modal-header #lcdi_serial").text("{{ data_id }}");
+				$(".modal-body #lcdi_serial").val("{{ data_id }}");
+			});
+		</script>
+	{% endif %}
 {% endblock %}
