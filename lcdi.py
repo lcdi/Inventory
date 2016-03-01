@@ -264,8 +264,9 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	
 	serialNumber = models.getNextSerialNumber(device_type)
 	
-	if device_other != '':
+	if device_type == 'Other':
 		device_type = device_other
+	
 	if file and allowed_file(file.filename):
 		fileList = file.filename.split(".")
 		filename = serialNumber + '.' + fileList[1]
