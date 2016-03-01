@@ -157,7 +157,7 @@ def search():
 		return renderPage_View(searchPhrase)
 	else:
 		query = models.getDevices().where(
-			models.Device.SerialNumber.contains(search) |
+			models.Device.SerialNumber.contains(searchPhrase) |
 			models.Device.SerialDevice.contains(searchPhrase) |
 			models.Device.Type.contains(searchPhrase) |
 			models.Device.Description.contains(searchPhrase)
@@ -213,7 +213,7 @@ def signInOut():
 		deviceLog.AuthorizerIn = request.form['authorizerID']
 		deviceLog.save()
 		
-	return renderPage_View(serial)
+	return getIndexURL()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
