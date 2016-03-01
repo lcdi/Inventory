@@ -48,6 +48,7 @@ def getName():
 def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 	
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
+	length = models.getDevices()
 	
 	return render_template('index.html',
 			filter_Type = itemType,
@@ -56,7 +57,8 @@ def renderMainPage(itemType = 'ALL', status = 'ALL', quality = 'ALL'):
 			query = deviceList,
 			types = models.getDeviceTypes(),
 			states = models.getStates(),
-			totalItems = len(deviceList),
+			totalItems = len(length),
+			totalSignedOut = len(deviceList),
 			
 			name = escape(getName())
 		)
@@ -129,9 +131,12 @@ def index():
 						file = request.files['file']
 					)
 			elif function == 'deleteItem':
+				serial = request.form['serial']
 				item = models.Device.select().where(
-						models.Device.SerialNumber == request.form['serial']
+						models.Device.SerialNumber == serial
 					).get();
+				if item.PhotoName:
+					os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
 				item.delete_instance();
 				return getIndexURL()
 			
@@ -201,16 +206,16 @@ def signInOut():
 	if function == 'out':
 		models.Log.create(
 			SerialNumber = serial,
-			UserOut = session['username'],
+			UserOut = request.form['authorizerID'],
 			Purpose = request.form['purpose'],
 			DateOut = models.datetime.datetime.now(),
-			AuthorizerOut = request.form['authorizerID']
+			AuthorizerOut = session['username']
 		)
 	elif function == 'in':
 		deviceLog = models.getDeviceLog(serial).get()
-		deviceLog.UserIn = session['username']
+		deviceLog.UserIn = request.form['authorizerID']
 		deviceLog.DateIn = models.datetime.datetime.now()
-		deviceLog.AuthorizerIn = request.form['authorizerID']
+		deviceLog.AuthorizerIn = session['username']
 		deviceLog.save()
 		
 	return getIndexURL()
@@ -229,11 +234,11 @@ def login():
 				session['username'] = user
 				session['displayName'] = session['username']
 				session['hasEditAccess'] = hasEditAccess or app.debug == True
-				
-				# Send user back to index page
-				# (if username wasnt set, it will redirect back to login screen)
-				return getIndexURL()
-				
+			
+			# Send user back to index page
+			# (if username wasnt set, it will redirect back to login screen)
+			return getIndexURL()
+			
 		except Exception as e:
 			return str(e)
 	else:
@@ -251,21 +256,24 @@ def logout():
 
 def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
 	
+	serialNumber = models.getNextSerialNumber(device_type)
+	
 	if device_other != '':
 		device_type = device_other
 	if file and allowed_file(file.filename):
-		filename = secure_filename(file.filename)
+		fileList = file.filename.split(".")
+		filename = serialNumber + '.' + fileList[1]
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+	else:
+		filename = ''
 	
-	serialNumber = models.getNextSerialNumber(device_type)
-
 	models.Device.create(
 			SerialNumber = serialNumber,
 			SerialDevice = serialDevice,
 			Type = device_type,
 			Description = description,
 			Issues = notes,
-			PhotoName = file.filename,
+			PhotoName = filename,
 			Quality = quality
 		)
 	return renderPage_View(serialNumber)
@@ -275,7 +283,8 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	device = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
 	if file and allowed_file(file.filename):
-		filename = secure_filename(file.filename)
+		fileList = file.filename.split(".")
+		filename = oldSerial + '.' + fileList[1]
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
 	device.SerialNumber = oldSerial
@@ -284,16 +293,17 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	device.Issues = notes
 	device.Quality = quality
 	if file:
-		device.PhotoName = file.filename
+		device.PhotoName = filename
 	
 	device.save()
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-         
+
 def signOutItem(serial, sname, use):
 	identifierItem = models.Log.select().order_by(models.Log.Identifier.desc())
+	
 	if len(identifierItem) == 0:
 		identifier = 1
 	else:
@@ -302,10 +312,10 @@ def signOutItem(serial, sname, use):
 	models.Log.create(
 			Identifier = identifier,
 			SerialNumber = serial,
-			UserOut = sname,
+			UserOut = escape(session['username']),
+			AuthorizerOut = sname,
 			Purpose = use,
-			DateOut = models.datetime.datetime.now(),
-			AuthorizerOut = escape(session['displayName'])
+			DateOut = models.datetime.datetime.now()
 		)
 	
 	return renderPage_View(serial)
