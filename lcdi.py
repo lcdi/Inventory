@@ -206,14 +206,14 @@ def signInOut():
 	if function == 'out':
 		models.Log.create(
 			SerialNumber = serial,
-			UserOut = request.form['authorizerID'],
+			UserOut = request.form['userID'],
 			Purpose = request.form['purpose'],
 			DateOut = models.datetime.datetime.now(),
 			AuthorizerOut = session['username']
 		)
 	elif function == 'in':
 		deviceLog = models.getDeviceLog(serial).get()
-		deviceLog.UserIn = request.form['authorizerID']
+		deviceLog.UserIn = request.form['userID']
 		deviceLog.DateIn = models.datetime.datetime.now()
 		deviceLog.AuthorizerIn = session['username']
 		deviceLog.save()
