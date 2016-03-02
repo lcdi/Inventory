@@ -119,6 +119,38 @@ def renderFilter(device_type, status, page):
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if 'username' in session:
+		return redirect(url_for('index'))
+	elif request.method == 'POST':
+		try:
+			user = request.form['username']
+			pw = request.form['password']
+			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
+			if (app.debug == True or valid == True):
+				# Set username and displayName in session
+				session['username'] = user
+				session['displayName'] = session['username']
+				session['hasEditAccess'] = hasEditAccess or app.debug == True
+			
+			# Send user back to index page
+			# (if username wasnt set, it will redirect back to login screen)
+			return getIndexURL()
+			
+		except Exception as e:
+			return str(e)
+	else:
+		# Was not a POST, which means index or some other source sent user to login
+		return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+	session.pop('username', None)
+	session.pop('displayName', None)
+	session.pop('hasEditAccess', None)
+	return getIndexURL()
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 	# http://flask.pocoo.org/snippets/15/
@@ -167,43 +199,6 @@ def allItems():
 		return getLoginURL()
 	return renderInventoryListings()
 
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-	if not 'username' in session:
-		return getLoginURL()
-	if not request.method == 'POST':
-		return getIndexURL()
-	
-	searchPhrase = str(request.form['searchField'])
-	
-	if searchPhrase.startswith("scan:"):
-		serial = searchPhrase[5:]
-		query = models.getDeviceLog(serial)
-		isOut, obj = models.getStatus(query)
-		if isOut:
-			modal = "signIn"
-		else:
-			modal = "signOut"
-		modal = ""
-		return renderInventoryListings(searchSerial = serial, searchModal = modal)
-	
-	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
-		return renderPage_View(searchPhrase)
-	else:
-		query = models.getDevices().where(
-			models.Device.SerialNumber.contains(searchPhrase) |
-			models.Device.SerialDevice.contains(searchPhrase) |
-			models.Device.Type.contains(searchPhrase) |
-			models.Device.Description.contains(searchPhrase)
-		)
-		deviceList = models.getDeviceAndLogListForQuery(query)
-		
-		return render_template('searchResults.html',
-				query = deviceList,
-				types = models.getDeviceTypes(),
-				params = searchPhrase,
-				searchPhrase = searchPhrase)
-
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):
 	if not 'username' in session:
@@ -249,37 +244,42 @@ def signInOut():
 		
 	return getIndexURL()
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	if 'username' in session:
-		return redirect(url_for('index'))
-	elif request.method == 'POST':
-		try:
-			user = request.form['username']
-			pw = request.form['password']
-			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
-			if (app.debug == True or valid == True):
-				# Set username and displayName in session
-				session['username'] = user
-				session['displayName'] = session['username']
-				session['hasEditAccess'] = hasEditAccess or app.debug == True
-			
-			# Send user back to index page
-			# (if username wasnt set, it will redirect back to login screen)
-			return getIndexURL()
-			
-		except Exception as e:
-			return str(e)
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+	if not 'username' in session:
+		return getLoginURL()
+	if not request.method == 'POST':
+		return getIndexURL()
+	
+	searchPhrase = str(request.form['searchField'])
+	
+	if searchPhrase.startswith("scan:"):
+		serial = searchPhrase[5:]
+		query = models.getDeviceLog(serial)
+		isOut, obj = models.getStatus(query)
+		if isOut:
+			modal = "signIn"
+		else:
+			modal = "signOut"
+		modal = ""
+		return renderInventoryListings(searchSerial = serial, searchModal = modal)
+	
+	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
+		return renderPage_View(searchPhrase)
 	else:
-		# Was not a POST, which means index or some other source sent user to login
-		return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-	session.pop('username', None)
-	session.pop('displayName', None)
-	session.pop('hasEditAccess', None)
-	return getIndexURL()
+		query = models.getDevices().where(
+			models.Device.SerialNumber.contains(searchPhrase) |
+			models.Device.SerialDevice.contains(searchPhrase) |
+			models.Device.Type.contains(searchPhrase) |
+			models.Device.Description.contains(searchPhrase)
+		)
+		deviceList = models.getDeviceAndLogListForQuery(query)
+		
+		return render_template('searchResults.html',
+				query = deviceList,
+				types = models.getDeviceTypes(),
+				params = searchPhrase,
+				searchPhrase = searchPhrase)
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
