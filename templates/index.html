@@ -96,8 +96,11 @@
 
 {% block scripts %}
 	<script type="text/javascript">
-		$.get('http://numbersapi.com/{{ totalItems }}', function(data) {
-	    $('#number').text(data);
+		var items = "";
+		if (Math.random() < 0.5) items = "{{ totalItems }}";
+		else items = "{{ totalSignedOut }}";
+		$.get('http://numbersapi.com/' + items, function(data) {
+	    	$('#number').text(data);
 		});
 	</script>
 	{% if data_id %}
