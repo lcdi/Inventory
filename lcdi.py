@@ -119,37 +119,11 @@ def renderFilter(device_type, status, page):
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	if 'username' in session:
-		return redirect(url_for('index'))
-	elif request.method == 'POST':
-		try:
-			user = request.form['username']
-			pw = request.form['password']
-			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
-			if (app.debug == True or valid == True):
-				# Set username and displayName in session
-				session['username'] = user
-				session['displayName'] = session['username']
-				session['hasEditAccess'] = hasEditAccess or app.debug == True
-			
-			# Send user back to index page
-			# (if username wasnt set, it will redirect back to login screen)
-			return getIndexURL()
-			
-		except Exception as e:
-			return str(e)
-	else:
-		# Was not a POST, which means index or some other source sent user to login
-		return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-	session.pop('username', None)
-	session.pop('displayName', None)
-	session.pop('hasEditAccess', None)
-	return getIndexURL()
+@app.route('/all')
+def allItems():
+	if not 'username' in session:
+		return getLoginURL()
+	return renderInventoryListings()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -193,55 +167,36 @@ def index():
 	# Force user to login
 	return getLoginURL()
 
-@app.route('/all')
-def allItems():
-	if not 'username' in session:
-		return getLoginURL()
-	return renderInventoryListings()
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if 'username' in session:
+		return redirect(url_for('index'))
+	elif request.method == 'POST':
+		try:
+			user = request.form['username']
+			pw = request.form['password']
+			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
+			if (app.debug == True or valid == True):
+				# Set username and displayName in session
+				session['username'] = user
+				session['displayName'] = session['username']
+				session['hasEditAccess'] = hasEditAccess or app.debug == True
+			
+			# Send user back to index page
+			# (if username wasnt set, it will redirect back to login screen)
+			return getIndexURL()
+			
+		except Exception as e:
+			return str(e)
+	else:
+		# Was not a POST, which means index or some other source sent user to login
+		return render_template('login.html')
 
-@app.route('/view/<string:serial>', methods=['GET', 'POST'])
-def view(serial):
-	if not 'username' in session:
-		return getLoginURL()
-	
-	if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
-		updateItem(
-			oldSerial = serial,
-			serialDevice = request.form['device_serial'],
-			description = request.form['device_desc'],
-			notes = request.form['device_notes'],
-			quality = request.form['device_quality'],
-			file = request.files['file']
-		)
-		return renderPage_View(serial)
-	
-	return renderPage_View(serial)
-
-@app.route('/signInOut', methods=['GET', 'POST'])
-def signInOut():
-	if not 'username' in session:
-		return getLoginURL()
-	if not request.method == 'POST':
-		return getIndexURL()
-	
-	function = request.form[pagePostKey]
-	serial = request.form['lcdi_serial']
-	
-	if function == 'out':
-		models.Log.create(
-			SerialNumber = serial,
-			UserOut = request.form['userID'],
-			Purpose = request.form['purpose'],
-			DateOut = models.datetime.datetime.now(),
-			AuthorizerOut = session['username']
-		)
-	elif function == 'in':
-		deviceLog = models.getDeviceLog(serial).get()
-		deviceLog.UserIn = request.form['userID']
-		deviceLog.DateIn = models.datetime.datetime.now()
-		deviceLog.AuthorizerIn = session['username']
-		deviceLog.save()
-		
+@app.route('/logout')
+def logout():
+	session.pop('username', None)
+	session.pop('displayName', None)
+	session.pop('hasEditAccess', None)
 	return getIndexURL()
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -280,6 +235,51 @@ def search():
 				types = models.getDeviceTypes(),
 				params = searchPhrase,
 				searchPhrase = searchPhrase)
+
+@app.route('/signInOut', methods=['GET', 'POST'])
+def signInOut():
+	if not 'username' in session:
+		return getLoginURL()
+	if not request.method == 'POST':
+		return getIndexURL()
+	
+	function = request.form[pagePostKey]
+	serial = request.form['lcdi_serial']
+	
+	if function == 'out':
+		models.Log.create(
+			SerialNumber = serial,
+			UserOut = request.form['userID'],
+			Purpose = request.form['purpose'],
+			DateOut = models.datetime.datetime.now(),
+			AuthorizerOut = session['username']
+		)
+	elif function == 'in':
+		deviceLog = models.getDeviceLog(serial).get()
+		deviceLog.UserIn = request.form['userID']
+		deviceLog.DateIn = models.datetime.datetime.now()
+		deviceLog.AuthorizerIn = session['username']
+		deviceLog.save()
+		
+	return getIndexURL()
+
+@app.route('/view/<string:serial>', methods=['GET', 'POST'])
+def view(serial):
+	if not 'username' in session:
+		return getLoginURL()
+	
+	if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
+		updateItem(
+			oldSerial = serial,
+			serialDevice = request.form['device_serial'],
+			description = request.form['device_desc'],
+			notes = request.form['device_notes'],
+			quality = request.form['device_quality'],
+			file = request.files['file']
+		)
+		return renderPage_View(serial)
+	
+	return renderPage_View(serial)
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
