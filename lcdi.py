@@ -64,7 +64,7 @@ def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', s
 			states = models.getStates(),
 			
 			totalItems = len(length),
-			totalSignedOut = len(deviceList),
+			totalSignedOut = len(models.getDevicesWithLog('ALL', 'out', 'ALL')),
 			
 			data_id = searchSerial,
 			queueModal = searchModal,
@@ -184,6 +184,7 @@ def search():
 			modal = "signIn"
 		else:
 			modal = "signOut"
+		modal = ""
 		return renderInventoryListings(searchSerial = serial, searchModal = modal)
 	
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
