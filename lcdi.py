@@ -230,7 +230,7 @@ def search():
 		)
 		deviceList = models.getDeviceAndLogListForQuery(query)
 		
-		return render_template('searchResults.html',
+		return render_template('PageSearchResults.html',
 				query = deviceList,
 				types = models.getDeviceTypes(),
 				params = searchPhrase,
