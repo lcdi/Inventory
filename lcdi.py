@@ -235,27 +235,30 @@ def signInOut():
 		
 	return getIndexURL()
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST'])
 def userLogsAll():
 	if not 'username' in session:
 		return getIndexURL()
 	
 	query = models.Log.select().order_by(-models.Log.DateOut)
-	return render_template("page/PageUserLogs.html", query=query)
-
-@app.route('/usersFilter', methods=['POST'])
-def usersFilter():
-	searchPhrase = request.form['searchPhrase']
-	query = (models.Log.select()
-		.order_by(-models.Log.DateOut)
-		.where(
-			models.Log.UserOut.contains(searchPhrase) |
-			models.Log.UserIn.contains(searchPhrase)
+	
+	searchPhrase = ""
+	if request.method == 'POST':
+		searchPhrase = request.form['searchField']
+		query = (query
+			.where(
+				models.Log.UserOut.contains(searchPhrase) |
+				models.Log.UserIn.contains(searchPhrase) |
+				models.Log.AuthorizerIn.contains(searchPhrase) |
+				models.Log.AuthorizerOut.contains(searchPhrase)
+			)
 		)
-	)
-	table = render_template('page/PageUserLogs_Body.html', query = query)
-	return jsonify(tableBody = table)
-	#return json.dumps({ 'status': 'OK', tableContent: table });
+		
+		if not 'isFormSubmission' in request.form:
+			table = render_template('page/PageUserLogs_Body.html', query = query)
+			return jsonify(tableBody = table)
+		
+	return render_template("page/PageUserLogs.html", query = query, searchPhrase = searchPhrase)
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):

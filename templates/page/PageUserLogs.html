@@ -5,8 +5,9 @@
 {%endblock%}
 
 {% block preContent %}
-	<form id='searchForm' action="/usersFilter" method="post" role="form">
-		<input id="searchField" name="searchField" placeholder="jwilliams" type="text" class="form-control"/>
+	<form id='searchForm' action="/users" method="post" role="form">
+		<input id="searchField" name="searchField" placeholder="jwilliams" type="text" value="{{ searchPhrase }}" class="form-control" />
+		<input name="isFormSubmission" type="hidden" class="form-control" />
 	</form>
 {% endblock %}
 
@@ -43,10 +44,10 @@
 			if (request) request.abort();
 			
 			request = $.ajax({
-				url: $SCRIPT_ROOT + '/usersFilter',
+				url: $SCRIPT_ROOT + '/users',
 				type: 'POST',
 				data: {
-					searchPhrase: $(this).val()
+					searchField: $(this).val()
 				},
 				success: function(response) {
 					document.getElementById('tableBody').innerHTML = response['tableBody'];
