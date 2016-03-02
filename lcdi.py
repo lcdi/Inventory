@@ -202,8 +202,7 @@ def search():
 				query = deviceList,
 				types = models.getDeviceTypes(),
 				params = searchPhrase,
-				searchPhrase = searchPhrase
-			)
+				searchPhrase = searchPhrase)
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):
