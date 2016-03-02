@@ -81,7 +81,7 @@ def renderPage_View(serial):
 	else:
 		device.statusIsOut = False
 	
-	return render_template('viewItem.html',
+	return render_template('PageViewItem.html',
 			device=device,
 			types=models.getDeviceTypes(),
 			states=models.getStates(),
@@ -262,6 +262,11 @@ def signInOut():
 		deviceLog.save()
 		
 	return getIndexURL()
+
+@app.route('/users')
+def userLogsAll():
+	
+	return render_template("PageUserLogs.html")
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):

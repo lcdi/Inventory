@@ -95,27 +95,36 @@
 						{% endif %}
 						
 						{% if session['hasEditAccess'] %}
+							
+							<!-- Direct user back to main page -->
 							<li>
-								<!-- Direct user back to main page -->
 								<a href="{{ url_for('index') }}">
 									<i class="fa fa-dashboard fa-fw"></i>
 									Dashboard
 								</a>
 							</li>
 							
+							<!-- Direct user back to main page -->
 							<li>
-								<!-- Direct user back to main page -->
 								<a href="{{ url_for('allItems') }}">
 									<i class="fa fa-table fa-fw"></i>
 									View All Items
 								</a>
 							</li>
 							
+							<!-- Send popup to add item. For usage, search for 'addItemModal' in this file -->
 							<li>
-								<!-- Send popup to add item. For usage, search for 'addItemModal' in this file -->
 								<a href="" data-toggle="modal" data-target="#addItemModal">
 									<i class="fa fa-edit fa-fw"></i>
 									Add Item
+								</a>
+							</li>
+							
+							<!-- Display user logs -->
+							<li>
+								<a href="{{ url_for('userLogsAll') }}">
+									<i class="fa fa-table fa-fw"></i>
+									View User Logs
 								</a>
 							</li>
 							
