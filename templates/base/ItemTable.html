@@ -1,72 +1,54 @@
-{% extends "base/Content.html" %}
+{% extends "base/Table.html" %}
 
-{% block content %}
-	<!-- Start: Table header -->
-	<div class="panel-heading">
-		{% block tableHeader %}{% endblock %}
-	</div>
-	<!-- End: Table header -->
-	
-	<!-- Start: Table Body -->
-	<div class="panel-body">
-		<div class="dataTable_wrapper">
-			<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-				<thead>
-					<tr>
-						<th>Serial Number</th>
-						<th>Type</th>
-						<th>Purpose</th>
-						<th>Last User</th>
-						<th>Date Out</th>
-						<th>Date In</th>
-						<th>Sign In / Out</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% set data_id=NONE %}
-					{% for device in query %}
-						{% set data_id=device.SerialNumber %}
-						<tr>
-							<td>
-								<a href="{{ url_for('view', serial=device.SerialNumber) }}">{{ device.SerialNumber }}</a>
-							</td>
-							<td>{{ device.Type }}</td>
-							<td>
-								{% if device.log.Purpose %}
-									{{ device.log.Purpose }}
-								{% endif %}
-							</td>
-							<td>
-								{% if device.log.UserOut %}
-									{{ device.log.UserOut }}
-								{% endif %}
-							</td>
-							<td>
-								{% if device.log.DateOut %}
-									{{ device.log.DateOut }}
-								{% endif %}
-							</td>
-							<td>
-								{% if device.log.DateIn %}
-									{{ device.log.DateIn }}
-								{% endif %}
-							</td>
-							<td>
-								{% if device.statusIsOut %}
-									{% include 'component/button/SignIn.html' %}
-								{% else %}
-									{% include 'component/button/SignOut.html' %}
-								{% endif %}
-							</td>
-							
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<!-- End: Table Body -->
-	
+{% block tableColumnsHeaders %}
+	<th>Serial Number</th>
+	<th>Type</th>
+	<th>Purpose</th>
+	<th>Last User</th>
+	<th>Date Out</th>
+	<th>Date In</th>
+	<th>Sign In / Out</th>
+{% endblock %}
+
+{% block tableBody %}
+	{% set data_id=NONE %}
+	{% for device in query %}
+		{% set data_id=device.SerialNumber %}
+		<tr>
+			<td>
+				<a href="{{ url_for('view', serial=device.SerialNumber) }}">{{ device.SerialNumber }}</a>
+			</td>
+			<td>{{ device.Type }}</td>
+			<td>
+				{% if device.log.Purpose %}
+					{{ device.log.Purpose }}
+				{% endif %}
+			</td>
+			<td>
+				{% if device.log.UserOut %}
+					{{ device.log.UserOut }}
+				{% endif %}
+			</td>
+			<td>
+				{% if device.log.DateOut %}
+					{{ device.log.DateOut }}
+				{% endif %}
+			</td>
+			<td>
+				{% if device.log.DateIn %}
+					{{ device.log.DateIn }}
+				{% endif %}
+			</td>
+			<td>
+				{% if device.statusIsOut %}
+					{% include 'component/button/SignIn.html' %}
+				{% else %}
+					{% include 'component/button/SignOut.html' %}
+				{% endif %}
+			</td>
+			
+		</tr>
+	{% endfor %}
 {%endblock%}
 
 {% block baseModals %}{% endblock %}
