@@ -13,8 +13,7 @@ import os.path
 import time
 
 # Custom support files
-import models
-import adLDAP
+import models, adLDAP
 
 # Paramaters
 isDebugMode = True
