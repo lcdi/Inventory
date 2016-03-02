@@ -69,9 +69,9 @@
 					<center>
 						{% set data_id=device.SerialNumber %}
 						{% if device.statusIsOut %}
-							{% include "signInButton.html" %}
+							{% include "ComponentButtonSignIn.html" %}
 						{% else %}
-							{% include "signOutButton.html" %}
+							{% include "ComponentButtonSignOut.html" %}
 						{% endif %}
 					</center>
 					<!-- END -->
