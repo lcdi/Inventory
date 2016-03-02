@@ -54,7 +54,7 @@ def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', s
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	length = models.getDevices()
 	
-	return render_template('index.html',
+	return render_template('PageIndex_Inventory.html',
 			filter_Type = itemType,
 			filter_Status = status,
 			filter_quality = quality,
