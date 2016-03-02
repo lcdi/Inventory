@@ -47,7 +47,7 @@ def getName():
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def renderHomepage():
-	return render_template("homepage.html")
+	return render_template("PageIndex_Homepage.html")
 
 def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None):
 	
