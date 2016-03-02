@@ -97,17 +97,17 @@
 						{% if session['hasEditAccess'] %}
 							<li>
 								<!-- Direct user back to main page -->
-								<a href="{{ url_for('allItems') }}">
+								<a href="{{ url_for('index') }}">
 									<i class="fa fa-dashboard fa-fw"></i>
-									Inventory (All)
+									Dashboard
 								</a>
 							</li>
 							
 							<li>
 								<!-- Direct user back to main page -->
-								<a href="{{ url_for('index') }}">
-									<i class="fa fa-dashboard fa-fw"></i>
-									Inventory (Out)
+								<a href="{{ url_for('allItems') }}">
+									<i class="fa fa-table fa-fw"></i>
+									View All Items
 								</a>
 							</li>
 							
