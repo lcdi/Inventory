@@ -47,14 +47,14 @@ def getName():
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def renderHomepage():
-	return render_template("PageIndex_Homepage.html")
+	return render_template("page/PageIndex_Homepage.html")
 
 def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None):
 	
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	length = models.getDevices()
 	
-	return render_template('PageIndex_Inventory.html',
+	return render_template("page/PageIndex_Inventory.html",
 			filter_Type = itemType,
 			filter_Status = status,
 			filter_quality = quality,
@@ -81,40 +81,11 @@ def renderPage_View(serial):
 	else:
 		device.statusIsOut = False
 	
-	return render_template('PageViewItem.html',
+	return render_template("page/PageViewItem.html",
 			device=device,
 			types=models.getDeviceTypes(),
 			states=models.getStates(),
 			log=log
-		)
-	
-def renderFilter(device_type, status, page):
-	
-	if device_type == 'Select Type' and status == 'Select Status':
-		return redirect(url_for('index'))
-	elif device_type == 'Select Type' and status != 'Select Status':
-		query = models.Device.select().order_by(models.Device.SerialNumber)
-	elif device_type != 'Select Type' and status == 'Select Status':
-		query = models.Device.select(
-		).where(
-			models.Device.Type == device_type
-		).order_by(models.Device.SerialNumber)
-	elif device_type != 'Select Type' and status != 'Select Status':
-		query = models.Device.select(
-		).where(
-			models.Device.Type == device_type
-		).order_by(models.Device.SerialNumber)
-	
-	types = models.getDeviceTypes()
-	
-	filters= [device_type, status]
-	
-	return render_template('searchResults.html',
-			query=query,
-			types=types,
-			page=page,
-			params=filters,
-			states=models.getStates()
 		)
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,7 +161,7 @@ def login():
 			return str(e)
 	else:
 		# Was not a POST, which means index or some other source sent user to login
-		return render_template('PageLogin.html')
+		return render_template("page/PageLogin.html")
 
 @app.route('/logout')
 def logout():
@@ -230,7 +201,7 @@ def search():
 		)
 		deviceList = models.getDeviceAndLogListForQuery(query)
 		
-		return render_template('PageSearchResults.html',
+		return render_template("page/PageSearchResults.html",
 				query = deviceList,
 				types = models.getDeviceTypes(),
 				params = searchPhrase,
@@ -266,7 +237,7 @@ def signInOut():
 @app.route('/users')
 def userLogsAll():
 	
-	return render_template("PageUserLogs.html")
+	return render_template("page/PageUserLogs.html")
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):
