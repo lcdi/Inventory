@@ -5,7 +5,9 @@
 {%endblock%}
 
 {% block preContent %}
-	<input id="searchField" placeholder="jwilliams" type="text" class="form-control"/>
+	<form id='searchForm' action="/usersFilter" method="post" role="form">
+		<input id="searchField" name="searchField" placeholder="jwilliams" type="text" class="form-control"/>
+	</form>
 {% endblock %}
 
 {% block tableColumnsHeaders %}
@@ -21,29 +23,7 @@
 {% endblock %}
 
 {% block tableBody %}
-	{% for log in query %}
-		<tr>
-			<td>
-				<a href="{{ url_for('view', serial=log.SerialNumber.SerialNumber) }}">{{ log.SerialNumber.SerialNumber }}</a>
-			</td>
-			<td>{{ log.SerialNumber.Type }}</td>
-			<th>
-				{% if log.Purpose %}
-					{{ log.Purpose }}
-				{% endif %}
-			</th>
-			<th>{{ log.UserOut }}</th>
-			<td>{{ log.DateOut }}</td>
-			<th>{{ log.AuthorizerOut }}</th>
-			<th>{{ log.UserIn }}</th>
-			<td>
-				{% if log.DateIn %}
-					{{ log.DateIn }}
-				{% endif %}
-			</td>
-			<th>{{ log.AuthorizerIn }}</th>
-		</tr>
-	{% endfor %}
+	{% include 'page/PageUserLogs_Body.html' %}
 {%endblock%}
 
 {% block modals %}{% endblock %}
@@ -55,7 +35,26 @@
 			searchField.oninput = onSearchFieldChange;
 			searchField.onpropertychange = searchField.oninput;
 		});
+		
+		var request;
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		function onSearchFieldChange() {
+			
+			if (request) request.abort();
+			
+			request = $.ajax({
+				url: $SCRIPT_ROOT + '/usersFilter',
+				type: 'POST',
+				data: {
+					searchPhrase: $(this).val()
+				},
+				success: function(response) {
+					document.getElementById('tableBody').innerHTML = response['tableBody'];
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
 			
 		}
 	</script>

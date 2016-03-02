@@ -1,5 +1,5 @@
 # Flask imports
-from flask import Flask, render_template, session, redirect, url_for, escape, request
+from flask import Flask, render_template, session, redirect, url_for, escape, request, jsonify
 from werkzeug import secure_filename
 import flask.ext.whooshalchemy
 
@@ -11,6 +11,7 @@ import sys
 import os
 import os.path
 import time
+import json
 
 # Custom support files
 import models, adLDAP
@@ -26,6 +27,8 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# TODO use a decorator for logins http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/#login-required-decorator
 
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -186,7 +189,6 @@ def search():
 			modal = "signIn"
 		else:
 			modal = "signOut"
-		modal = ""
 		return renderInventoryListings(searchSerial = serial, searchModal = modal)
 	
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
@@ -235,8 +237,25 @@ def signInOut():
 
 @app.route('/users')
 def userLogsAll():
+	if not 'username' in session:
+		return getIndexURL()
+	
 	query = models.Log.select().order_by(-models.Log.DateOut)
 	return render_template("page/PageUserLogs.html", query=query)
+
+@app.route('/usersFilter', methods=['POST'])
+def usersFilter():
+	searchPhrase = request.form['searchPhrase']
+	query = (models.Log.select()
+		.order_by(-models.Log.DateOut)
+		.where(
+			models.Log.UserOut.contains(searchPhrase) |
+			models.Log.UserIn.contains(searchPhrase)
+		)
+	)
+	table = render_template('page/PageUserLogs_Body.html', query = query)
+	return jsonify(tableBody = table)
+	#return json.dumps({ 'status': 'OK', tableContent: table });
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):
