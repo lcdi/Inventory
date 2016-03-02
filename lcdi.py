@@ -2,6 +2,7 @@
 from flask import Flask, render_template, session, redirect, url_for, escape, request, jsonify
 from werkzeug import secure_filename
 import flask.ext.whooshalchemy
+from functools import wraps
 
 # Peewee
 from peewee import *
@@ -29,6 +30,16 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # TODO use a decorator for logins http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/#login-required-decorator
+
+# ~~~~~~~~~~~~~~~~ Decorators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def login_required(f):
+	@wraps(f)
+	def decorated_function(*args, **kwargs):
+		if not 'username' in session:
+			return getLoginURL()
+		return f(*args, **kwargs)
+	return decorated_function
 
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -93,57 +104,52 @@ def renderPage_View(serial):
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @app.route('/all')
+@login_required
 def allItems():
-	if not 'username' in session:
-		return getLoginURL()
 	return renderInventoryListings()
 
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
 	# http://flask.pocoo.org/snippets/15/
 	
 	if isHomepageImplemented == True:
 		return renderHomepage()
 	
-	# If user logged in
-	if 'username' in session:
-		# Render main page
-		if request.method == 'POST':
-			function = request.form[pagePostKey]
-			
-			if function == 'addItem':
-				return addItem(
-						serialDevice = request.form['device_serial'],
-						device_type = request.form['device_types'],
-						device_other = request.form['other'],
-						description = request.form['device_desc'],
-						notes = request.form['device_notes'],
-						quality = request.form['device_quality'],
-						file = request.files['file']
-					)
-			elif function == 'deleteItem':
-				serial = request.form['serial']
-				item = models.Device.select().where(
-						models.Device.SerialNumber == serial
-					).get();
-				if item.PhotoName:
-					os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
-				item.delete_instance();
-				return getIndexURL()
-			
-			elif function == 'filter':
-				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
-			
-		else:
-			return renderInventoryListings(status = 'out')
-	
-	# Force user to login
-	return getLoginURL()
+	# Render main page
+	if request.method == 'POST':
+		function = request.form[pagePostKey]
+		
+		if function == 'addItem':
+			return addItem(
+					serialDevice = request.form['device_serial'],
+					device_type = request.form['device_types'],
+					device_other = request.form['other'],
+					description = request.form['device_desc'],
+					notes = request.form['device_notes'],
+					quality = request.form['device_quality'],
+					file = request.files['file']
+				)
+		elif function == 'deleteItem':
+			serial = request.form['serial']
+			item = models.Device.select().where(
+					models.Device.SerialNumber == serial
+				).get();
+			if item.PhotoName:
+				os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
+			item.delete_instance();
+			return getIndexURL()
+		
+		elif function == 'filter':
+			return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
+		
+	else:
+		return renderInventoryListings(status = 'out')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if 'username' in session:
-		return redirect(url_for('index'))
+		return getIndexURL()
 	elif request.method == 'POST':
 		try:
 			user = request.form['username']
@@ -173,9 +179,8 @@ def logout():
 	return getIndexURL()
 
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
-	if not 'username' in session:
-		return getLoginURL()
 	if not request.method == 'POST':
 		return getIndexURL()
 	
@@ -209,9 +214,8 @@ def search():
 				searchPhrase = searchPhrase)
 
 @app.route('/signInOut', methods=['GET', 'POST'])
+@login_required
 def signInOut():
-	if not 'username' in session:
-		return getLoginURL()
 	if not request.method == 'POST':
 		return getIndexURL()
 	
@@ -236,9 +240,8 @@ def signInOut():
 	return getIndexURL()
 
 @app.route('/users', methods=['GET', 'POST'])
+@login_required
 def userLogsAll():
-	if not 'username' in session:
-		return getIndexURL()
 	
 	query = models.Log.select().order_by(-models.Log.DateOut)
 	
@@ -261,9 +264,8 @@ def userLogsAll():
 	return render_template("page/PageUserLogs.html", query = query, searchPhrase = searchPhrase)
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
+@login_required
 def view(serial):
-	if not 'username' in session:
-		return getLoginURL()
 	
 	if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
 		updateItem(
