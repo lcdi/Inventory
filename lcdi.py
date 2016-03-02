@@ -235,8 +235,8 @@ def signInOut():
 
 @app.route('/users')
 def userLogsAll():
-	
-	return render_template("page/PageUserLogs.html")
+	query = models.Log.select().order_by(-models.Log.DateOut)
+	return render_template("page/PageUserLogs.html", query=query)
 
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 def view(serial):

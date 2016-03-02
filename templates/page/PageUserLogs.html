@@ -1,13 +1,62 @@
-{% extends "base/Content.html" %}
+{% extends "base/Table.html" %}
 
 {%block title%}
 	User Logs
 {%endblock%}
 
-{% block preContent %}{% endblock %}
+{% block preContent %}
+	<input id="searchField" placeholder="jwilliams" type="text" class="form-control"/>
+{% endblock %}
 
-{% block content %}
+{% block tableColumnsHeaders %}
+	<th>Serial Number</th>
+	<th>Type</th>
+	<th>Purpose</th>
+	<th>User Out</th>
+	<th>Date Out</th>
+	<th>Authorizer Out</th>
+	<th>User In</th>
+	<th>Date In</th>
+	<th>Authorizer In</th>
+{% endblock %}
 
+{% block tableBody %}
+	{% for log in query %}
+		<tr>
+			<td>
+				<a href="{{ url_for('view', serial=log.SerialNumber.SerialNumber) }}">{{ log.SerialNumber.SerialNumber }}</a>
+			</td>
+			<td>{{ log.SerialNumber.Type }}</td>
+			<th>
+				{% if log.Purpose %}
+					{{ log.Purpose }}
+				{% endif %}
+			</th>
+			<th>{{ log.UserOut }}</th>
+			<td>{{ log.DateOut }}</td>
+			<th>{{ log.AuthorizerOut }}</th>
+			<th>{{ log.UserIn }}</th>
+			<td>
+				{% if log.DateIn %}
+					{{ log.DateIn }}
+				{% endif %}
+			</td>
+			<th>{{ log.AuthorizerIn }}</th>
+		</tr>
+	{% endfor %}
 {%endblock%}
 
 {% block modals %}{% endblock %}
+
+{% block scripts %}
+	<script language="javascript">
+		$(window).load(function() {
+			var searchField = document.getElementById("searchField");
+			searchField.oninput = onSearchFieldChange;
+			searchField.onpropertychange = searchField.oninput;
+		});
+		function onSearchFieldChange() {
+			
+		}
+	</script>
+{% endblock %}
