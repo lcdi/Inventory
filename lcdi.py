@@ -190,7 +190,7 @@ def login():
 			return str(e)
 	else:
 		# Was not a POST, which means index or some other source sent user to login
-		return render_template('login.html')
+		return render_template('PageLogin.html')
 
 @app.route('/logout')
 def logout():
