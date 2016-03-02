@@ -21,14 +21,14 @@
 					
 					<!-- SerialDevice -->
 					<div class="form-group">
-						<label for="device_serial">Device Serial Number {% include "ComponentStarRed.html" %}</label>
+						<label for="device_serial">Device Serial Number {% include "component/StarRed.html" %}</label>
 						<input name="device_serial" type="text" class="form-control" placeholder="" required/>
 					</div>
 					
 					<!-- Type -->
 					<div class="row">
 						<div class="form-group col-xs-6">
-							<label for="device_types">Select Type {% include "ComponentStarRed.html" %}</label>
+							<label for="device_types">Select Type {% include "component/StarRed.html" %}</label>
 							<select name="device_types" class="form-control" required>
 								{% for type in types %}
 									<option>{{ type }}</option>
@@ -56,7 +56,7 @@
 					
 					<!-- Quality/State -->
 					<div class="form-group">
-						<label for="device_quality">Select Quality {% include "ComponentStarRed.html" %}</label>
+						<label for="device_quality">Select Quality {% include "component/StarRed.html" %}</label>
 						<select name="device_quality" class="form-control" required>
 							<option>Operational</option>
 							<option>Decommissioned</option>
@@ -65,7 +65,7 @@
 					
 					<!-- File -->
 					<div class="form-group">
-						<label for="file">Photo {% include "ComponentStarRed.html" %}</label>
+						<label for="file">Photo {% include "component/StarRed.html" %}</label>
 						<input name="file" type="file" required/>
 					</div>
 		
