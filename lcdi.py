@@ -294,7 +294,11 @@ def not_found(error):
 
 def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
 	
-	serialNumber = models.getNextSerialNumber(device_type)
+	serialNumber, error = models.getNextSerialNumber(device_type)
+	
+	if serialNumber == None:
+		print(error)
+		return getIndexURL()
 	
 	if device_type == 'Other':
 		device_type = device_other
