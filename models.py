@@ -161,7 +161,7 @@ def getNextSerialNumber(device_type):
 				itemNumber = int(lastSerial[len(lastSerial)-2:]) + 1
 			
 			if itemNumber > itemNumberMAX:
-				return (None, "OVERFLOW ERROR: All automatic serials used up")
+				return (None, "OVERFLOW ERROR: All serials used up")
 
 	return (lcdiPrefix + str(typeNumber).zfill(typeNumberLength) + str(itemNumber).zfill(itemNumberLength), None)
 
