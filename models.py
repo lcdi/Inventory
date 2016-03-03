@@ -126,25 +126,41 @@ def getNextSerialNumber(device_type):
 	lcdiPrefixLength = len(lcdiPrefix)
 	typeNumber = 0
 	typeNumberLength = 2
+	typeNumberQuantityMAX = pow(10, typeNumberLength)
+	typeNumberMAX = typeNumberQuantityMAX - 1
 	itemNumber = 0
 	itemNumberLength = 2
+	itemNumberQuantityMAX = 15#pow(10, itemNumberLength)
+	itemNumberMAX = itemNumberQuantityMAX - 1
 	
 	# No items of type
 	if numberOfEntries <= 0:
 		typeNumber = len(getDeviceTypes())
-		if typeNumber > pow(10, typeNumberLength) - 1:
+		if typeNumber > typeNumberLength:
 			return (None, "OVERFLOW ERROR: Too many types")
 	# Items of type found
 	else:
-		typeNumber = querySerial.get().SerialNumber[lcdiPrefixLength : lcdiPrefixLength+2]
+		typeNumber = querySerial.get().SerialNumber[lcdiPrefixLength : lcdiPrefixLength + typeNumberLength]
 		
-		if numberOfEntries > pow(10, itemNumberLength) - 1:
+		if numberOfEntries >= itemNumberQuantityMAX:
 			return (None, "OVERFLOW ERROR: Too many items for type " + device_type)
 		# Less than maximum quantity of items for type
 		else:
 			lastSerial = querySerial.get().SerialNumber
-			itemNumber = int(lastSerial[len(lastSerial)-2:]) + 1
-			if itemNumber > 99:
+			lastSerial_itemNumber = int(lastSerial[len(lastSerial)-2:])
+			
+			if lastSerial_itemNumber == numberOfEntries:
+				i = 0
+				for device in querySerial.order_by(Device.SerialNumber):
+					i_itemNumber = int(device.SerialNumber[lcdiPrefixLength + typeNumberLength:])
+					if i_itemNumber != i:
+						itemNumber = i
+						break
+					i += 1
+			else:
+				itemNumber = int(lastSerial[len(lastSerial)-2:]) + 1
+			
+			if itemNumber > itemNumberMAX:
 				return (None, "OVERFLOW ERROR: All automatic serials used up")
 
 	return (lcdiPrefix + str(typeNumber).zfill(typeNumberLength) + str(itemNumber).zfill(itemNumberLength), None)
