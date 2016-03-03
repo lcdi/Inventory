@@ -19,7 +19,6 @@ import models, adLDAP
 
 # Paramaters
 isDebugMode = True
-isHomepageImplemented = False
 pagePostKey = 'functionID'
 UPLOAD_FOLDER = 'static/item_photos'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
@@ -112,9 +111,6 @@ def allItems():
 @login_required
 def index():
 	# http://flask.pocoo.org/snippets/15/
-	
-	if isHomepageImplemented == True:
-		return renderHomepage()
 	
 	# Render main page
 	if request.method == 'POST':

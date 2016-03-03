@@ -16,9 +16,7 @@
 				
 				<img src="{{ url_for('static', filename='lcdi_logo.png')}}" alt="LCDI Logo Goes Here" style="width: 250px; height:auto; padding: 10px;">
 				
-				{% if not isHomepageImplemented %}
-					<a href="http://homepage.lcdi/"><button class="btn btn-primary">LCDI Home Page</button></a>
-				{% endif %}
+				<a href="http://homepage.lcdi/"><button class="btn btn-primary">LCDI Home Page</button></a>
 				
 			</div>
 			<!-- End: Nav Bar; Header Image -->
@@ -83,15 +81,6 @@
 						</li>
 						
 						<!-- Sidebar listings -->
-						
-						<!-- Direct user back to main page 
-						<li>
-							<a href="{{ url_for('index') }}">
-								<i class="fa fa-dashboard fa-fw"></i>
-								Homepage
-							</a>
-						</li>
-						<!---->
 						
 						{% if session['hasEditAccess'] %}
 							
