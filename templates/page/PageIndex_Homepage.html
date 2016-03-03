@@ -9,7 +9,23 @@
 {% endblock %}
 
 {% block content %}
-	TEST
+	<div class="container-narrow">
+		<div class="row">
+			
+			<center>
+				<h1>LCDI at Champlain</h1>
+				<h3>Announcements:</h3>
+			</center>
+			
+			<div class="col-sm-6">
+				{% include "data/homepage/left.html" %}
+			</div>
+			<div class="col-sm-6">
+				{% include "data/homepage/right.html" %}
+			</div>
+			
+		</div>
+	</div>
 {% endblock %}
 
 {% block baseModals %}{% endblock %}
