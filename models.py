@@ -119,7 +119,7 @@ def getStatus(log):
 def getNextSerialNumber(device_type):
 	prefixStr = "LCDI"
 	
-	querySerial = Device.select(Device.SerialNumber).where(Device.Type == device_type).order_by(Device.SerialNumber)
+	querySerial = Device.select(Device.SerialNumber).where(Device.Type == device_type).order_by(-Device.SerialNumber)
 	nextSerial = prefixStr + "-"
 	
 	numberOfEntries = len(querySerial)
@@ -133,7 +133,9 @@ def getNextSerialNumber(device_type):
 	prefix = str(prefix).zfill(2)
 	
 	if numberOfEntries < 99:
-		nextSerial += prefix + str(numberOfEntries).zfill(2)
+		lastSerial = querySerial.get().SerialNumber
+		lastSerialOfType = int(lastSerial[len(lastSerial)-2:]) + 1
+		nextSerial += prefix + str(lastSerialOfType).zfill(2)
 	else:
 		return "OVERFLOW ERROR (MORE THAN 100 ITEMS PER TYPE)"
 	
