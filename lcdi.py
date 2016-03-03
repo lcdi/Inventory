@@ -46,9 +46,12 @@ def init(isDebug):
 	app.debug = isDebug
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
-	
+
 def getIndexURL():
 	return redirect(url_for('index'))
+
+def getInventoryURL():
+	return redirect(url_for('inventory'))
 
 def getLoginURL():
 	return redirect(url_for('login'))
@@ -102,15 +105,13 @@ def renderPage_View(serial):
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@app.route('/items')
-@login_required
-def viewItems():
-	session['redirectSource'] = 'outItems'
-	return getIndexURL()
-
-@app.route('/', methods=['GET', 'POST'])
-@login_required
+@app.route('/')
 def index():
+	return renderHomepage()
+
+@app.route('/inventory', methods=['GET', 'POST'])
+@login_required
+def inventory():
 	# http://flask.pocoo.org/snippets/15/
 	
 	# Render main page
@@ -135,7 +136,7 @@ def index():
 			if item.PhotoName:
 				os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
 			item.delete_instance();
-			return getIndexURL()
+			return getInventoryURL()
 		
 		elif function == 'filter':
 			return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
@@ -181,11 +182,15 @@ def logout():
 	session.pop('hasEditAccess', None)
 	return getIndexURL()
 
+@app.errorhandler(404)
+def not_found(error):
+	return render_template('page/404.html'), 404
+
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
 	if not request.method == 'POST':
-		return getIndexURL()
+		return getInventoryURL()
 	
 	searchPhrase = str(request.form['searchField'])
 	
@@ -220,7 +225,7 @@ def search():
 @login_required
 def signInOut():
 	if not request.method == 'POST':
-		return getIndexURL()
+		return getInventoryURL()
 	
 	function = request.form[pagePostKey]
 	serial = request.form['lcdi_serial']
@@ -240,7 +245,7 @@ def signInOut():
 		deviceLog.AuthorizerIn = session['username']
 		deviceLog.save()
 		
-	return getIndexURL()
+	return getInventoryURL()
 
 @app.route('/users', methods=['GET', 'POST'])
 @login_required
@@ -285,10 +290,12 @@ def view(serial):
 		return renderPage_View(serial)
 	except models.DoesNotExist:
 		abort(404)
-		
-@app.errorhandler(404)
-def not_found(error):
-	return render_template('page/404.html'), 404
+
+@app.route('/items')
+@login_required
+def viewItems():
+	session['redirectSource'] = 'outItems'
+	return getInventoryURL()
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -298,7 +305,7 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	
 	if serialNumber == None:
 		print(error)
-		return getIndexURL()
+		return getInventoryURL()
 	
 	if device_type == 'Other':
 		device_type = device_other
