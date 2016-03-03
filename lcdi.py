@@ -1,5 +1,5 @@
 # Flask imports
-from flask import Flask, render_template, session, redirect, url_for, escape, request, jsonify
+from flask import Flask, render_template, session, redirect, url_for, escape, request, jsonify, abort
 from werkzeug import secure_filename
 import flask.ext.whooshalchemy
 from functools import wraps
@@ -267,18 +267,25 @@ def userLogsAll():
 @login_required
 def view(serial):
 	
-	if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
-		updateItem(
-			oldSerial = serial,
-			serialDevice = request.form['device_serial'],
-			description = request.form['device_desc'],
-			notes = request.form['device_notes'],
-			quality = request.form['device_quality'],
-			file = request.files['file']
-		)
+	try:
+		if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
+			updateItem(
+				oldSerial = serial,
+				serialDevice = request.form['device_serial'],
+				description = request.form['device_desc'],
+				notes = request.form['device_notes'],
+				quality = request.form['device_quality'],
+				file = request.files['file']
+			)
+			return renderPage_View(serial)
+		
 		return renderPage_View(serial)
-	
-	return renderPage_View(serial)
+	except models.DoesNotExist:
+		abort(404)
+		
+@app.errorhandler(404)
+def not_found(error):
+	return render_template('page/404.html'), 404
 
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
