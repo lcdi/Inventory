@@ -102,10 +102,11 @@ def renderPage_View(serial):
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@app.route('/all')
+@app.route('/items')
 @login_required
-def allItems():
-	return renderInventoryListings()
+def viewItems():
+	session['redirectSource'] = 'outItems'
+	return getIndexURL()
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -140,7 +141,12 @@ def index():
 			return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
 		
 	else:
-		return renderInventoryListings(status = 'out')
+		status = 'ALL'
+		if 'redirectSource' in session:
+			if session['redirectSource'] == 'outItems':
+				status = 'out'
+			session['redirectSource'] = None
+		return renderInventoryListings(status = status)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -156,6 +162,7 @@ def login():
 				session['username'] = user
 				session['displayName'] = session['username']
 				session['hasEditAccess'] = hasEditAccess or app.debug == True
+				session['redirectSource'] = 'outItems'
 			
 			# Send user back to index page
 			# (if username wasnt set, it will redirect back to login screen)
