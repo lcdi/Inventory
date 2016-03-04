@@ -68,7 +68,7 @@
 							<!-- Start: Search bar form -->
 							<form role="form" method="POST" action="{{ url_for('search') }}">
 								<div class="input-group custom-search-form">
-									<input name="searchField" type="text" class="form-control" placeholder="Search..." >
+									<input name="searchField" type="text" class="form-control" placeholder="Search..." value="{{ searchPhrase }}">
 									<span class="input-group-btn">
 										<button name="searchButton" class="btn btn-default" type="submit">
 											<i class="fa fa-search"></i>
