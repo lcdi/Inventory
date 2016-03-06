@@ -1,0 +1,154 @@
+<ul class="nav navbar-nav">
+	
+	<li class="nav-item">
+		<img src="{{ url_for('static', filename='lcdi_logo.png')}}"
+			alt="LCDI Logo Goes Here"
+			style="width: 250px; height:auto; padding: 10px;">
+	</li>
+	
+	<!-- Start: Dropdown: Campus -->
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+			<big>Campus</big>
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			
+			<li>
+				<a href="http://shuttle.champlain.edu/" target="_blank">
+					Shuttle
+				</a>
+			</li>
+			
+		</ul>
+	</li>
+	<!--   End: Dropdown: Campus -->
+	
+	<!-- Start: Dropdown: LCDI -->
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+			<big>LCDI</big>
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			
+			<li>
+				<a href="https://app.wheniwork.com/" target="_blank">
+					When I Work
+				</a>
+			</li>
+			
+			<li>
+				<a href="https://wd5.myworkday.com/champlain/login-saml2.flex" target="_blank">
+					Workday
+				</a>
+			</li>
+			
+			<li>
+				<a href="https://docs.google.com/a/champlain.edu/spreadsheets/d/1eRKGaJUgKP_IMhXJ0suHy-s7LOOiACSARtHLwKc_BII/edit?usp=sharing" target="_blank">
+					Spotify Playlist
+				</a>
+			</li>
+			
+			<li>
+				<a href="https://lcdichamplain.hipchat.com/chat" target="_blank">
+					HipChat
+				</a>
+			</li>
+			
+		</ul>
+	</li>
+	<!--   End: Dropdown: LCDI -->
+	
+	<!-- Start: Dropdown: Google -->
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+			<big>Google</big>
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			
+			<li>
+				<a href="http://drive.google.com/" target="_blank">
+					Drive
+				</a>
+			</li>
+			
+			<li>
+				<a href="http://gmail.champlain.edu/" target="_blank">
+					Gmail
+				</a>
+			</li>
+			
+			<li>
+				<a href="https://docs.google.com/spreadsheet/ccc?key=0AiOXXxbhpoavdEFLVXZGTE1xZ2pEaXFaNGxLUWdKMnc#gid=0" target="_blank">
+					Sign-Up Sheet
+				</a>
+			</li>
+			
+			<li>
+				<a href="http://goo.gl/forms/wPgmZ5kT5C" target="_blank">
+					Google Time
+				</a>
+			</li>
+			
+		</ul>
+	</li>
+	<!--   End: Dropdown: Google -->
+	
+	<li class="nav-item">
+		<a href="https://secretserver.lcdi/SecretServer" target="_blank">
+			<big>Secret Server</big>
+		</a>
+	</li>
+	
+	<li class="nav-item">
+		<a href="http://wiki.lcdi/index.php/Main_Page" target="_blank">
+			<big>LCDI Wiki</big>
+		</a>
+	</li>
+	
+	<li class="nav-item">
+		<a href="" >
+			<big>Policies</big>
+		</a>
+	</li>
+	
+	<li class="nav-item">
+		<a href="http://support.lcdi/" target="_blank">
+			<big>Support</big>
+		</a>
+	</li>
+	
+</ul>
+
+<!-- Start: Dropdown: User -->
+<ul class="nav navbar-nav navbar-right">
+	<li class="nav-item dropdown">
+		
+		<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+			<i class="fa fa-user fa-fw"></i>
+			<i class="fa fa-caret-down"></i>
+		</a>
+		
+		<!-- Start: User Dropdown -->
+		<ul class="dropdown-menu dropdown-user">
+			<li>
+				{% if 'username' in session %}
+					<a href="{{ url_for('logout') }}">
+						<i class="fa fa-sign-out fa-fw"></i>
+						Logout
+					</a>
+				{% else %}
+					<a href="{{ url_for('login') }}">
+						<i class="fa fa-sign-out fa-fw"></i>
+						Login
+					</a>
+				{% endif %}
+			</li>
+		</ul>
+		<!-- End: User Dropdown -->
+		
+	</li>
+</ul>
+<!--   End: Dropdown: User -->
