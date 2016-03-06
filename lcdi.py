@@ -187,8 +187,9 @@ def not_found(error):
 	return render_template('page/404.html'), 404
 
 @app.route('/search', methods=['GET', 'POST'])
-@login_required
 def search():
+	if not 'username' in session:
+		return getIndexURL()
 	if not request.method == 'POST':
 		return getInventoryURL()
 	
