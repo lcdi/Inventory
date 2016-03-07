@@ -83,6 +83,9 @@ def getDevices():
 		Device.Description,
 		Device.Issues
 	).order_by(Device.SerialNumber)
+	
+def getDevicesAndLogs():
+	return Device.select(Device, Log).join(Log).order_by(Device.SerialNumber)
 
 def getDevicesWithLog(itemType, status, quality):
 	query = getDevices().where(
@@ -167,3 +170,19 @@ def getNextSerialNumber(device_type):
 
 def getDeviceLog(serial):
 	return Log.select().where(Log.SerialNumber == serial).order_by(-Log.Identifier)
+	
+def isSearchUser(user):
+	
+	query = Log.select().where(Log.AuthorizerIn == user | Log.AuthorizerOut == user | Log.UserIn == user | Log.UserOut == user)
+	
+	for log in query:
+		if log.AuthorizerIn == user:
+			return True
+		elif log.AuthorizerOut == user:
+			return True
+		elif log.UserIn == user:
+			return True
+		elif log.UserOut == user:
+			return True
+	
+	return False
