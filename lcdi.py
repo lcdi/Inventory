@@ -198,15 +198,27 @@ def search():
 		else:
 			modal = "signOut"
 		return renderInventoryListings(searchSerial = serial, searchModal = modal)
+		
+	if models.isSearchUser(searchPhrase):
+		logs = models.Log.select().where(
+			models.Log.AuthorizerIn.contains(searchPhrase) | 
+			models.Log.AuthorizerOut.contains(searchPhrase) | 
+			models.Log.UserIn.contains(searchPhrase) | 
+			models.Log.UserOut.contains(searchPhrase)
+			).order_by(-models.Log.DateOut)
+		
+		return render_template("page/PageUserLogs.html", query = logs, searchPhrase = searchPhrase)
+		
 	
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
 		return renderPage_View(searchPhrase)
 	else:
-		query = models.getDevices().where(
+		query = models.getDevicesAndLogs().where(
 			models.Device.SerialNumber.contains(searchPhrase) |
 			models.Device.SerialDevice.contains(searchPhrase) |
 			models.Device.Type.contains(searchPhrase) |
-			models.Device.Description.contains(searchPhrase)
+			models.Device.Description.contains(searchPhrase) |
+			models.Log.Purpose.contains(searchPhrase)
 		)
 		deviceList = models.getDeviceAndLogListForQuery(query)
 		
