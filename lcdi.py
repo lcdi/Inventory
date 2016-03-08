@@ -18,7 +18,6 @@ import json
 import models, adLDAP
 
 # Paramaters
-isDebugMode = True
 pagePostKey = 'functionID'
 UPLOAD_FOLDER = 'static/item_photos'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
@@ -42,11 +41,11 @@ def login_required(f):
 
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def init(isDebug):
-	app.debug = isDebug
+def init():
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
-	
+	app.config.from_object('config')
+
 def getIndexURL():
 	return redirect(url_for('index'))
 
@@ -55,6 +54,15 @@ def getLoginURL():
 
 def getName():
 	return session['displayName']
+
+def getDatabase():
+	return app.config['SQL_DATABASE']
+
+def getSQLUsername():
+	return app.config['SQL_USERNAME']
+
+def getSQLPassword():
+	return app.config['SQL_PASSWORD']
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -166,7 +174,7 @@ def login():
 		try:
 			user = request.form['username']
 			pw = request.form['password']
-			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
+			valid, hasEditAccess = adLDAP.checkCredentials(app, user, pw)
 			if valid != True:
 				session["error"] = valid
 			if (app.debug == True or valid == True):
@@ -395,7 +403,7 @@ def signOutItem(serial, sname, use):
 
 # ~~~~~~~~~~~~~~~~ Start page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-init(isDebugMode)
+init()
 
 if __name__ == '__main__':
 	ctx = app.test_request_context()

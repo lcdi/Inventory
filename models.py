@@ -1,8 +1,9 @@
 from peewee import *
 import flask.ext.whooshalchemy
 import datetime
+import lcdi
 
-db = MySQLDatabase('inventory', user="root", password="root")
+db = MySQLDatabase(lcdi.getDatabase(), user=lcdi.getSQLUsername(), password=lcdi.getSQLPassword())
 
 class BaseModel(Model):
 	class Meta:
