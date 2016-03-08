@@ -4,11 +4,12 @@
 	User Logs
 {%endblock%}
 
-{% block preContent %}
-	<form id='searchForm' action="/users" method="post" role="form">
-		<input id="searchField" name="searchField" placeholder="jwilliams" type="text" value="{{ searchPhrase }}" class="form-control" />
-		<input name="isFormSubmission" type="hidden" class="form-control" />
-	</form>
+{% block tableHeader %}
+	{% if searchPhrase %}
+		User Logs for ({{ searchPhrase }})
+	{% else %}
+		All Logs
+	{% endif %}
 {% endblock %}
 
 {% block tableColumnsHeaders %}
