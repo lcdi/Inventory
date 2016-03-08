@@ -61,7 +61,7 @@ def getName():
 def renderHomepage():
 	return render_template("page/PageIndex_Homepage.html")
 
-def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None):
+def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None, error = None):
 	
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	length = models.getDevices()
@@ -81,7 +81,8 @@ def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', s
 			data_id = searchSerial,
 			queueModal = searchModal,
 			
-			name = escape(getName())
+			name = escape(getName()),
+			error = error
 		)
 
 def renderPage_View(serial):
@@ -123,29 +124,32 @@ def index():
 	if request.method == 'POST':
 		function = request.form[pagePostKey]
 		
-		if function == 'addItem':
-			return addItem(
-					serialDevice = request.form['device_serial'],
-					device_type = request.form['device_types'],
-					device_other = request.form['other'],
-					description = request.form['device_desc'],
-					notes = request.form['device_notes'],
-					quality = request.form['device_quality'],
-					file = request.files['file']
-				)
-		elif function == 'deleteItem':
-			serial = request.form['serial']
-			item = models.Device.select().where(
-					models.Device.SerialNumber == serial
-				).get();
-			if item.PhotoName:
-				os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
-			item.delete_instance();
-			return getIndexURL()
-		
-		elif function == 'filter':
-			return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
-		
+		try:
+			if function == 'addItem':
+				return addItem(
+						serialDevice = request.form['device_serial'],
+						device_type = request.form['device_types'],
+						device_other = request.form['other'],
+						description = request.form['device_desc'],
+						notes = request.form['device_notes'],
+						quality = request.form['device_quality'],
+						file = request.files['file']
+					)
+			elif function == 'deleteItem':
+				serial = request.form['serial']
+				item = models.Device.select().where(
+						models.Device.SerialNumber == serial
+					).get();
+				if item.PhotoName:
+					os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
+				item.delete_instance();
+				return getIndexURL()
+			
+			elif function == 'filter':
+				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
+		except:
+			flash(sys.exc_info()[0])
+			return renderInventoryListings()
 	else:
 		status = 'ALL'
 		if 'redirectSource' in session:
@@ -163,6 +167,8 @@ def login():
 			user = request.form['username']
 			pw = request.form['password']
 			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
+			if valid != True:
+				session["error"] = valid
 			if (app.debug == True or valid == True):
 				# Set username and displayName in session
 				session['username'] = user
@@ -178,7 +184,12 @@ def login():
 			return str(e)
 	else:
 		# Was not a POST, which means index or some other source sent user to login
-		return render_template("page/PageLogin.html")
+		if 'error' in session:
+			error = session['error']
+			session.pop('error', None)
+			return render_template("page/PageLogin.html", error=error)
+		else:
+			return render_template("page/PageLogin.html")
 
 @app.route('/logout')
 def logout():
