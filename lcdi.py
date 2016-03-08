@@ -69,7 +69,7 @@ def getSQLPassword():
 def renderHomepage():
 	return render_template("page/PageIndex_Homepage.html")
 
-def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None, error = None):
+def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', searchSerial = None, searchModal = None):
 	
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	length = models.getDevices()
@@ -89,8 +89,7 @@ def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', s
 			data_id = searchSerial,
 			queueModal = searchModal,
 			
-			name = escape(getName()),
-			error = error
+			name = escape(getName())
 		)
 
 def renderPage_View(serial):
@@ -156,6 +155,7 @@ def index():
 			elif function == 'filter':
 				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
 		except:
+			print(sys.exc_info()[0])
 			flash(sys.exc_info()[0])
 			return renderInventoryListings()
 	else:
