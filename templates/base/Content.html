@@ -68,7 +68,7 @@
 							<!-- Start: Search bar form -->
 							<form role="form" method="POST" action="{{ url_for('search') }}">
 								<div class="input-group custom-search-form">
-									<input name="searchField" type="text" class="form-control" placeholder="Search..." value="{{ searchPhrase }}">
+									<input name="searchField" type="text" class="form-control" placeholder="Search..." value="{{ searchPhrase }}" autofocus>
 									<span class="input-group-btn">
 										<button name="searchButton" class="btn btn-default" type="submit">
 											<i class="fa fa-search"></i>
@@ -86,7 +86,7 @@
 							
 							<!-- Direct user back to main page -->
 							<li>
-								<a href="{{ url_for('index') }}">
+								<a href="{{ url_for('viewOut') }}">
 									<i class="fa fa-dashboard fa-fw"></i>
 									Dashboard
 								</a>
@@ -94,23 +94,23 @@
 							
 							<!-- Direct user back to main page -->
 							<li>
-								<a href="{{ url_for('viewItems') }}">
+								<a href="{{ url_for('viewAll') }}">
 									<i class="fa fa-table fa-fw"></i>
-									View Out Items
+									View All Items
 								</a>
 							</li>
 							
 							<!-- Display user logs -->
 							<li>
 								<a href="{{ url_for('userLogsAll') }}">
-									<i class="fa fa-table fa-fw"></i>
-									View User Logs
+									<i class="fa fa-list fa-fw"></i>
+									View Recent Logs
 								</a>
 							</li>
 							
 							<li>
 								<a href="" data-toggle="modal" data-target="#addItemModal">
-									<i class="fa fa-edit fa-fw"></i>
+									<i class="fa fa-plus fa-fw"></i>
 									Add Item
 								</a>
 							</li>

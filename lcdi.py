@@ -102,9 +102,15 @@ def renderPage_View(serial):
 
 # ~~~~~~~~~~~~~~~~ Routing Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@app.route('/items')
+@app.route('/items/all')
 @login_required
-def viewItems():
+def viewAll():
+	session['redirectSource'] = 'all'
+	return getIndexURL()
+
+@app.route('/items/out')
+@login_required
+def viewOut():
 	session['redirectSource'] = 'outItems'
 	return getIndexURL()
 
@@ -145,7 +151,7 @@ def index():
 		if 'redirectSource' in session:
 			if session['redirectSource'] == 'outItems':
 				status = 'out'
-			session['redirectSource'] = None
+			session.pop('redirectSource', None)
 		return renderInventoryListings(status = status)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -179,6 +185,7 @@ def logout():
 	session.pop('username', None)
 	session.pop('displayName', None)
 	session.pop('hasEditAccess', None)
+	session.pop('redirectSource', None)
 	return getIndexURL()
 
 @app.route('/search', methods=['GET', 'POST'])
