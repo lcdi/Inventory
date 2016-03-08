@@ -1,0 +1,63 @@
+{% extends "base/Table.html" %}
+
+{%block title%}
+	User Logs
+{%endblock%}
+
+{% block tableHeader %}
+	{% if searchPhrase %}
+		User Logs for ({{ searchPhrase }})
+	{% else %}
+		All Logs
+	{% endif %}
+{% endblock %}
+
+{% block tableColumnsHeaders %}
+	<th>Serial Number</th>
+	<th>Type</th>
+	<th>Purpose</th>
+	<th>User Out</th>
+	<th>Date Out</th>
+	<th>Authorizer Out</th>
+	<th>User In</th>
+	<th>Date In</th>
+	<th>Authorizer In</th>
+{% endblock %}
+
+{% block tableBody %}
+	{% include 'page/PageUserLogs_Body.html' %}
+{%endblock%}
+
+{% block modals %}{% endblock %}
+
+{% block scripts %}
+	<script language="javascript">
+		$(window).load(function() {
+			var searchField = document.getElementById("searchField");
+			searchField.oninput = onSearchFieldChange;
+			searchField.onpropertychange = searchField.oninput;
+		});
+		
+		var request;
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+		function onSearchFieldChange() {
+			
+			if (request) request.abort();
+			
+			request = $.ajax({
+				url: $SCRIPT_ROOT + '/users',
+				type: 'POST',
+				data: {
+					searchField: $(this).val()
+				},
+				success: function(response) {
+					document.getElementById('tableBody').innerHTML = response['tableBody'];
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+			
+		}
+	</script>
+{% endblock %}

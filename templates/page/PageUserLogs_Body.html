@@ -1,0 +1,23 @@
+{% for log in query %}
+	<tr>
+		<td>
+			<a href="{{ url_for('view', serial=log.SerialNumber.SerialNumber) }}">{{ log.SerialNumber.SerialNumber }}</a>
+		</td>
+		<td>{{ log.SerialNumber.Type }}</td>
+		<th>
+			{% if log.Purpose %}
+				{{ log.Purpose }}
+			{% endif %}
+		</th>
+		<th>{{ log.UserOut }}</th>
+		<td>{{ log.DateOut }}</td>
+		<th>{{ log.AuthorizerOut }}</th>
+		<th>{{ log.UserIn }}</th>
+		<td>
+			{% if log.DateIn %}
+				{{ log.DateIn }}
+			{% endif %}
+		</td>
+		<th>{{ log.AuthorizerIn }}</th>
+	</tr>
+{% endfor %}

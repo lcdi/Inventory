@@ -1,2 +1,3 @@
-uploads/
-includes/adLDAP/src/adLDAP.php
+commit.sh
+push.sh
+/static/item_photos/*

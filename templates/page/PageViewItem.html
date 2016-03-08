@@ -1,0 +1,222 @@
+{% extends "base/Content.html" %}
+
+{%block title%}
+	{{ device.SerialNumber }}
+{%endblock%}
+
+{% block preContent %}{% endblock %}
+
+{% block content %}
+
+	<div class="panel panel-primary">
+		
+		<!-- Start: Table header -->
+		<div class="panel-heading">
+			<h1>{{ device.SerialNumber }}</h1>
+		</div>
+		<!-- End: Table header -->
+		
+		<div class="panel-body">
+			
+			<!-- Start: Details Body -->
+			<div class="col-lg-6">
+				
+				<div class="well" style="display: flex; justify-content: flex-start;">
+					<div>
+						<img src="{{ url_for('static', filename='item_photos/' + device.PhotoName) }}" alt = "Item-Photo" style="width: 350px; height: auto;">                            
+					</div>
+					<div style="padding-left: 20px;">
+						<h4><b>Device Serial Number:</b> {{ device.SerialDevice }} </h4>
+						<h4><b>Device Type:</b> {{ device.Type }} </h4>
+						<h4><b>State:</b> {{ device.Quality }} </h4>
+						<h4><b>Description:</b></h4>
+						<div class="well well-sm" style="background: rgb(255,255,255);">
+							<p>{{ device.Description}}</p>    
+						</div>
+						<h4><b>Notes:</b></h4>
+						<div class="well well-sm" style="background: rgb(255,255,255);">
+							<p>{{ device.Issues}}</p>    
+						</div>
+					</div>
+				</div>
+				
+				{% if session['hasEditAccess'] %}
+					<center>
+						<button type="button" class="btn btn-warning"
+								data-toggle="modal" data-target="#editItemModal">
+							<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+							Edit Item
+						</button>
+						<button type="button" class="btn btn-danger"
+								data-toggle="modal" data-target="#deleteModal">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							Delete Item
+						</button>
+					</center>
+					<br />
+				{% endif %}
+				
+			</div>
+			<!-- End: Details Body -->
+			
+			<!-- Start: History Table -->
+			<div class="col-lg-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						History
+					</div>
+					<div class="panel-body">
+						
+						<!-- Start: Sign In Sign Out -->
+						<center>
+							{% set data_id=device.SerialNumber %}
+							{% if device.statusIsOut %}
+								{% include "component/button/SignIn.html" %}
+							{% else %}
+								{% include "component/button/SignOut.html" %}
+							{% endif %}
+						</center>
+						<!-- END -->
+						
+						<br />
+						<div class="dataTable_wrapper">
+							<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+								<thead>
+									<tr>
+										<th>Purpose</th>
+										<th>User Out</th>
+										<th>Date Out</th>
+										<th>Authorizer Out</th>
+										<th>User In</th>
+										<th>Date In</th>
+										<th>Authorizer In</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for log in log %}
+										<tr>
+											<th>{{ log.Purpose }}</th>
+											<th>{{ log.UserOut }}</th>
+											<td>{{ log.DateOut }}</td>
+											<th>{{ log.AuthorizerOut }}</th>
+											<th>{{ log.UserIn }}</th>
+											<td>
+												{% if log.DateIn %}
+													{{ log.DateIn }}
+												{% endif %}
+											</td>
+											<th>{{ log.AuthorizerIn }}</th>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End: History Table -->
+			
+		</div>
+	</div>
+
+{%endblock%}
+
+{% block modals %}
+
+	<!-- Start: Edit -->
+	<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<!-- Start: Header -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						Edit Item
+					</h4>
+				</div>
+				<!-- End: Header -->
+
+				<!-- Start: Body -->
+				<div class="modal-body">
+					<form action="{{ url_for('view', serial=device.SerialNumber) }}" method="POST" enctype="multipart/form-data">
+						<input name='functionID' value='updateItem' type='hidden' class='form-control' >
+						
+						<div class="form-group">
+							<label for="device_serial">Device Serial Number {% include "component/StarRed.html" %}</label>
+							<input name="device_serial" value='{{ device.SerialDevice }}' type="text" class="form-control" required/>
+						</div>
+						
+						<div class="form-group">
+							<label>Description</label>
+							<textarea name="device_desc" class="form-control" rows="3" >{{ device.Description }}</textarea>
+						</div>
+						
+						<div class="form-group">
+							<label>Notes</label>
+							<textarea name="device_notes" class="form-control" rows="3" >{{ device.Issues }}</textarea>
+						</div>
+						
+						<div class="form-group">
+							<label for="device_quality">Select Quality {% include "component/StarRed.html" %}</label>
+							<select name="device_quality" class="form-control" required>
+								<option>Operational</option>
+								<option>Decommissioned</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label>Add Photo</label>
+							<input type="file" name="file">
+						</div>
+						
+						<!-- Start: Footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								Close
+							</button>
+							<button type="submit" class="btn btn-primary">
+								Edit Item
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End: Edit -->
+
+	<!-- Start: Delete -->
+	<div class="modal fade" id="deleteModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="panel panel-red">
+					<div class="panel-heading">
+						Confirm Delete?
+					</div>
+					<div class="panel-body">
+						<p>Are You Sure?</p>
+						
+						<form name="viewSerialForm" role="form" method="POST" action="{{ url_for('index') }}">
+							<input name='functionID' value='deleteItem' type='hidden' class='form-contorl' >
+							<input name='serial' value='{{ device.SerialNumber }}' type='hidden' >
+							<button type="submit" class="btn btn-success" >
+								<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+								Yes
+							</button>
+							<button type="button" class="btn btn-danger" data-dismiss="modal">
+								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+								No
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End: Delete -->
+	
+{% endblock %}

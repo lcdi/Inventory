@@ -1,0 +1,117 @@
+{% extends "base/ItemTable.html" %}
+
+{%block title%}
+	Inventory
+{%endblock%}
+
+{% block preContent %}
+
+	<!-- Start: Header -->
+	<div class="col-lg-12">
+		<div class="jumbotron">
+			<center>
+				<h2 style="margin-left: 20px;">
+					Welcome back {{ name }}
+				</h2>
+				<p class="lead" style="margin-left: 20px;">
+					<span class='text-info'>
+						There are currently {{ totalItems }} items in the inventory and {{ totalSignedOut }} items signed out
+					</span>
+				</p>
+				<div class="well well-sm" style="background: rgb(255,255,255); margin: 0px 20px 0px 20px; display: inline-block;">
+						<h4 style="padding: 0 10px 0 10px;"><span id="number"></span></h4>    
+				</div>
+			</center>
+		</div>
+	</div>
+	<!-- End: Header -->
+	
+	<!-- Start: Filter Form -->
+	<form action="{{ url_for('index') }}" method="POST" role="form" >
+		<input name='functionID' value='filter' type='hidden' class='form-contorl' >
+		
+		<div class="form-group col-xs-2">
+			<select name="type" class="form-control">
+				<option value='ALL'>All Item Types</option>
+				{% for type in types %}
+					<option value='{{ type }}'
+						{% if filter_Type == type %}
+							selected='selected'
+						{% endif %}
+					>{{ type }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		
+		<div class="form-group col-xs-2">
+			<select name="status" class="form-control">
+				<option value='ALL'>All Items</option>
+				<option value='out'
+					{% if filter_Status == 'out' %} selected='selected' {% endif %}
+				>Signed Out</option>
+				<option value='in'
+					{% if filter_Status == 'in' %} selected='selected' {% endif %}
+				>Signed In</option>
+			</select>
+		</div>
+		
+		<div class="form-group col-xs-2">
+			<select name="quality" class="form-control">
+				<option value='ALL'>Select Quality</option>
+				<option
+					{% if filter_quality == 'Operational' %} selected='selected' {% endif %}
+				>Operational</option>
+				<option
+					{% if filter_quality == 'Decommissioned' %} selected='selected' {% endif %}
+				>Decommissioned</option>
+			</select>
+		</div>
+		
+		<div class="form-group col-xs-2">
+			<button type='submit' class="btn btn-primary">Filter</button>
+		</div>
+		
+	</form>
+	<br />
+	<br />
+	<!-- End: Filter Form -->
+	
+	{% if data_id != None %}
+		
+	{% endif %}
+	
+{% endblock %}
+
+{% block tableHeader %}
+	{% if filter_Status == 'ALL' %}
+		All Items
+	{% elif filter_Status == 'out' %}
+		Signed Out Items
+	{% else %}
+		Signed In Items
+	{% endif %}
+		
+{% endblock %}
+
+{% block modals %}{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript">
+		var items = "";
+		if (Math.random() < 0.5) items = "{{ totalItems }}";
+		else items = "{{ totalSignedOut }}";
+		$.get('http://numbersapi.com/' + items, function(data) {
+	    	$('#number').text(data);
+		});
+	</script>
+	{% if data_id %}
+		<script language="javascript">
+			$(window).load(function() {
+				//alert("{{ data_id }}");
+				$('#{{ queueModal }}Modal').modal('show');
+				$(".modal-header #lcdi_serial").text("{{ data_id }}");
+				$(".modal-body #lcdi_serial").val("{{ data_id }}");
+			});
+		</script>
+	{% endif %}
+{% endblock %}

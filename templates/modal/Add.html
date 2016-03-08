@@ -1,0 +1,89 @@
+<!-- Start: Modal View; addItemModal -->
+<div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			
+			<!-- Start: Modal Header -->
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Add Item</h4>
+			</div>
+			<!-- End: Modal Header -->
+
+			<!-- Start: Modal Body -->
+			<div class="modal-body">
+				<form method="post" action="{{ url_for('index') }}" enctype="multipart/form-data">
+					<!-- Function -->
+					<input name='functionID' value='addItem' type='hidden' class='form-contorl' >
+					
+					<!-- SerialDevice -->
+					<div class="form-group">
+						<label for="device_serial">Device Serial Number {% include "component/StarRed.html" %}</label>
+						<input name="device_serial" type="text" class="form-control" placeholder="" required/>
+					</div>
+					
+					<!-- Type -->
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label for="device_types">Select Type {% include "component/StarRed.html" %}</label>
+							<select name="device_types" class="form-control" required>
+								{% for type in types %}
+									<option>{{ type }}</option>
+								{% endfor %}
+								<option>Other</option>
+							</select>
+						</div>
+						<div class="form-group col-xs-6">
+							<label for="other">If 'Other'</label>
+							<input name="other" type="text" class="form-control" placeholder=""/>
+						</div> 
+					</div>
+					
+					<!-- Description -->
+					<div class="form-group">
+						<label for="device_desc">Description</label>
+						<textarea name="device_desc" class="form-control" rows="3"></textarea>
+					</div>
+					
+					<!-- Issues -->
+					<div class="form-group">
+						<label for="device_notes">Notes</label>
+						<textarea name="device_notes" class="form-control" rows="3"></textarea>
+					</div>
+					
+					<!-- Quality/State -->
+					<div class="form-group">
+						<label for="device_quality">Select Quality {% include "component/StarRed.html" %}</label>
+						<select name="device_quality" class="form-control" required>
+							<option>Operational</option>
+							<option>Decommissioned</option>
+						</select>
+					</div>
+					
+					<!-- File -->
+					<div class="form-group">
+						<label for="file">Photo {% include "component/StarRed.html" %}</label>
+						<input name="file" type="file" required/>
+					</div>
+		
+					<!-- Start: Modal Footer -->			
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Close
+						</button>
+						<button type="submit" class="btn btn-primary">
+							Add Item
+						</button>
+					</div>
+					<!-- End: Modal Footer -->
+					
+				</form>
+			</div>
+			<!-- End: Modal Body -->
+		</div>
+	</div>
+</div>
+<!-- End: Modal View; addItemModal -->
