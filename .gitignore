@@ -1,3 +1,4 @@
 commit.sh
 push.sh
 /static/item_photos/*
+*.log
