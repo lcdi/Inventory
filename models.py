@@ -1,12 +1,9 @@
 from peewee import *
 import flask.ext.whooshalchemy
 import datetime
-import lcdi
+from lcdi import *
 
-databaseName = lcdi.getConfig('SQL_DATABASE')
-dbUser = lcdi.getConfig('SQL_USERNAME')
-dbPass = lcdi.getConfig('SQL_PASSWORD')
-db = MySQLDatabase(databaseName, user=dbUser, password=dbPass)
+db = MySQLDatabase(getConfig('SQL_DATABASE'), user=getConfig('SQL_USERNAME'), password=getConfig('SQL_PASSWORD'))
 
 class BaseModel(Model):
 	class Meta:
