@@ -28,7 +28,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-lcdiLog = logging.getLogger('lcdi_logger')
+#lcdiLog = logging.getLogger('lcdi_logger')
 
 # TODO use a decorator for logins http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/#login-required-decorator
 
@@ -45,9 +45,9 @@ def login_required(f):
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def init():
-	lcdiLog.addHandler(logging.FileHandler(os.getcwd() + '/lcdi.log'))
-	lcdiLog.setLevel(logging.DEBUG)
-	
+	#lcdiLog.addHandler(logging.FileHandler(os.getcwd() + '/lcdi.log'))
+	#lcdiLog.setLevel(logging.DEBUG)
+	logging.basicConfig(filename='lcdi.log',level=logging.DEBUG)
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
 	app.config.from_object('config')
@@ -137,7 +137,7 @@ def index():
 	if request.method == 'POST':
 		function = request.form[pagePostKey]
 		
-		lcdiLog.info('[INDEX] Executing function: ' + function)
+		logging.info('[INDEX] Executing function: ' + function)
 		try:
 			if function == 'addItem':
 				return addItem(
@@ -161,7 +161,7 @@ def index():
 			elif function == 'filter':
 				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
 		except:
-			lcdiLog.error(sys.exc_info()[0])
+			logging.error(sys.exc_info()[0])
 			flash(sys.exc_info()[0])
 			return renderInventoryListings()
 		
