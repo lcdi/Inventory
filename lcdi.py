@@ -27,6 +27,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config.from_object('config')
 
 #lcdiLog = logging.getLogger('lcdi_logger')
 
@@ -52,7 +53,6 @@ def init():
 	#logging.basicConfig(filename='lcdi.log',level=logging.DEBUG)
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
-	app.config.from_object('config')
 
 def getIndexURL():
 	return redirect(url_for('index'))
