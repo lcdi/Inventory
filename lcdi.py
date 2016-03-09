@@ -155,9 +155,10 @@ def index():
 					if item.PhotoName:
 						try:
 							os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
-						except IOError, e:
+						except OSError, e:
 							print e.errno
-							print e
+							print e.filename
+							print e.strerror
 					item.delete_instance()
 				except:
 					print(sys.exc_info()[0])
@@ -365,10 +366,9 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		filename = serialNumber + '.' + fileList[1]
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		except OSError, e:
+		except IOError, e:
 			print e.errno
-			print e.filename
-			print e.strerror
+			print e
 		except:
 			print(sys.exc_info()[0])
 			return renderPage_View(serialNumber)
