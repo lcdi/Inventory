@@ -18,7 +18,7 @@ import json
 import models, adLDAP
 
 # Paramaters
-isDebugMode = True
+isDebugMode = False
 pagePostKey = 'functionID'
 UPLOAD_FOLDER = 'static/item_photos'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
