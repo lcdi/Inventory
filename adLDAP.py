@@ -25,7 +25,7 @@ def checkCredentials(controller, domainA, domainB, username, password):
 		return ('Wrong Credentials', False)
 	except ldap.SERVER_DOWN:
 		return ('Server Down', False)
-	
+	return (True, True)
 	hasEditAccess = False
 	dn = 'cn=Users,' + base_dn
 	filter = 'cn=' + str(username)

@@ -147,7 +147,7 @@ def index():
 						description = request.form['device_desc'],
 						notes = request.form['device_notes'],
 						quality = request.form['device_quality'],
-						file = request.files['file']
+						file = None#request.files['file']
 					)
 			elif function == 'deleteItem':
 				serial = request.form['serial']
@@ -182,10 +182,10 @@ def login():
 			user = request.form['username']
 			pw = request.form['password']
 			valid, hasEditAccess = adLDAP.checkCredentials(
-					controller = app.config['LDAP_CONTROLLER'],
-					domainA = app.config['LDAP_DOMAIN_A'],
-					domainB = app.config['LDAP_DOMAIN_B'],
-					user, pw)
+				app.config['LDAP_CONTROLLER'],
+				app.config['LDAP_DOMAIN_A'],
+				app.config['LDAP_DOMAIN_B'],
+				user, pw)
 			if valid != True:
 				session["error"] = valid
 			if (app.debug == True or valid == True):
