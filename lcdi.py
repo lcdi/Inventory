@@ -44,6 +44,8 @@ def login_required(f):
 
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+__all__ = ['getConfig']
+
 def init():
 	#lcdiLog.addHandler(logging.FileHandler(os.getcwd() + '/lcdi.log'))
 	#lcdiLog.setLevel(logging.DEBUG)
@@ -60,6 +62,9 @@ def getLoginURL():
 
 def getName():
 	return session['displayName']
+
+def getConfig():
+	return app.config
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
