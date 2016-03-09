@@ -365,7 +365,7 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		filename = serialNumber + '.' + fileList[1]
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		except IOError, e:
+		except OSError, e:
 			print e.errno
 			print e
 		except:
