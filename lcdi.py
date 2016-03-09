@@ -16,7 +16,7 @@ import json
 import logging
 
 # Custom support files
-import models, adLDAP
+import adLDAP
 
 # Paramaters
 pagePostKey = 'functionID'
@@ -65,6 +65,8 @@ def getName():
 
 def getConfig(key):
 	return app.config[key]
+
+import models
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
