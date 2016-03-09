@@ -187,12 +187,14 @@ def login():
 			if valid != True:
 				session["error"] = valid
 			if (app.debug == True or valid == True):
-				#if hasEditAccess == True:
-				# Set username and displayName in session
-				session['username'] = user
-				session['displayName'] = session['username']
-				session['hasEditAccess'] = hasEditAccess or app.debug == True
-				session['redirectSource'] = 'outItems'
+				if hasEditAccess == True:
+					# Set username and displayName in session
+					session['username'] = user
+					session['displayName'] = session['username']
+					session['hasEditAccess'] = hasEditAccess or app.debug == True
+					session['redirectSource'] = 'outItems'
+				else:
+					session["error"] = "You do not have access"
 			
 			# Send user back to index page
 			# (if username wasnt set, it will redirect back to login screen)
