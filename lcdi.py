@@ -181,7 +181,11 @@ def login():
 		try:
 			user = request.form['username']
 			pw = request.form['password']
-			valid, hasEditAccess = adLDAP.checkCredentials(app, user, pw)
+			valid, hasEditAccess = adLDAP.checkCredentials(
+					controller = app.config['LDAP_CONTROLLER'],
+					domainA = app.config['LDAP_DOMAIN_A'],
+					domainB = app.config['LDAP_DOMAIN_B'],
+					user, pw)
 			if valid != True:
 				session["error"] = valid
 			if (app.debug == True or valid == True):

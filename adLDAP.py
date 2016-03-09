@@ -2,13 +2,10 @@ import ldap
 
 validEditAccessGroups = ['Office Assistants', 'Domain Admins']
 
-def checkCredentials(app, username, password):
+def checkCredentials(controller, domainA, domainB, username, password):
 	if password == "":
 		return ('Empty Password', False)
 	
-	controller = app.config['LDAP_CONTROLLER']
-	domainA = app.config['LDAP_DOMAIN_A']
-	domainB = app.config['LDAP_DOMAIN_B']
 	domain = domainA + '.' + domainB
 	
 	ldapServer = 'ldap://' + controller + '.' + domain
