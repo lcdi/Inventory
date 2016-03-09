@@ -362,8 +362,11 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		print("pre-save")
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		except IOError, e:
+			print e.errno
+			print e
 		except:
-			print(str(sys.exc_info()[0]))
+			print(sys.exc_info()[0])
 			return renderPage_View(serialNumber)
 		print("post-save")
 	else:
