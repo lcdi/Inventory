@@ -143,30 +143,6 @@ def inventory():
 	if request.method == 'POST':
 		function = request.form[pagePostKey]
 		
-<<<<<<< HEAD
-		if function == 'addItem':
-			return addItem(
-					serialDevice = request.form['device_serial'],
-					device_type = request.form['device_types'],
-					device_other = request.form['other'],
-					description = request.form['device_desc'],
-					notes = request.form['device_notes'],
-					quality = request.form['device_quality'],
-					file = request.files['file']
-				)
-		elif function == 'deleteItem':
-			serial = request.form['serial']
-			item = models.Device.select().where(
-					models.Device.SerialNumber == serial
-				).get();
-			if item.PhotoName:
-				os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
-			item.delete_instance();
-			return getInventoryURL()
-		
-		elif function == 'filter':
-			return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
-=======
 		#logging.info('[INDEX] Executing function: ' + function)
 		try:
 			if function == 'addItem':
@@ -201,7 +177,6 @@ def inventory():
 			#logging.error(sys.exc_info()[0])
 			flash(sys.exc_info()[0])
 			return renderInventoryListings()
->>>>>>> upstream/master
 		
 	else:
 		status = 'ALL'
