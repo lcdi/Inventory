@@ -149,15 +149,18 @@ def index():
 						file = request.files['file']
 					)
 			elif function == 'deleteItem':
-				serial = request.form['serial']
-				item = models.Device.select().where(models.Device.SerialNumber == serial).get();
-				if item.PhotoName:
-					try:
-						os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
-					except IOError, e:
-						print e.errno
-						print e
-				item.delete_instance();
+				try:
+					serial = request.form['serial']
+					item = models.Device.select().where(models.Device.SerialNumber == serial).get();
+					if item.PhotoName:
+						try:
+							os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
+						except IOError, e:
+							print e.errno
+							print e
+					item.delete_instance()
+				except:
+					print(sys.exc_info()[0])
 				
 				return getIndexURL()
 			elif function == 'filter':
@@ -348,8 +351,6 @@ def not_found(error):
 
 def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
 	
-	print("UPLOADING")
-	
 	serialNumber, error = models.getNextSerialNumber(device_type)
 	
 	if serialNumber == None:
@@ -362,8 +363,6 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	if file and allowed_file(file.filename):
 		fileList = file.filename.split(".")
 		filename = serialNumber + '.' + fileList[1]
-		print(type(file))
-		print("pre-save")
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except IOError, e:
@@ -372,11 +371,9 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		except:
 			print(sys.exc_info()[0])
 			return renderPage_View(serialNumber)
-		print("post-save")
 	else:
 		filename = ''
 	
-	print("create")
 	models.Device.create(
 			SerialNumber = serialNumber,
 			SerialDevice = serialDevice,
@@ -386,7 +383,6 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 			PhotoName = filename,
 			Quality = quality
 		)
-	print("created")
 	return renderPage_View(serialNumber)
 
 def updateItem(oldSerial, serialDevice, description, notes, quality, file):
