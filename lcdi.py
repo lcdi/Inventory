@@ -195,7 +195,7 @@ def login():
 			if valid != True:
 				session["error"] = valid
 			if (app.debug == True or valid == True):
-				if hasEditAccess == True:
+				if (app.debug == True or hasEditAccess == True):
 					# Set username and displayName in session
 					session['username'] = user
 					session['displayName'] = session['username']
