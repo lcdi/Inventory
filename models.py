@@ -1,7 +1,7 @@
 from peewee import *
 import flask.ext.whooshalchemy
 import datetime
-from lcdi
+import lcdi
 
 databaseName = lcdi.getConfig('SQL_DATABASE')
 dbUser = lcdi.getConfig('SQL_USERNAME')
