@@ -16,7 +16,7 @@ import json
 import logging
 
 # Custom support files
-import models, adLDAP, configHelper
+import models, adLDAP
 
 # Paramaters
 pagePostKey = 'functionID'
