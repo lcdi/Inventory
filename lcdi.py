@@ -361,19 +361,9 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	if device_type == 'Other':
 		device_type = device_other
 	
-	if file and allowed_file(file.filename):
-		fileList = file.filename.split(".")
-		filename = serialNumber + '.' + fileList[1]
-		try:
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		except IOError, e:
-			print e.errno
-			print e
-		except:
-			print(sys.exc_info()[0])
-			return renderPage_View(serialNumber)
-	else:
-		filename = ''
+	filename = uploadFile(file)
+	if filename == None:
+		return renderPage_View(serialNumber)
 	
 	models.Device.create(
 			SerialNumber = serialNumber,
@@ -390,20 +380,33 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	
 	device = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
-	if file and allowed_file(file.filename):
-		fileList = file.filename.split(".")
-		filename = oldSerial + '.' + fileList[1]
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	
 	device.SerialNumber = oldSerial
 	device.SerialDevice = serialDevice
 	device.Description = description
 	device.Issues = notes
 	device.Quality = quality
-	if file:
+	
+	filename = uploadFile(file)
+	if filename != None:
 		device.PhotoName = filename
 	
 	device.save()
+
+def uploadFile(file):
+	if file and allowed_file(file.filename):
+		fileList = file.filename.split(".")
+		filename = serialNumber + '.' + fileList[1]
+		try:
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		except IOError, e:
+			print e.errno
+			print e
+		except:
+			print(sys.exc_info()[0])
+			return None
+	else:
+		filename = ''
+	return filename
 
 def allowed_file(filename):
     return '.' in filename and \
