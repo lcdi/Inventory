@@ -1,6 +1,15 @@
 {% extends "base/_styles.html" %}
 
 {% block bodyContent %}
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message | safe }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
 	<div id="wrapper">
 		<!-- Start: Navigation Bar | This is the header bar across the top of the page-->
 		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">

@@ -1,8 +1,9 @@
 from peewee import *
 import flask.ext.whooshalchemy
 import datetime
+from lcdi import *
 
-db = MySQLDatabase('inventory', user="root", password="root")
+db = MySQLDatabase(getConfig('SQL_DATABASE'), user=getConfig('SQL_USERNAME'), password=getConfig('SQL_PASSWORD'))
 
 class BaseModel(Model):
 	class Meta:
@@ -133,7 +134,7 @@ def getNextSerialNumber(device_type):
 	typeNumberMAX = typeNumberQuantityMAX - 1
 	itemNumber = 0
 	itemNumberLength = 2
-	itemNumberQuantityMAX = 15#pow(10, itemNumberLength)
+	itemNumberQuantityMAX = pow(10, itemNumberLength)
 	itemNumberMAX = itemNumberQuantityMAX - 1
 	
 	# No items of type

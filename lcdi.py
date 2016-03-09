@@ -13,20 +13,28 @@ import os
 import os.path
 import time
 import json
+import logging
 
 # Custom support files
-import models, adLDAP
+import adLDAP
 
 # Paramaters
+<<<<<<< HEAD
 isDebugMode = False
+=======
+>>>>>>> upstream/master
 pagePostKey = 'functionID'
-UPLOAD_FOLDER = 'static/item_photos'
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static/item_photos')
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 						  'PNG', 'JPG', 'JPEG', 'GIF'])
 
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config.from_object('config')
+
+#lcdiLog = logging.getLogger('lcdi_logger')
 
 # TODO use a decorator for logins http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/#login-required-decorator
 
@@ -42,8 +50,12 @@ def login_required(f):
 
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def init(isDebug):
-	app.debug = isDebug
+__all__ = ['getConfig']
+
+def init():
+	#lcdiLog.addHandler(logging.FileHandler(os.getcwd() + '/lcdi.log'))
+	#lcdiLog.setLevel(logging.DEBUG)
+	#logging.basicConfig(filename='lcdi.log',level=logging.DEBUG)
 	# Generate secret key for session
 	app.secret_key = os.urandom(20)
 
@@ -58,6 +70,11 @@ def getLoginURL():
 
 def getName():
 	return session['displayName']
+
+def getConfig(key):
+	return app.config[key]
+
+import models
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -130,6 +147,7 @@ def inventory():
 	if request.method == 'POST':
 		function = request.form[pagePostKey]
 		
+<<<<<<< HEAD
 		if function == 'addItem':
 			return addItem(
 					serialDevice = request.form['device_serial'],
@@ -152,6 +170,42 @@ def inventory():
 		
 		elif function == 'filter':
 			return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
+=======
+		#logging.info('[INDEX] Executing function: ' + function)
+		try:
+			if function == 'addItem':
+				return addItem(
+						serialDevice = request.form['device_serial'],
+						device_type = request.form['device_types'],
+						device_other = request.form['other'],
+						description = request.form['device_desc'],
+						notes = request.form['device_notes'],
+						quality = request.form['device_quality'],
+						file = request.files['file']
+					)
+			elif function == 'deleteItem':
+				try:
+					serial = request.form['serial']
+					item = models.Device.select().where(models.Device.SerialNumber == serial).get();
+					if item.PhotoName:
+						try:
+							os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
+						except OSError, e:
+							print e.errno
+							print e.filename
+							print e.strerror
+					item.delete_instance()
+				except:
+					print(sys.exc_info()[0])
+				
+				return getIndexURL()
+			elif function == 'filter':
+				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
+		except:
+			#logging.error(sys.exc_info()[0])
+			flash(sys.exc_info()[0])
+			return renderInventoryListings()
+>>>>>>> upstream/master
 		
 	else:
 		status = 'ALL'
@@ -169,13 +223,22 @@ def login():
 		try:
 			user = request.form['username']
 			pw = request.form['password']
-			valid, hasEditAccess = adLDAP.checkCredentials(user, pw)
+			valid, hasEditAccess = adLDAP.checkCredentials(
+				app.config['LDAP_CONTROLLER'],
+				app.config['LDAP_DOMAIN_A'],
+				app.config['LDAP_DOMAIN_B'],
+				user, pw)
+			if valid != True:
+				session["error"] = valid
 			if (app.debug == True or valid == True):
-				# Set username and displayName in session
-				session['username'] = user
-				session['displayName'] = session['username']
-				session['hasEditAccess'] = hasEditAccess or app.debug == True
-				session['redirectSource'] = 'outItems'
+				if (app.debug == True or hasEditAccess == True):
+					# Set username and displayName in session
+					session['username'] = user
+					session['displayName'] = session['username']
+					session['hasEditAccess'] = hasEditAccess or app.debug == True
+					session['redirectSource'] = 'outItems'
+				else:
+					session["error"] = "You do not have access"
 			
 			# Send user back to index page
 			# (if username wasnt set, it will redirect back to login screen)
@@ -185,7 +248,12 @@ def login():
 			return str(e)
 	else:
 		# Was not a POST, which means index or some other source sent user to login
-		return render_template("page/PageLogin.html")
+		if 'error' in session:
+			error = session['error']
+			session.pop('error', None)
+			return render_template("page/PageLogin.html", error=error)
+		else:
+			return render_template("page/PageLogin.html")
 
 @app.route('/logout')
 def logout():
@@ -336,12 +404,9 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	if device_type == 'Other':
 		device_type = device_other
 	
-	if file and allowed_file(file.filename):
-		fileList = file.filename.split(".")
-		filename = serialNumber + '.' + fileList[1]
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	else:
-		filename = ''
+	filename = uploadFile(file)
+	if filename == None:
+		return renderPage_View(serialNumber)
 	
 	models.Device.create(
 			SerialNumber = serialNumber,
@@ -358,20 +423,33 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	
 	device = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
-	if file and allowed_file(file.filename):
-		fileList = file.filename.split(".")
-		filename = oldSerial + '.' + fileList[1]
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	
 	device.SerialNumber = oldSerial
 	device.SerialDevice = serialDevice
 	device.Description = description
 	device.Issues = notes
 	device.Quality = quality
-	if file:
+	
+	filename = uploadFile(file)
+	if filename != None:
 		device.PhotoName = filename
 	
 	device.save()
+
+def uploadFile(file):
+	if file and allowed_file(file.filename):
+		fileList = file.filename.split(".")
+		filename = serialNumber + '.' + fileList[1]
+		try:
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		except IOError, e:
+			print e.errno
+			print e
+		except:
+			print(sys.exc_info()[0])
+			return None
+	else:
+		filename = ''
+	return filename
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -398,7 +476,7 @@ def signOutItem(serial, sname, use):
 
 # ~~~~~~~~~~~~~~~~ Start page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-init(isDebugMode)
+init()
 
 if __name__ == '__main__':
 	ctx = app.test_request_context()
@@ -407,7 +485,7 @@ if __name__ == '__main__':
 	port = int(os.getenv('PORT', 8080))
 	host = os.getenv('IP', '0.0.0.0')
 	app.run(port=port, host=host)
-
+	
 	models.db.connect()
 	
 	#"""

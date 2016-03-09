@@ -2,13 +2,10 @@ import ldap
 
 validEditAccessGroups = ['Office Assistants', 'Domain Admins']
 
-def checkCredentials(username, password):
+def checkCredentials(controller, domainA, domainB, username, password):
 	if password == "":
 		return ('Empty Password', False)
 	
-	controller = 'devdc'
-	domainA = 'dev'
-	domainB = 'devlcdi'
 	domain = domainA + '.' + domainB
 	
 	ldapServer = 'ldap://' + controller + '.' + domain
@@ -29,19 +26,42 @@ def checkCredentials(username, password):
 	except ldap.SERVER_DOWN:
 		return ('Server Down', False)
 	
+	#print(ldap_client.whoami_s())
+	
 	hasEditAccess = False
-	dn = 'cn=Users,' + base_dn
-	filter = 'cn=' + str(username)
+	#dn = 'ou=Users,' + base_dn
+	dn = base_dn
+	#dn = 'cn=' + username + ',' + base_dn
+	#print(dn)
+	
+	#filter_ = 'cn=' + username
+	#filter_ = '(&(objectclass=person)(cn=%s)' % username
+	#filter_ = '(uid=*)'
+	filter_ = 'samaccountname=' + username
+	#filter_ = ldap_filter
+	#filter_ = '(&(objectCategory=person)(%s))' % filter_
+	#filter_ = 'memberOf=' + validEditAccessGroups[0]
+	#filter_ = 'cn=' + username
+	#print(filter_)
+	
 	attrs = ['memberOf']
-	id = ldap_client.search(dn, ldap.SCOPE_SUBTREE, filter, attrs)
-	groups = ldap_client.result(id)[1][0][1]['memberOf']
+	
+	result = ldap_client.search_s(dn, ldap.SCOPE_SUBTREE, filter_, attrs)
+	#print(result)
+	#for d1 in result:
+	#	print(d1)
+	groups = result[0][1]['memberOf']
+	#print(groups)
+	
+	#return ("", "")
+	#groups = ldap_client.result(id)[1][0][1]['memberOf']
 	for group in groups:
 		address = group.split(',')
 		groupName = address[0].split('=')[1]
 		if groupName in validEditAccessGroups:
 			hasEditAccess = True
 			break
+	#print(hasEditAccess)
 	
 	ldap_client.unbind()
 	return (True, hasEditAccess)
-	
