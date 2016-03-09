@@ -145,7 +145,7 @@ def index():
 						description = request.form['device_desc'],
 						notes = request.form['device_notes'],
 						quality = request.form['device_quality'],
-						file = None#request.files['file']
+						file = request.files['file']
 					)
 			elif function == 'deleteItem':
 				serial = request.form['serial']
@@ -341,6 +341,8 @@ def not_found(error):
 # ~~~~~~~~~~~~~~~~ Utility ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
+	
+	print("UPLOADING")
 	
 	serialNumber, error = models.getNextSerialNumber(device_type)
 	
