@@ -45,7 +45,7 @@ def login_required(f):
 # ~~~~~~~~~~~~~~~~ Startup Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def init():
-	lcdiLog.addHandler(logging.FileHandler('lcdi.log'))
+	lcdiLog.addHandler(logging.FileHandler(os.getcwd() + '/lcdi.log'))
 	lcdiLog.setLevel(logging.DEBUG)
 	
 	# Generate secret key for session
