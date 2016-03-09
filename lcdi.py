@@ -20,7 +20,7 @@ import adLDAP
 
 # Paramaters
 pagePostKey = 'functionID'
-UPLOAD_FOLDER = 'static/item_photos'
+UPLOAD_FOLDER = os.getcwd() + '/static/item_photos'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 						  'PNG', 'JPG', 'JPEG', 'GIF'])
 
