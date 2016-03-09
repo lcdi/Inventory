@@ -358,10 +358,13 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	if file and allowed_file(file.filename):
 		fileList = file.filename.split(".")
 		filename = serialNumber + '.' + fileList[1]
+		print("pre-save")
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		print("post-save")
 	else:
 		filename = ''
 	
+	print("create")
 	models.Device.create(
 			SerialNumber = serialNumber,
 			SerialDevice = serialDevice,
@@ -371,6 +374,7 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 			PhotoName = filename,
 			Quality = quality
 		)
+	print("created")
 	return renderPage_View(serialNumber)
 
 def updateItem(oldSerial, serialDevice, description, notes, quality, file):
