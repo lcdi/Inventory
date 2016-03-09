@@ -3,7 +3,10 @@ import flask.ext.whooshalchemy
 import datetime
 import lcdi
 
-db = MySQLDatabase(lcdi.getDatabase(), user=lcdi.getSQLUsername(), password=lcdi.getSQLPassword())
+databaseName = "inventory"
+dbUser = "root"
+dbPass = "root"
+db = MySQLDatabase(databaseName, user=dbUser, password=dbPass)
 
 class BaseModel(Model):
 	class Meta:
