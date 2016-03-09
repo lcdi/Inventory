@@ -367,7 +367,8 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except OSError, e:
 			print e.errno
-			print e
+			print e.filename
+			print e.strerror
 		except:
 			print(sys.exc_info()[0])
 			return renderPage_View(serialNumber)
