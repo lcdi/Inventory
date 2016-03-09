@@ -1,11 +1,11 @@
 from peewee import *
 import flask.ext.whooshalchemy
 import datetime
-from configHelper import *
+from lcdi
 
-databaseName = getSQLDatabase()
-dbUser = getSQLUsername()
-dbPass = getSQLPassword()
+databaseName = lcdi.getConfig('SQL_DATABASE')
+dbUser = lcdi.getConfig('SQL_USERNAME')
+dbPass = lcdi.getConfig('SQL_PASSWORD')
 db = MySQLDatabase(databaseName, user=dbUser, password=dbPass)
 
 class BaseModel(Model):

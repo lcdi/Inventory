@@ -63,8 +63,8 @@ def getLoginURL():
 def getName():
 	return session['displayName']
 
-def getConfig():
-	return app.config
+def getConfig(key):
+	return app.config[key]
 
 # ~~~~~~~~~~~~~~~~ Page Render Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
