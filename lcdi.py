@@ -150,12 +150,15 @@ def index():
 					)
 			elif function == 'deleteItem':
 				serial = request.form['serial']
-				item = models.Device.select().where(
-						models.Device.SerialNumber == serial
-					).get();
+				item = models.Device.select().where(models.Device.SerialNumber == serial).get();
 				if item.PhotoName:
-					os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
+					try:
+						os.remove(UPLOAD_FOLDER + '/' + item.PhotoName)
+					except IOError, e:
+						print e.errno
+						print e
 				item.delete_instance();
+				
 				return getIndexURL()
 			elif function == 'filter':
 				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
