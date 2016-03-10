@@ -387,8 +387,6 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 
 def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	
-	error = "Update item"
-	
 	device = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
 	device.SerialNumber = oldSerial
@@ -401,11 +399,7 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	if filename != None:
 		device.PhotoName = filename
 	
-	error = "Saving..."
-	
 	device.save()
-	
-	error = "done"
 	
 	return error
 
@@ -416,8 +410,9 @@ def uploadFile(file):
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except IOError, e:
-			print e.errno
-			print e
+			return (None, "Errno: " + e.errno + "<br />" + str(e))
+		except NameError, e:
+			return (None, str(e))
 		except:
 			return (None, sys.exc_info()[0])
 	else:
