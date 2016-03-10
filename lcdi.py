@@ -414,7 +414,7 @@ def uploadFile(serialNumber, file):
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except IOError, e:
-			return (None, "[uploadFile] " + "Errno: " + str(e.errno) + " " + str(e))
+			return (None, "[uploadFile] " + "[Errno " + str(e.errno) + "] " + str(e))
 		except NameError, e:
 			return (None, "[uploadFile] " + str(e))
 		except:
