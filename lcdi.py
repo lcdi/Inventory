@@ -412,7 +412,7 @@ def uploadFile(file):
 		except IOError, e:
 			return (None, "Errno: " + e.errno + "<br />" + str(e))
 		except NameError, e:
-			return (None, str(e))
+			return (None, "Errno: " + e.errno + "<br />" + str(e))
 		except:
 			return (None, sys.exc_info()[0])
 	else:
