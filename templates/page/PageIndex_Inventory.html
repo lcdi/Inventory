@@ -5,7 +5,11 @@
 {%endblock%}
 
 {% block preContent %}
-
+	
+	{% if error is not none %}
+		<span>{{ error }}</span>
+	{% endif %}
+	
 	<!-- Start: Header -->
 	<div class="col-lg-12">
 		<div class="jumbotron">
