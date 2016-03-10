@@ -224,7 +224,7 @@ def login():
 			session.pop('error', None)
 			return render_template("page/PageLogin.html", error=error)
 		else:
-			return render_template("page/PageLogin.html")
+			return render_template("page/PageLogin.html", error=None)
 
 @app.route('/logout')
 def logout():
