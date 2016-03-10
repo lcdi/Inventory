@@ -351,6 +351,8 @@ def view(serial):
 		abort(404)
 	except NameError, e:
 		error = "[view] " + str(e)
+	except TypeError, e:
+		error = "[view] " + str(e)
 	except:
 		error = "[view] " + str(sys.exc_info()[0])
 	return renderPage_View(serial, error = error)
