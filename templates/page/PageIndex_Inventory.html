@@ -6,9 +6,7 @@
 
 {% block preContent %}
 	
-	{% if error is not none %}
-		<span>{{ error }}</span>
-	{% endif %}
+	{% include "component/ErrorMessage.html" %}
 	
 	<!-- Start: Header -->
 	<div class="col-lg-12">
