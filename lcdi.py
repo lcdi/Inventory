@@ -32,8 +32,6 @@ app.config.from_object('config')
 
 #lcdiLog = logging.getLogger('lcdi_logger')
 
-# TODO use a decorator for logins http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/#login-required-decorator
-
 # ~~~~~~~~~~~~~~~~ Decorators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def login_required(f):
