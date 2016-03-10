@@ -140,7 +140,7 @@ def getNextSerialNumber(device_type):
 	# No items of type
 	if numberOfEntries <= 0:
 		typeNumber = len(getDeviceTypes())
-		if typeNumber > typeNumberLength:
+		if typeNumber > typeNumberQuantityMAX - 1:
 			return (None, "OVERFLOW ERROR: Too many types")
 	# Items of type found
 	else:
