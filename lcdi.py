@@ -350,7 +350,7 @@ def view(serial):
 	except models.DoesNotExist:
 		abort(404)
 	except NameError, e:
-		return (None, "[view]<br />" + str(e))
+		error = "[view]<br />" + str(e)
 	except:
 		error = "[view]<br />" + str(sys.exc_info()[0])
 	return renderPage_View(serial, error = error)
