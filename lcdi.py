@@ -82,6 +82,11 @@ def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', s
 	deviceList = models.getDevicesWithLog(itemType, status, quality)
 	length = models.getDevices()
 	
+	error = None
+	if 'error' in session:
+		error = session['error']
+		session.pop('error', None)
+	
 	return render_template("page/PageIndex_Inventory.html",
 			filter_Type = itemType,
 			filter_Status = status,
@@ -97,7 +102,8 @@ def renderInventoryListings(itemType = 'ALL', status = 'ALL', quality = 'ALL', s
 			data_id = searchSerial,
 			queueModal = searchModal,
 			
-			name = escape(getName())
+			name = escape(getName()),
+			error = error
 		)
 
 def renderPage_View(serial):
@@ -369,7 +375,7 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	serialNumber, error = models.getNextSerialNumber(device_type)
 	
 	if serialNumber == None:
-		print(error)
+		session['error'] = error
 		return getInventoryURL()
 	
 	if device_type == 'Other':
