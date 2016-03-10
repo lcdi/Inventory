@@ -410,11 +410,11 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 def uploadFile(serialNumber, file):
 	if file and allowed_file(file.filename):
 		fileList = file.filename.split(".")
-		filename = serialNumber + '.' + fileList[1]
+		filename = serialNumber + '.' + str(fileList[1])
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except IOError, e:
-			return (None, "[uploadFile] " + "Errno: " + e.errno + " " + str(e))
+			return (None, "[uploadFile] " + "Errno: " + str(e.errno) + " " + str(e))
 		except NameError, e:
 			return (None, "[uploadFile] " + str(e))
 		except:
