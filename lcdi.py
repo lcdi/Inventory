@@ -335,6 +335,8 @@ def userLogsAll():
 @login_required
 def view(serial):
 	
+	error = None
+	
 	try:
 		if request.method == 'POST' and request.form[pagePostKey] == 'updateItem':
 			error = updateItem(
@@ -345,11 +347,11 @@ def view(serial):
 				quality = request.form['device_quality'],
 				file = request.files['file']
 			)
-			return renderPage_View(serial, error = error)
-		
-		return renderPage_View(serial)
 	except models.DoesNotExist:
 		abort(404)
+	except:
+		error = sys.exc_info()[0]
+	return renderPage_View(serial, error = error)
 		
 @app.errorhandler(404)
 def not_found(error):
