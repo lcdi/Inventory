@@ -350,7 +350,7 @@ def view(serial):
 	except models.DoesNotExist:
 		abort(404)
 	except:
-		error = "[view] " + sys.exc_info()[0]
+		error = "[view] " + str(sys.exc_info()[0])
 	return renderPage_View(serial, error = error)
 		
 @app.errorhandler(404)
@@ -414,7 +414,7 @@ def uploadFile(file):
 		except NameError, e:
 			return (None, "[uploadFile]<br />" + str(e))
 		except:
-			return (None, "[uploadFile]<br />" + sys.exc_info()[0])
+			return (None, "[uploadFile]<br />" + str(sys.exc_info()[0]))
 	else:
 		filename = None
 	return (filename, None)
