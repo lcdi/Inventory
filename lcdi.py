@@ -385,6 +385,8 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 
 def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	
+	error = "Update item"
+	
 	device = models.Device.select().where(models.Device.SerialNumber == oldSerial).get()
 	
 	device.SerialNumber = oldSerial
@@ -397,7 +399,11 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	if filename != None:
 		device.PhotoName = filename
 	
+	error = "Saving..."
+	
 	device.save()
+	
+	error = "done"
 	
 	return error
 
