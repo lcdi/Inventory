@@ -350,9 +350,9 @@ def view(serial):
 	except models.DoesNotExist:
 		abort(404)
 	except NameError, e:
-		error = "[view]<br />" + str(e)
+		error = "[view] " + str(e)
 	except:
-		error = "[view]<br />" + str(sys.exc_info()[0])
+		error = "[view] " + str(sys.exc_info()[0])
 	return renderPage_View(serial, error = error)
 		
 @app.errorhandler(404)
@@ -372,7 +372,7 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 	if device_type == 'Other':
 		device_type = device_other
 	
-	filename, error = uploadFile(file)
+	filename, error = uploadFile(serialNumber, file)
 	if filename == None:
 		return renderPage_View(serialNumber)
 	
@@ -397,7 +397,7 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	device.Issues = notes
 	device.Quality = quality
 	
-	filename, error = uploadFile(file)
+	filename, error = uploadFile(oldSerial, file)
 	if filename != None:
 		device.PhotoName = filename
 	
@@ -405,18 +405,18 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	
 	return error
 
-def uploadFile(file):
+def uploadFile(serialNumber, file):
 	if file and allowed_file(file.filename):
 		fileList = file.filename.split(".")
 		filename = serialNumber + '.' + fileList[1]
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except IOError, e:
-			return (None, "[uploadFile]<br />" + "Errno: " + e.errno + "<br />" + str(e))
+			return (None, "[uploadFile] " + "Errno: " + e.errno + " " + str(e))
 		except NameError, e:
-			return (None, "[uploadFile]<br />" + str(e))
+			return (None, "[uploadFile] " + str(e))
 		except:
-			return (None, "[uploadFile]<br />" + str(sys.exc_info()[0]))
+			return (None, "[uploadFile] " + str(sys.exc_info()[0]))
 	else:
 		filename = None
 	return (filename, None)
