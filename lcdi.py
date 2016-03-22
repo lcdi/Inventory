@@ -1,5 +1,6 @@
 # Flask imports
 from flask import Flask, render_template, session, redirect, url_for, escape, request, jsonify, abort
+from flask_jsglue import JSGlue
 from werkzeug import secure_filename
 import flask.ext.whooshalchemy
 from functools import wraps
@@ -27,6 +28,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = Flask(__name__)
+jsglue = JSGlue(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.from_object('config')
 
@@ -175,7 +177,7 @@ def index():
 				return renderInventoryListings(itemType = request.form['type'], status = request.form['status'], quality = request.form['quality'])
 		except:
 			#logging.error(sys.exc_info()[0])
-			flash(sys.exc_info()[0])
+			#flash(sys.exc_info()[0])
 			return renderInventoryListings()
 		
 	else:
