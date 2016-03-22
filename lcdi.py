@@ -384,9 +384,12 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		device_type = device_other
 	
 	filename, error = uploadFile(serialNumber, file)
-	if filename == None:
-		return renderPage_View(serialNumber)
+	if filename == None and error != None:
+		session['error'] = error
+		return getIndexURL()
 	
+	if filename == None:
+		filename = ""
 	models.Device.create(
 			SerialNumber = serialNumber,
 			SerialDevice = serialDevice,
@@ -417,6 +420,8 @@ def updateItem(oldSerial, serialDevice, description, notes, quality, file):
 	return error
 
 def uploadFile(serialNumber, file):
+	if file and not file.filename:
+		return (None, None)
 	if file and allowed_file(file.filename):
 		fileList = file.filename.split(".")
 		filename = serialNumber + '.' + str(fileList[1])
