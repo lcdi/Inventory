@@ -44,18 +44,22 @@
 							Close
 						</button>
 						
-						<button type="button" class="btn btn-warning" id="viewItemFromSerial">
-							View Item
-						</button>
-						
 						<button type="submit" class="btn btn-primary">
 							{{ title }}
 						</button>
+				</form>
+						
+						<form action="{{ url_for('viewItem') }}" method="POST" enctype="multipart/form-data" style="display: inline-block;">
+							<input name='functionID' value='viewItem' type='hidden' class='form-control'>
+							<input name="lcdi_serial" id="lcdi_serial" type='hidden' class="form-control"/>
+							<button type="submit" class="btn btn-warning">
+								View Item
+							</button>
+						</form>
 						
 					</div>
 					<!-- End: Footer -->
 					
-				</form>
 			</div>
 			<!-- End: Body -->
 			

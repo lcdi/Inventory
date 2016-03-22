@@ -1,5 +1,6 @@
 # Flask imports
 from flask import Flask, render_template, session, redirect, url_for, escape, request, jsonify, abort
+#from flask_jsglue import JSGlue
 from werkzeug import secure_filename
 import flask.ext.whooshalchemy
 from functools import wraps
@@ -332,6 +333,12 @@ def userLogsAll():
 		
 	return render_template("page/PageUserLogs.html", query = query, searchPhrase = searchPhrase)
 
+@app.route('/viewItem', methods=['POST'])
+@login_required
+def viewItem():
+	if request.method == 'POST':
+		return redirect(url_for('view', serial=request.form['lcdi_serial']))
+
 @app.route('/view/<string:serial>', methods=['GET', 'POST'])
 @login_required
 def view(serial):
@@ -349,9 +356,6 @@ def view(serial):
 					quality = request.form['device_quality'],
 					file = request.files['file']
 				)
-			elif request.form[pagePostKey] == 'viewItem':
-				print(request.form['lcdi_serial'])
-				return view(request.form['lcdi_serial'])
 	except models.DoesNotExist:
 		abort(404)
 	except NameError, e:
