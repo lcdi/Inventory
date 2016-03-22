@@ -27,7 +27,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif',
 
 # ~~~~~~~~~~~~~~~~ Start Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = Flask(__name__)
-jsglue = JSGlue(app)
+#jsglue = JSGlue(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.from_object('config')
 
