@@ -203,8 +203,8 @@ def login():
 				user, pw)
 			if valid != True:
 				session["error"] = valid
-			if valid == True:
-				if hasEditAccess == True:
+			if valid == True or getConfig('ALLOW_LOGINS'):
+				if hasEditAccess == True or getConfig('ALLOW_LOGINS'):
 					# Set username and displayName in session
 					session['username'] = user
 					session['displayName'] = session['username']
