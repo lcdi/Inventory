@@ -102,8 +102,20 @@
 		var items = "";
 		if (Math.random() < 0.5) items = "{{ totalItems }}";
 		else items = "{{ totalSignedOut }}";
+		/*
 		$.get('https://numbersapi.com/' + items, function(data) {
 			$('#number').text('' + data);
+		});
+		*/
+		$.ajax({
+			url: 'http://numbersapi.com/' + items,
+			type: 'GET',
+			success: function(data) {
+				$('#number').text('' + data);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				console.log("Failed numapi with error... request ready state is " + XMLHttpRequest.readyState);
+			}
 		});
 	</script>
 	{% if data_id %}
