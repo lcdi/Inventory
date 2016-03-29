@@ -102,7 +102,7 @@
 		var items = "";
 		if (Math.random() < 0.5) items = "{{ totalItems }}";
 		else items = "{{ totalSignedOut }}";
-		$.get('http://numbersapi.com/' + items, function(data) {
+		$.get('https://numbersapi.com/' + items, function(data) {
 			$('#number').text('' + data);
 		});
 	</script>
