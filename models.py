@@ -1,9 +1,14 @@
 from peewee import *
+from playhouse.shortcuts import RetryOperationalError
 import flask.ext.whooshalchemy
 import datetime
 from lcdi import *
 
-db = MySQLDatabase(getConfig('SQL_DATABASE'), user=getConfig('SQL_USERNAME'), password=getConfig('SQL_PASSWORD'))
+class MysqlRetryDatabase(RetryOperationalError, MySQLDatabase):
+	pass
+
+#db = MySQLDatabase(getConfig('SQL_DATABASE'), user=getConfig('SQL_USERNAME'), password=getConfig('SQL_PASSWORD'))
+db = MysqlRetryDatabase(getConfig('SQL_DATABASE'), user=getConfig('SQL_USERNAME'), password=getConfig('SQL_PASSWORD'))
 
 class BaseModel(Model):
 	class Meta:
