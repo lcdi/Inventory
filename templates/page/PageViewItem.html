@@ -25,7 +25,9 @@
 				
 				<div class="well" style="display: flex; justify-content: flex-start;">
 					<div>
-						<img src="{{ url_for('static', filename='item_photos/' + device.PhotoName) }}" alt = "Item-Photo" style="width: 350px; height: auto;">                            
+						<a href="#" id="openImage">
+							<img src="{{ url_for('static', filename='item_photos/' + device.PhotoName) }}" alt = "Item-Photo" style="width: 350px; height: auto;">       
+						</a>
 					</div>
 					<div style="padding-left: 20px;">
 						<h4><b>Device Serial Number:</b> {{ device.SerialDevice }} </h4>
@@ -221,4 +223,32 @@
 	</div>
 	<!-- End: Delete -->
 	
+	<div class="modal fade" id="imageModal" tabIndex="-1" role="dialog" aria-labelledby="Image" aria-hidden="true">
+		<div class="modal-dialog" style="width: 80%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="Image">{{ device.SerialNumber }} Image</h4>
+				</div>
+				<div class="modal-body">
+					<img src="{{ url_for('static', filename='item_photos/' + device.PhotoName) }}" id="imagepreview" style="width: 100%;">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}
+
+{% block scripts %}
+	<script text="text/javascript" language="javascript">
+		$("#openImage").on("click", function() {
+			$("#imageModal").modal("show");
+		});
+	</script>
 {% endblock %}
