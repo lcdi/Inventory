@@ -15,6 +15,7 @@ import os.path
 import time
 import json
 import logging
+import shutil
 
 # Custom support files
 import adLDAP
@@ -386,9 +387,14 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		device_type = device_other
 	
 	filename, error = uploadFile(serialNumber, file)
-	if filename == None and error != None:
-		session['error'] = error
-		return getIndexURL()
+	if filename == None:
+		if error != None:
+			session['error'] = error
+			return getIndexURL()
+		else:
+			static = os.getcwd() + "/static/"
+			filename = serialNumber + ".png"
+			shutil.copy(static + "lcdi_logo.png", static + "item_photos/" + filename)
 	
 	if filename == None:
 		filename = ""
