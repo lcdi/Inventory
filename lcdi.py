@@ -394,7 +394,7 @@ def addItem(serialDevice, device_type, device_other, description, notes, quality
 		else:
 			static = os.getcwd() + "/static/"
 			filename = serialNumber + ".png"
-			shutil.copy(static + "lcdi_logo.png", static + "item_photos/" + filename)
+			shutil.copy(static + "default.jpeg", static + "item_photos/" + filename)
 	
 	if filename == None:
 		filename = ""
