@@ -28,4 +28,17 @@
 		<!-- End: Table Body -->
 	
 	</div>
+
+<script src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.bootstrap.min.js') }}"></script>
+	
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#dataTables-example').DataTable({
+			responsive: true
+		});
+	});
+</script>
+
 {%endblock%}
