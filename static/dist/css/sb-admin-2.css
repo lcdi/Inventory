@@ -102,6 +102,10 @@ body {
     background-color: #eee;
 }
 
+.sidebar ul li a.active:last-child {
+    background-color: #f8f8f8;
+}
+
 .sidebar .arrow {
     float: right;
 }
