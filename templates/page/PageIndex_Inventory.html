@@ -20,9 +20,6 @@
 						There are currently {{ totalItems }} items in the inventory and {{ totalSignedOut }} items signed out
 					</span>
 				</p>
-				<div class="well well-sm" style="background: rgb(255,255,255); margin: 0px 20px 0px 20px; display: inline-block;">
-						<h4 style="padding: 0 10px 0 10px;"><span id="number"></span></h4>    
-				</div>
 			</center>
 		</div>
 	</div>
@@ -98,26 +95,7 @@
 {% block modals %}{% endblock %}
 
 {% block scripts %}
-	<script type="text/javascript">
-		var items = "";
-		if (Math.random() < 0.5) items = "{{ totalItems }}";
-		else items = "{{ totalSignedOut }}";
-		/*
-		$.get('https://numbersapi.com/' + items, function(data) {
-			$('#number').text('' + data);
-		});
-		*/
-		$.ajax({
-			url: 'http://numbersapi.com/' + items,
-			type: 'GET',
-			success: function(data) {
-				$('#number').text('' + data);
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				console.log("Failed numapi with error... request ready state is " + XMLHttpRequest.readyState);
-			}
-		});
-	</script>
+	
 	{% if data_id %}
 		<script language="javascript">
 			$(window).load(function() {
