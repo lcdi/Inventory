@@ -138,7 +138,7 @@ def getNextSerialNumber(device_type):
 	typeNumberQuantityMAX = pow(10, typeNumberLength)
 	typeNumberMAX = typeNumberQuantityMAX - 1
 	itemNumber = 0
-	itemNumberLength = 2
+	itemNumberLength = 3
 	itemNumberQuantityMAX = pow(10, itemNumberLength)
 	itemNumberMAX = itemNumberQuantityMAX - 1
 	

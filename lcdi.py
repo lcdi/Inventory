@@ -368,7 +368,7 @@ def view(serial):
 	except:
 		error = "[view] " + str(sys.exc_info()[0])
 	return renderPage_View(serial, error = error)
-
+	
 @app.errorhandler(404)
 def not_found(error):
 	return render_template('page/404.html'), 404
