@@ -377,7 +377,7 @@ def not_found(error):
 
 def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
 	
-	serialNumber, error = models.getNextSerialNumber(device_type)
+	serialNumber, error = models.generateSerial(device_type)
 	
 	if serialNumber == None:
 		session['error'] = error

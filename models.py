@@ -173,7 +173,57 @@ def getNextSerialNumber(device_type):
 				return (None, "OVERFLOW ERROR: All serials used up")
 
 	return (lcdiPrefix + str(typeNumber).zfill(typeNumberLength) + str(itemNumber).zfill(itemNumberLength), None)
-
+	
+def generateSerial(device_type):
+	
+	querySerial = Device.select(Device.SerialNumber).where(Device.Type == device_type).order_by(-Device.SerialNumber)
+	numberOfEntries = len(querySerial)
+	
+	if numberOfEntries > 99:
+		return (None, "OVERFLOW ERROR: Too many items for type " + device_type)
+	
+	if numberOfEntries <= 0:
+		serialList = []
+		deviceQuery = getDevices();
+		
+		count = 0;
+		for device in deviceQuery:
+			serial = device.SerialNumber
+			serial = serial[5:]
+			typeNumber = serial[:2]
+			
+			if typeNumber not in serialList:
+				serialList.append(typeNumber)
+				
+		
+		print(serialList)
+		
+		missingTypes = []
+		
+		for x in range(0, 100):
+			testType = str(x).zfill(2)
+			if testType not in serialList:
+				missingTypes.append(testType)
+				
+		
+		print(missingTypes)
+		
+		typeNumber = missingTypes.pop(0)
+		if int(typeNumber) > 99:
+			return (None, "OVERFLOW ERROR: Too many types")
+		
+		itemNumber = 0	
+		print(typeNumber)
+	else:
+		
+		serial = querySerial[0].SerialNumber
+		serial = serial[5:]
+		typeNumber = serial[:2]
+		itemNumber = numberOfEntries
+	
+	return ('LCDI-' + typeNumber + str(itemNumber).zfill(3), None)
+	
+	
 def getDeviceLog(serial):
 	return Log.select().where(Log.SerialNumber == serial).order_by(-Log.Identifier)
 	

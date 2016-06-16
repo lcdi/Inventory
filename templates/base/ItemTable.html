@@ -3,9 +3,9 @@
 {% block tableColumnsHeaders %}
 	<th>Serial Number</th>
 	<th>Type</th>
+	<th>Description</th>
 	<th>Purpose</th>
 	<th>Last User</th>
-	<th>Date Out</th>
 	<th>Date In</th>
 	<th>Sign In / Out</th>
 {% endblock %}
@@ -20,6 +20,11 @@
 			</td>
 			<td>{{ device.Type }}</td>
 			<td>
+				{% if device.Description %}
+					{{ device.Description }}
+				{% endif %}
+			</td>
+			<td>
 				{% if device.log.Purpose %}
 					{{ device.log.Purpose }}
 				{% endif %}
@@ -27,11 +32,6 @@
 			<td>
 				{% if device.log.UserOut %}
 					{{ device.log.UserOut }}
-				{% endif %}
-			</td>
-			<td>
-				{% if device.log.DateOut %}
-					{{ device.log.DateOut }}
 				{% endif %}
 			</td>
 			<td>
