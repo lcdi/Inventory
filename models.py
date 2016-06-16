@@ -218,7 +218,7 @@ def generateSerial(device_type):
 		
 		serial = querySerial[0].SerialNumber
 		serial = serial[5:]
-		typeNumber = serial[:2]
+		typeNumber, itemnNumber = serial[:2] , serial[3:]
 		itemNumber = numberOfEntries
 	
 	return ('LCDI-' + typeNumber + str(itemNumber).zfill(3), None)
