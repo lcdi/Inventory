@@ -377,14 +377,14 @@ def not_found(error):
 
 def addItem(serialDevice, device_type, device_other, description, notes, quality, file):
 	
+	if device_type == 'Other':
+		device_type = device_other
+		
 	serialNumber, error = models.generateSerial(device_type)
 	
 	if serialNumber == None:
 		session['error'] = error
 		return getIndexURL()
-	
-	if device_type == 'Other':
-		device_type = device_other
 	
 	filename, error = uploadFile(serialNumber, file)
 	if filename == None:
