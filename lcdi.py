@@ -268,12 +268,11 @@ def search():
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
 		return renderPage_View(searchPhrase)
 	else:
-		query = models.getDevicesAndLogs().where(
+		query = models.getDevices().where(
 			models.Device.SerialNumber.contains(searchPhrase) |
 			models.Device.SerialDevice.contains(searchPhrase) |
 			models.Device.Type.contains(searchPhrase) |
-			models.Device.Description.contains(searchPhrase) |
-			models.Log.Purpose.contains(searchPhrase)
+			models.Device.Description.contains(searchPhrase)
 		)
 		deviceList = models.getDeviceAndLogListForQuery(query)
 		
