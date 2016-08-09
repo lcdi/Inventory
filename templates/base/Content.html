@@ -18,6 +18,20 @@
 	.new-wrapper{
 		padding: 3%;
 	}
+	#lcdi_nav_logo{
+		height: 100%; 
+		width: auto;
+	}
+	@media only screen 
+        and (min-device-width : 768px) 
+        and (max-device-width : 1024px) 
+        and (orientation : landscape) { 
+            #lcdi_nav_logo{
+                width: auto; 
+                height: 23px; 
+            }
+            
+        }
 </style>
 	
 <nav class="navbar navbar-default">
@@ -31,7 +45,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">
-      	<img src="{{ url_for('static', filename='LCDI_Only_Logo.jpg')}}" style="height: 100%; width: auto;"></img>
+      	<img src="{{ url_for('static', filename='LCDI_Only_Logo.jpg')}}" id="lcdi_nav_logo"></img>
       </a>
     </div>
 
