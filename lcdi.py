@@ -265,7 +265,7 @@ def search():
 		
 		return render_template("page/PageUserLogs.html", query = logs, searchPhrase = searchPhrase)
 		
-	if len(searchPhrase) == 4 and searchPhrase.isdigit():
+	if len(searchPhrase) == 5 and searchPhrase.isdigit():
 		searchPhrase = "LCDI-" + searchPhrase
 	
 	if (len(models.Device.select().where(models.Device.SerialNumber == searchPhrase)) == 1):
