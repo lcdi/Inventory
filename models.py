@@ -216,10 +216,31 @@ def generateSerial(device_type):
 		print(typeNumber)
 	else:
 		
+		numberList = []
+		
+		for device in querySerial:
+			serial = device.SerialNumber
+			serial = serial[5:]
+			itemNumber = serial[2:]
+			
+			if itemNumber not in numberList:
+				numberList.append(itemNumber)
+				
+		print numberList
+		
+		missingNumbers = []
+		
+		for x in range(0, 1000):
+			testNumber = str(x).zfill(3)
+			if testNumber not in numberList:
+				missingNumbers.append(testNumber)
+				
+		print missingNumbers
+		
 		serial = querySerial[0].SerialNumber
 		serial = serial[5:]
 		typeNumber, itemnNumber = serial[:2] , serial[3:]
-		itemNumber = numberOfEntries
+		itemNumber = missingNumbers.pop(0)
 	
 	return ('LCDI-' + typeNumber + str(itemNumber).zfill(3), None)
 	
