@@ -330,7 +330,7 @@ def userLogsAll():
 			table = render_template('page/PageUserLogs_Body.html', query = query)
 			return jsonify(tableBody = table)
 		
-	return render_template("page/PageUserLogs.html", query = query, searchPhrase = searchPhrase)
+	return render_template("page/PageUserLogs.html", query = query, types = models.getDeviceTypes(), searchPhrase = searchPhrase)
 
 @app.route('/viewItem', methods=['POST'])
 @login_required
