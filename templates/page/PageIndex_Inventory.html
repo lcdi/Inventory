@@ -8,6 +8,8 @@
 	
 	{% include "component/ErrorMessage.html" %}
 	
+	{% if filter_Status == 'out' %}
+	
 	<!-- Start: Header -->
 	<div class="col-lg-12">
 		<div class="jumbotron">
@@ -24,6 +26,8 @@
 		</div>
 	</div>
 	<!-- End: Header -->
+	
+	{% endif %}
 	
 	<!-- Start: Filter Form -->
 	<form action="{{ url_for('index') }}" method="POST" role="form" >

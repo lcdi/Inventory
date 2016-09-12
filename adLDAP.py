@@ -1,6 +1,6 @@
 import ldap
 
-validEditAccessGroups = ['Office Assistants', 'Domain Admins', 'Inventory']
+validEditAccessGroups = ['Office Assistants', 'Domain Admins', 'Inventory', 'Research Assistants']
 
 def checkCredentials(controller, domainA, domainB, username, password):
 	if password == "":
