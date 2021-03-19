@@ -5,7 +5,7 @@ Flask-JSGlue==0.3
 Flask-SQLAlchemy==2.1
 Flask-WhooshAlchemy==0.56
 FormEncode==1.2.6
-Jinja2==2.7.2
+Jinja2==2.11.3
 M2Crypto==0.21.1
 MarkupSafe==0.18
 MySQL-python==1.2.3
