@@ -13,7 +13,7 @@ Paste==1.7.5.1
 PasteDeploy==1.5.2
 PasteScript==1.7.5
 Pillow==2.3.0
-PyYAML==3.10
+PyYAML==5.4
 Routes==2.0
 SQLAlchemy==0.8.4
 SecretStorage==2.0.0
