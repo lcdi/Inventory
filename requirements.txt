@@ -83,7 +83,7 @@ python-cinderclient==1.0.8
 python-dateutil==1.5
 python-glanceclient==0.12.0
 python-keystoneclient==0.7.1
-python-ldap==2.4.10
+python-ldap==3.4.0
 python-neutronclient==2.3.4
 python-novnc==0.4-dfsg-1-20130425-git4973b9cc80
 python-openid==2.2.5
