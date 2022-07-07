@@ -89,7 +89,7 @@ python-novnc==0.4-dfsg-1-20130425-git4973b9cc80
 python-openid==2.2.5
 pytz==2012c
 repoze.lru==0.6
-requests==2.2.1
+requests==2.20.0
 scgi==1.13
 scipy==0.13.3
 simplegeneric==0.8.1
